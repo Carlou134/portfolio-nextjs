@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
 import Stack from "@/components/Stack";
 import Experience from "@/components/Experience";
+import About from "@/components/About";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Projects />
       <Stack />
       <Experience />
+      <About />
     </main>
   );
 }
