@@ -83,23 +83,25 @@ export default function Hero() {
             custom={3}
             className="flex gap-4 flex-wrap items-center"
           >
-            <button
+            <motion.button
               className="btn-primary"
               onClick={() =>
                 document.getElementById('proyectos')?.scrollIntoView({ behavior: 'smooth' })
               }
+              whileTap={{ scale: 0.95 }}
             >
               Ver proyectos
-            </button>
+            </motion.button>
 
-            <a
+            <motion.a
               href="/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
+              whileTap={{ scale: 0.95 }}
             >
               Descargar CV
-            </a>
+            </motion.a>
 
             <Link
               href="https://github.com/Carlou134"

@@ -86,7 +86,10 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
       </div>
 
       {/* Contenido */}
-      <div className="card hover:border-border-hover transition-all duration-300">
+      <motion.div
+        className="card hover:border-accent-green/30 hover:glow-green transition-all duration-300"
+        whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+      >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
           <div>
             <h3 className="font-mono font-medium text-base text-text-primary">
@@ -118,7 +121,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
             </li>
           ))}
         </ul>
-      </div>
+      </motion.div>
     </motion.div>
   )
 }

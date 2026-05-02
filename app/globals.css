@@ -123,7 +123,7 @@
   }
 
   .btn-primary {
-    @apply bg-accent-green text-bg-primary font-mono font-medium text-sm px-6 py-3 rounded-lg transition-all duration-200;
+    @apply bg-accent-green text-bg-primary font-mono font-medium text-sm px-6 py-3 rounded-lg transition-all duration-200 select-none;
   }
 
   .btn-primary:hover {
@@ -135,7 +135,7 @@
   }
 
   .btn-secondary {
-    @apply border border-border text-text-primary font-mono text-sm px-6 py-3 rounded-lg transition-all duration-200;
+    @apply border border-border text-text-primary font-mono text-sm px-6 py-3 rounded-lg transition-all duration-200 select-none;
   }
 
   .btn-secondary:hover {

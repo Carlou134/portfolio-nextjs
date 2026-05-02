@@ -75,11 +75,12 @@ export default function Contact() {
 
       <div className="max-w-2xl mx-auto">
         <motion.div
-          className="card"
+          className="card hover:border-accent-green/30 hover:glow-green transition-all duration-300"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
+          whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
         >
           {/* Header */}
           <h2 className="font-mono text-xl font-medium text-text-primary mb-2">
@@ -154,13 +155,14 @@ export default function Contact() {
             </button>
           ) : (
             <>
-              <button
+              <motion.button
                 onClick={handleSubmit}
                 className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
+                whileTap={{ scale: 0.95 }}
               >
                 <Send size={16} />
                 Enviar mensaje
-              </button>
+              </motion.button>
               {status === 'error' && (
                 <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
                   <AlertCircle size={14} color="#F87171" />
