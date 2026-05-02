@@ -115,6 +115,7 @@ function ProjectImage({
   alt,
   priority = false,
   aspect = 'aspect-video',
+  grow = false,
   sizes,
   fit = 'cover',
 }: {
@@ -122,22 +123,26 @@ function ProjectImage({
   alt: string;
   priority?: boolean;
   aspect?: string;
+  grow?: boolean;
   sizes: string;
   fit?: 'cover' | 'contain';
 }) {
   const [hasError, setHasError] = useState(false);
   const fileName = src.split('/').pop() ?? src;
+  const containerClass = grow
+    ? 'relative w-full flex-1 min-h-0'
+    : `relative w-full ${aspect}`;
 
   if (hasError) {
     return (
-      <div className={`relative w-full ${aspect} rounded-lg bg-bg-secondary overflow-hidden flex items-center justify-center`}>
+      <div className={`${containerClass} rounded-lg bg-bg-secondary overflow-hidden flex items-center justify-center`}>
         <span className="font-mono text-xs text-text-muted">{fileName}</span>
       </div>
     );
   }
 
   return (
-    <div className={`relative w-full ${aspect} rounded-lg overflow-hidden`}>
+    <div className={`${containerClass} rounded-lg overflow-hidden`}>
       <Image
         src={src}
         alt={alt}
@@ -209,7 +214,7 @@ export default function Projects() {
                 src={project.image}
                 alt={project.title}
                 priority={isFeatured}
-                aspect={isFeatured ? 'aspect-[4/3]' : 'aspect-video'}
+                grow={isFeatured}
                 sizes={
                   isFeatured
                     ? '(max-width: 768px) 100vw, 66vw'
@@ -217,7 +222,7 @@ export default function Projects() {
                       ? '(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1152px'
                       : '(max-width: 768px) 100vw, 33vw'
                 }
-                fit={isFeatured || isLast ? 'contain' : 'cover'}
+                fit={isLast ? 'contain' : 'cover'}
               />
 
               {/* Title */}
