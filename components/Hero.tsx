@@ -1,10 +1,10 @@
 'use client';
 
 import { type ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
@@ -12,7 +12,7 @@ const fadeUp = {
     transition: {
       delay: i * 0.15,
       duration: 0.6,
-      ease: 'easeOut',
+      ease: 'easeOut' as const,
     },
   }),
 };
