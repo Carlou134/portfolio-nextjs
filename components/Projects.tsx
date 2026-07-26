@@ -4,6 +4,12 @@ import Image from 'next/image';
 import { ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+interface Bilingual {
+  es: string;
+  en: string;
+}
 
 interface ProjectLink {
   label: string;
@@ -17,26 +23,31 @@ interface ProjectMetric {
 
 interface Project {
   id: number;
-  badge: string;
+  badge: Bilingual;
   badgeColor: 'blue' | 'green' | 'amber' | 'pink';
-  title: string;
-  description: string;
+  title: Bilingual;
+  description: Bilingual;
   metrics: ProjectMetric[];
   stack: string[];
   image?: string;
   links: ProjectLink[];
   featured: boolean;
-  footer?: string;
+  footer?: Bilingual;
 }
 
 const projects: Project[] = [
   {
     id: 1,
-    badge: 'AI & ML',
+    badge: { es: 'AI & ML', en: 'AI & ML' },
     badgeColor: 'blue',
-    title: 'Clasificación de alertas con Random Forest',
-    description:
-      'Sistema jerárquico de dos etapas (Random Forest + LightGBM) frente a baselines XGBoost/SVM, evaluado sobre ~33,000 alertas reales anonimizadas de un SOC de Lima Metropolitana. Priorización por risk score y explicabilidad SHAP con lenguaje natural vía Claude API. Desplegado en Azure.',
+    title: {
+      es: 'Clasificación de alertas con Random Forest',
+      en: 'Alert classification with Random Forest',
+    },
+    description: {
+      es: 'Sistema jerárquico de dos etapas (Random Forest + LightGBM) frente a baselines XGBoost/SVM, evaluado sobre ~33,000 alertas reales anonimizadas de un SOC de Lima Metropolitana. Priorización por risk score y explicabilidad SHAP con lenguaje natural vía Claude API. Desplegado en Azure.',
+      en: 'Two-stage hierarchical system (Random Forest + LightGBM) benchmarked against XGBoost/SVM baselines, evaluated on ~33,000 real anonymized alerts from a Metropolitan Lima SOC. Risk-score prioritization and SHAP explainability translated into natural language via the Claude API. Deployed on Azure.',
+    },
     metrics: [
       { value: '82.91%', label: 'Accuracy' },
       { value: '83.16%', label: 'F1-Macro' },
@@ -45,15 +56,23 @@ const projects: Project[] = [
     image: '/tesis.png',
     links: [{ label: 'GitHub', href: 'https://github.com/Carlou134/soc-alert-prioritization-ml' }],
     featured: true,
-    footer: 'Tesis de grado · UPC · ~33,000 alertas reales de SOC (Lima Metropolitana)',
+    footer: {
+      es: 'Tesis de grado · UPC · ~33,000 alertas reales de SOC (Lima Metropolitana)',
+      en: 'Degree thesis · UPC · ~33,000 real SOC alerts (Metropolitan Lima)',
+    },
   },
   {
     id: 2,
-    badge: 'Backend',
+    badge: { es: 'Backend', en: 'Backend' },
     badgeColor: 'green',
-    title: 'API REST con Clean Architecture',
-    description:
-      'API robusta bajo Clean Architecture, SOLID y CQRS con MediatR. Seguridad con JWT + BCrypt, validaciones con FluentValidation y persistencia con EF Core. Diseñada para escalar sin deuda técnica.',
+    title: {
+      es: 'API REST con Clean Architecture',
+      en: 'REST API with Clean Architecture',
+    },
+    description: {
+      es: 'API robusta bajo Clean Architecture, SOLID y CQRS con MediatR. Seguridad con JWT + BCrypt, validaciones con FluentValidation y persistencia con EF Core. Diseñada para escalar sin deuda técnica.',
+      en: 'Robust API under Clean Architecture, SOLID, and CQRS with MediatR. JWT + BCrypt security, FluentValidation checks, and EF Core persistence. Designed to scale without technical debt.',
+    },
     metrics: [],
     stack: ['.NET Core', 'C#', 'SQL Server', 'MediatR', 'AutoMapper'],
     image: '/api-rest.png',
@@ -62,11 +81,16 @@ const projects: Project[] = [
   },
   {
     id: 3,
-    badge: 'Fullstack',
+    badge: { es: 'Fullstack', en: 'Fullstack' },
     badgeColor: 'amber',
-    title: 'Sistema de gestión de órdenes',
-    description:
-      'SPA en React consumiendo API .NET Core con arquitectura desacoplada. Base de datos en AWS RDS (MySQL). Despliegue automatizado en Azure App Service.',
+    title: {
+      es: 'Sistema de gestión de órdenes',
+      en: 'Order management system',
+    },
+    description: {
+      es: 'SPA en React consumiendo API .NET Core con arquitectura desacoplada. Base de datos en AWS RDS (MySQL). Despliegue automatizado en Azure App Service.',
+      en: 'React SPA consuming a .NET Core API with decoupled architecture. Database on AWS RDS (MySQL). Automated deployment on Azure App Service.',
+    },
     metrics: [],
     stack: ['React', '.NET Core', 'MySQL', 'Azure', 'AWS RDS'],
     image: '/gestion-ordenes.png',
@@ -78,11 +102,16 @@ const projects: Project[] = [
   },
   {
     id: 4,
-    badge: 'Fullstack',
+    badge: { es: 'Fullstack', en: 'Fullstack' },
     badgeColor: 'pink',
-    title: 'Ecosistema de gestión empresarial',
-    description:
-      'Sistema de citas y facturación con Spring Security (JWT), JPA/PostgreSQL y Angular. Arquitectura multicapa desplegada en Heroku + Netlify.',
+    title: {
+      es: 'Ecosistema de gestión empresarial',
+      en: 'Enterprise management ecosystem',
+    },
+    description: {
+      es: 'Sistema de citas y facturación con Spring Security (JWT), JPA/PostgreSQL y Angular. Arquitectura multicapa desplegada en Heroku + Netlify.',
+      en: 'Appointment and billing system with Spring Security (JWT), JPA/PostgreSQL, and Angular. Multi-layer architecture deployed on Heroku + Netlify.',
+    },
     metrics: [],
     stack: ['Java 17', 'Spring Boot', 'Angular', 'PostgreSQL', 'JWT'],
     image: '/angular-spring.png',
@@ -94,11 +123,16 @@ const projects: Project[] = [
   },
   {
     id: 5,
-    badge: 'Fullstack · IA',
+    badge: { es: 'Fullstack · IA', en: 'Fullstack · AI' },
     badgeColor: 'blue',
-    title: 'Interfaz con estado moderno e integración de IA',
-    description:
-      'Interfaz construida con React 19, shadcn/UI, Zustand y TanStack Query, consumiendo APIs .NET bajo Clean Architecture con integración de servicios OpenAI. Optimización de la carga de archivos sobre almacenamiento en AWS.',
+    title: {
+      es: 'Interfaz con estado moderno e integración de IA',
+      en: 'Modern state management UI with AI integration',
+    },
+    description: {
+      es: 'Interfaz construida con React 19, shadcn/UI, Zustand y TanStack Query, consumiendo APIs .NET bajo Clean Architecture con integración de servicios OpenAI. Optimización de la carga de archivos sobre almacenamiento en AWS.',
+      en: 'UI built with React 19, shadcn/UI, Zustand, and TanStack Query, consuming .NET APIs under Clean Architecture with OpenAI service integration. Optimized file upload/retrieval on AWS storage.',
+    },
     metrics: [],
     stack: ['React 19', 'shadcn/UI', 'Zustand', 'TanStack Query', '.NET', 'Clean Architecture', 'OpenAI', 'AWS'],
     links: [],
@@ -106,17 +140,24 @@ const projects: Project[] = [
   },
   {
     id: 6,
-    badge: 'Backend · Legacy',
+    badge: { es: 'Backend · Legacy', en: 'Backend · Legacy' },
     badgeColor: 'amber',
-    title: 'Análisis y modernización de sistema legacy',
-    description:
-      'Análisis técnico de un sistema legacy en C# y Visual Basic para planificar su migración a una arquitectura moderna. Mantenimiento y soporte en producción sobre IIS y SQL Server.',
+    title: {
+      es: 'Análisis y modernización de sistema legacy',
+      en: 'Legacy system analysis and modernization',
+    },
+    description: {
+      es: 'Análisis técnico de un sistema legacy en C# y Visual Basic para planificar su migración a una arquitectura moderna. Mantenimiento y soporte en producción sobre IIS y SQL Server.',
+      en: 'Technical analysis of a legacy system in C# and Visual Basic to plan its migration to a modern architecture. Production maintenance and support on IIS and SQL Server.',
+    },
     metrics: [],
     stack: ['C#', 'Visual Basic', 'IIS', 'SQL Server', 'Legacy Migration'],
     links: [],
     featured: false,
   },
 ];
+
+const sectionLabel: Bilingual = { es: 'Lo que he construido', en: "What I've built" };
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -181,9 +222,11 @@ function ProjectImage({
 }
 
 export default function Projects() {
+  const { lang } = useLanguage();
+
   return (
     <section id="proyectos" className="section">
-      <p className="section-label">Lo que he construido</p>
+      <p className="section-label">{sectionLabel[lang]}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {projects.map((project, index) => {
@@ -214,7 +257,7 @@ export default function Projects() {
             >
               {/* Badge + Links */}
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <Badge color={project.badgeColor} label={project.badge} />
+                <Badge color={project.badgeColor} label={project.badge[lang]} />
                 {project.links.length > 0 && (
                   <div className="flex gap-3">
                     {project.links.map((link) => (
@@ -237,7 +280,7 @@ export default function Projects() {
               {project.image && (
                 <ProjectImage
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title[lang]}
                   eager={isFeatured || isLast}
                   grow={isFeatured}
                   sizes={
@@ -258,7 +301,7 @@ export default function Projects() {
                   isFeatured ? 'text-xl font-bold' : 'text-base font-medium',
                 ].join(' ')}
               >
-                {project.title}
+                {project.title[lang]}
               </h3>
 
               {/* Description */}
@@ -268,7 +311,7 @@ export default function Projects() {
                   '',
                 ].join(' ')}
               >
-                {project.description}
+                {project.description[lang]}
               </p>
 
               {/* Metrics (featured only) */}
@@ -295,7 +338,7 @@ export default function Projects() {
               {/* Footer */}
               {project.footer && (
                 <p className="text-xs font-mono text-text-muted border-t border-border pt-3">
-                  {project.footer}
+                  {project.footer[lang]}
                 </p>
               )}
             </motion.div>

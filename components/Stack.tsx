@@ -7,6 +7,7 @@ import {
   siTailwindcss, siShadcnui, siDocker, siGit, siGitlab, siScikitlearn,
   siKotlin, siDjango
 } from 'simple-icons'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface StackItem {
   name: string
@@ -182,10 +183,14 @@ const StackColumn = ({
   </motion.div>
 )
 
+const sectionLabel = { es: 'Con qué trabajo', en: 'What I work with' }
+
 export default function Stack() {
+  const { lang } = useLanguage()
+
   return (
     <section id="stack" className="section">
-      <p className="section-label">Con qué trabajo</p>
+      <p className="section-label">{sectionLabel[lang]}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stackData.map((column, columnIndex) => (

@@ -3,6 +3,26 @@
 import { type ReactNode } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+const copy = {
+  available: { es: 'Disponible', en: 'Available' },
+  tagline: { es: 'Fullstack Developer · Lima, Perú', en: 'Fullstack Developer · Lima, Peru' },
+  headline: {
+    es: ['Construyo software', 'que funciona.'],
+    en: ['I build software', 'that works.'],
+  },
+  subtext: {
+    es: ['.NET · React · Next.js · IA aplicada.', '+2 años entregando en producción.'],
+    en: ['.NET · React · Next.js · Applied AI.', '+2 years shipping to production.'],
+  },
+  viewProjects: { es: 'Ver proyectos', en: 'View projects' },
+  downloadCv: { es: 'Descargar CV', en: 'Download CV' },
+  cvFile: {
+    es: '/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf',
+    en: '/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf',
+  },
+};
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -34,6 +54,8 @@ const GithubIcon = () => (
 );
 
 export default function Hero() {
+  const { lang } = useLanguage();
+
   return (
     <section className="section min-h-screen flex items-center relative">
       <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" />
@@ -52,7 +74,7 @@ export default function Hero() {
               className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
               style={{ backgroundColor: '#00E5A0' }}
             />
-            Disponible
+            {copy.available[lang]}
           </motion.div>
 
           <motion.p
@@ -62,7 +84,7 @@ export default function Hero() {
             custom={1}
             className="font-mono text-sm text-text-secondary tracking-wide"
           >
-            Fullstack Developer · Lima, Perú
+            {copy.tagline[lang]}
           </motion.p>
 
           <motion.h1
@@ -73,9 +95,9 @@ export default function Hero() {
             className="font-mono font-bold leading-tight"
             style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
           >
-            Construyo software
+            {copy.headline[lang][0]}
             <br />
-            <span style={{ color: '#00E5A0' }}>que funciona.</span>
+            <span style={{ color: '#00E5A0' }}>{copy.headline[lang][1]}</span>
           </motion.h1>
 
           <motion.p
@@ -85,9 +107,9 @@ export default function Hero() {
             custom={3}
             className="text-text-secondary text-base font-sans leading-relaxed"
           >
-            .NET · React · Next.js · IA aplicada.
+            {copy.subtext[lang][0]}
             <br />
-            +2 años entregando en producción.
+            {copy.subtext[lang][1]}
           </motion.p>
 
           <motion.div
@@ -104,17 +126,17 @@ export default function Hero() {
               }
               whileTap={{ scale: 0.95 }}
             >
-              Ver proyectos
+              {copy.viewProjects[lang]}
             </motion.button>
 
             <motion.a
-              href="/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf"
+              href={copy.cvFile[lang]}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
               whileTap={{ scale: 0.95 }}
             >
-              Descargar CV
+              {copy.downloadCv[lang]}
             </motion.a>
 
             <Link

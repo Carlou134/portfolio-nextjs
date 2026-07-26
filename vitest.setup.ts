@@ -6,6 +6,7 @@ import '@testing-library/jest-dom/vitest'
 // (explicit imports in every test file instead) — so it has to be done here.
 afterEach(() => {
   cleanup()
+  window.localStorage.clear()
 })
 
 // jsdom doesn't implement IntersectionObserver; Framer Motion's `whileInView`

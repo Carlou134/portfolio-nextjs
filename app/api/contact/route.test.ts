@@ -44,6 +44,14 @@ describe('POST /api/contact', () => {
     expect((await res.json()).error).toMatch(/corto/i)
   })
 
+  it('returns English error messages when lang is "en"', async () => {
+    const res = await POST(
+      makeRequest({ name: 'Carlos', email: 'not-an-email', message: 'short', lang: 'en' })
+    )
+    expect(res.status).toBe(400)
+    expect((await res.json()).error).toBe('Invalid email.')
+  })
+
   it('sends the email and returns success for valid input', async () => {
     const res = await POST(
       makeRequest({ name: 'Carlos', email: 'a@b.com', message: 'Quiero hablar de un proyecto' })

@@ -3,14 +3,24 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+const messages = {
+  missingFields: { es: 'Todos los campos son requeridos.', en: 'All fields are required.' },
+  invalidEmail: { es: 'Email inválido.', en: 'Invalid email.' },
+  shortMessage: { es: 'El mensaje es muy corto.', en: 'The message is too short.' },
+  sendFailed: { es: 'Error al enviar el mensaje.', en: 'Failed to send the message.' },
+}
+
 export async function POST(req: NextRequest) {
+  let lang: 'es' | 'en' = 'es'
+
   try {
     const body = await req.json()
     const { name, email, message } = body
+    lang = body.lang === 'en' ? 'en' : 'es'
 
     if (!name || !email || !message) {
       return NextResponse.json(
-        { error: 'Todos los campos son requeridos.' },
+        { error: messages.missingFields[lang] },
         { status: 400 }
       )
     }
@@ -18,14 +28,14 @@ export async function POST(req: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: 'Email inválido.' },
+        { error: messages.invalidEmail[lang] },
         { status: 400 }
       )
     }
 
     if (message.length < 10) {
       return NextResponse.json(
-        { error: 'El mensaje es muy corto.' },
+        { error: messages.shortMessage[lang] },
         { status: 400 }
       )
     }
@@ -80,7 +90,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Error sending email:', error)
     return NextResponse.json(
-      { error: 'Error al enviar el mensaje.' },
+      { error: messages.sendFailed[lang] },
       { status: 500 }
     )
   }

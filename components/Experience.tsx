@@ -2,55 +2,95 @@
 
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { useRef } from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
+
+interface Bilingual {
+  es: string
+  en: string
+}
 
 interface Experience {
   id: number
   company: string
-  role: string
-  period: string
+  role: Bilingual
+  period: Bilingual
   current: boolean
-  bullets: string[]
+  bullets: Bilingual[]
 }
 
 const experiences: Experience[] = [
   {
     id: 1,
     company: 'Zoluxiones Latam',
-    role: 'Practicante Pre Profesional',
-    period: 'Mar 2026 – Actualidad',
+    role: { es: 'Practicante Pre Profesional', en: 'Pre-Professional Intern' },
+    period: { es: 'Mar 2026 – Actualidad', en: 'Mar 2026 – Present' },
     current: true,
     bullets: [
-      'Desarrollo de aplicaciones con Next.js, Node.js y Redis — mejora de eficiencia del 15%.',
-      'Backend en C# con ADO.NET nativo, endpoints REST y control de roles por tabla vía stored procedures.',
-      'Herramienta interna estilo Jira que redujo reuniones de coordinación en 40%.',
-      'Migración de microservicio legacy a Kotlin; API Kotlin con interfaz visual para robots.',
-      'App Android con WebSockets. Contenerización con Docker y pipelines CI/CD en GitLab.',
+      {
+        es: 'Desarrollo de aplicaciones con Next.js, Node.js y Redis — mejora de eficiencia del 15%.',
+        en: 'Built applications with Next.js, Node.js, and Redis — 15% efficiency improvement.',
+      },
+      {
+        es: 'Backend en C# con ADO.NET nativo, endpoints REST y control de roles por tabla vía stored procedures.',
+        en: 'C# backend with native ADO.NET, REST endpoints, and table-level role control via stored procedures.',
+      },
+      {
+        es: 'Herramienta interna estilo Jira que redujo reuniones de coordinación en 40%.',
+        en: 'Internal Jira-style task tool that cut coordination meetings by 40%.',
+      },
+      {
+        es: 'Migración de microservicio legacy a Kotlin; API Kotlin con interfaz visual para robots.',
+        en: 'Migrated a legacy microservice to Kotlin; built a Kotlin API with a visual interface for robot control.',
+      },
+      {
+        es: 'App Android con WebSockets. Contenerización con Docker y pipelines CI/CD en GitLab.',
+        en: 'Android app with WebSockets. Containerization with Docker and CI/CD pipelines in GitLab.',
+      },
     ],
   },
   {
     id: 2,
     company: 'MSC Perú',
-    role: 'Practicante IT',
-    period: 'Dic 2023 – Feb 2026',
+    role: { es: 'Practicante IT', en: 'IT Intern' },
+    period: { es: 'Dic 2023 – Feb 2026', en: 'Dec 2023 – Feb 2026' },
     current: false,
     bullets: [
-      'Construcción de +10 módulos empresariales en producción bajo Clean Architecture y CQRS.',
-      'Migración de sistemas legacy (jQuery) a Angular — mejora estimada del 20% en velocidad de respuesta.',
-      'Automatización con Python/Pandas y Power Automate.',
-      'Gestión en Azure DevOps bajo Scrum.',
+      {
+        es: 'Construcción de +10 módulos empresariales en producción bajo Clean Architecture y CQRS.',
+        en: 'Built +10 enterprise modules in production under Clean Architecture and CQRS.',
+      },
+      {
+        es: 'Migración de sistemas legacy (jQuery) a Angular — mejora estimada del 20% en velocidad de respuesta.',
+        en: 'Migrated legacy systems (jQuery) to Angular — an estimated 20% improvement in response speed.',
+      },
+      {
+        es: 'Automatización con Python/Pandas y Power Automate.',
+        en: 'Automation with Python/Pandas and Power Automate.',
+      },
+      {
+        es: 'Gestión en Azure DevOps bajo Scrum.',
+        en: 'Project management in Azure DevOps under Scrum.',
+      },
     ],
   },
 ]
 
+const copy = {
+  sectionLabel: { es: 'Experiencia', en: 'Experience' },
+  current: { es: 'Actual', en: 'Current' },
+}
+
 function highlightBullet(text: string): string {
   return text
-    .replace(/\+10 módulos/g, '<strong class="text-text-primary">+10 módulos</strong>')
+    .replace(/\+10 (módulos|modules)/g, '<strong class="text-text-primary">+10 $1</strong>')
     .replace(/20%/g, '<strong class="text-text-primary">20%</strong>')
     .replace(/15%/g, '<strong class="text-text-primary">15%</strong>')
     .replace(/40%/g, '<strong class="text-text-primary">40%</strong>')
 }
 
 function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
+  const { lang } = useLanguage()
+
   return (
     <motion.div
       className="relative"
@@ -88,13 +128,13 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
               {exp.company}
             </h3>
             <p className="font-mono text-sm mt-0.5" style={{ color: '#00E5A0' }}>
-              {exp.role}
+              {exp.role[lang]}
             </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="font-mono text-xs text-text-muted">{exp.period}</span>
+            <span className="font-mono text-xs text-text-muted">{exp.period[lang]}</span>
             {exp.current && (
-              <span className="badge-green text-[10px] px-2 py-0.5">Actual</span>
+              <span className="badge-green text-[10px] px-2 py-0.5">{copy.current[lang]}</span>
             )}
           </div>
         </div>
@@ -109,7 +149,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
                 className="mt-2 w-1 h-1 rounded-full flex-shrink-0"
                 style={{ backgroundColor: '#00E5A0' }}
               />
-              <span dangerouslySetInnerHTML={{ __html: highlightBullet(bullet) }} />
+              <span dangerouslySetInnerHTML={{ __html: highlightBullet(bullet[lang]) }} />
             </li>
           ))}
         </ul>
@@ -119,6 +159,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 }
 
 export default function Experience() {
+  const { lang } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { scrollYProgress } = useScroll({
@@ -134,7 +175,7 @@ export default function Experience() {
 
   return (
     <section id="experiencia" className="section">
-      <p className="section-label">Experiencia</p>
+      <p className="section-label">{copy.sectionLabel[lang]}</p>
 
       <div ref={containerRef} className="relative" style={{ position: 'relative' }}>
         {/* Línea de fondo (gris) */}

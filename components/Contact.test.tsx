@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Contact from './Contact'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 
 async function fillAndSubmit(user: ReturnType<typeof userEvent.setup>, message: string) {
   await user.type(screen.getByPlaceholderText('Tu nombre'), 'Carlos')
@@ -26,11 +27,17 @@ describe('Contact form', () => {
     } as Response)
 
     const user = userEvent.setup()
-    render(<Contact />)
+    render(<Contact />, { wrapper: LanguageProvider })
     await fillAndSubmit(user, 'Quiero hablar de un proyecto')
 
     expect(await screen.findByText(/mensaje enviado/i)).toBeInTheDocument()
-    expect(fetch).toHaveBeenCalledWith('/api/contact', expect.objectContaining({ method: 'POST' }))
+    expect(fetch).toHaveBeenCalledWith(
+      '/api/contact',
+      expect.objectContaining({
+        method: 'POST',
+        body: expect.stringContaining('"lang":"es"'),
+      })
+    )
   })
 
   it('shows the server error message when the request fails', async () => {
@@ -40,7 +47,7 @@ describe('Contact form', () => {
     } as Response)
 
     const user = userEvent.setup()
-    render(<Contact />)
+    render(<Contact />, { wrapper: LanguageProvider })
     await fillAndSubmit(user, 'corto')
 
     expect(await screen.findByText('El mensaje es muy corto.')).toBeInTheDocument()
@@ -50,7 +57,7 @@ describe('Contact form', () => {
     vi.mocked(fetch).mockRejectedValueOnce(new Error('network down'))
 
     const user = userEvent.setup()
-    render(<Contact />)
+    render(<Contact />, { wrapper: LanguageProvider })
     await fillAndSubmit(user, 'Quiero hablar de un proyecto')
 
     expect(await screen.findByText(/error de conexión/i)).toBeInTheDocument()
