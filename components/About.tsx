@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { GraduationCap, BookOpen } from 'lucide-react'
 import Image from 'next/image'
 
-const thesisTags = ['Python', 'Random Forest', 'SHAP', 'Django', 'Azure']
+const thesisTags = ['Python', 'Random Forest', 'LightGBM', 'SHAP', 'Django', 'Azure']
 
 function Photo() {
   return (
@@ -21,8 +21,8 @@ function Photo() {
           src="/Foto-Linkedin.jpeg"
           alt="Carlos Vásquez — Fullstack Developer"
           fill
+          sizes="(max-width: 768px) 128px, 176px"
           className="object-cover object-top"
-          priority={false}
         />
       </div>
 
@@ -48,8 +48,8 @@ function PhotoAndText() {
           principalmente con .NET y React, aunque me adapto al stack que el proyecto necesite.
         </p>
         <p className="font-sans text-sm text-text-secondary leading-relaxed">
-          Estudiante de Ingeniería de Sistemas en UPC (9no ciclo, Quinto Superior). Inglés
-          avanzado. Autodidacta por convicción.
+          Estudiante de Ingeniería de Sistemas en UPC (10mo ciclo, Quinto Superior). Inglés
+          B2. Autodidacta por convicción.
         </p>
         <div className="flex flex-col gap-2">
           <p className="font-sans text-sm text-text-secondary leading-relaxed">
@@ -106,7 +106,7 @@ function EducationCard() {
 
       {/* Badges */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <span className="badge-amber">9no ciclo</span>
+        <span className="badge-amber">10mo ciclo</span>
         <span className="badge-amber">Quinto Superior</span>
         <span className="badge-green">2020 – 2026</span>
       </div>
@@ -122,8 +122,9 @@ function EducationCard() {
       </div>
 
       <p className="text-xs text-text-secondary leading-relaxed">
-        Sistema web con Random Forest y SHAP para clasificación automática de alertas de seguridad.
-        Desplegado en Azure.
+        Sistema web jerárquico (Random Forest + LightGBM) alineado al NIST Cybersecurity Framework
+        para clasificación automática de alertas de seguridad, evaluado sobre datos reales de un
+        SOC de Lima Metropolitana. Desplegado en Azure.
       </p>
 
       <div className="flex flex-wrap gap-1.5 mt-3">

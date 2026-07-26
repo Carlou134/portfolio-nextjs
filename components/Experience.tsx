@@ -20,25 +20,15 @@ const experiences: Experience[] = [
     period: 'Mar 2026 – Actualidad',
     current: true,
     bullets: [
-      'Desarrollo de aplicaciones con Next.js y Node.js.',
-      'Contenerización con Docker y pipelines CI/CD en GitLab.',
-      'Proyecto estratégico presentado ante gerencia para optimización de eficiencia operativa.',
+      'Desarrollo de aplicaciones con Next.js, Node.js y Redis — mejora de eficiencia del 15%.',
+      'Backend en C# con ADO.NET nativo, endpoints REST y control de roles por tabla vía stored procedures.',
+      'Herramienta interna estilo Jira que redujo reuniones de coordinación en 40%.',
+      'Migración de microservicio legacy a Kotlin; API Kotlin con interfaz visual para robots.',
+      'App Android con WebSockets. Contenerización con Docker y pipelines CI/CD en GitLab.',
     ],
   },
   {
     id: 2,
-    company: 'Fractal Soluciones TI',
-    role: 'Software Developer Trainee',
-    period: 'Mar 2026 – Actualidad',
-    current: true,
-    bullets: [
-      'Interfaces con React 19 y shadcn/UI, estado con Zustand y TanStack Query.',
-      'APIs en .NET bajo Clean Architecture con integración de servicios OpenAI.',
-      'Despliegue en AWS.',
-    ],
-  },
-  {
-    id: 3,
     company: 'MSC Perú',
     role: 'Practicante IT',
     period: 'Dic 2023 – Feb 2026',
@@ -56,6 +46,8 @@ function highlightBullet(text: string): string {
   return text
     .replace(/\+10 módulos/g, '<strong class="text-text-primary">+10 módulos</strong>')
     .replace(/20%/g, '<strong class="text-text-primary">20%</strong>')
+    .replace(/15%/g, '<strong class="text-text-primary">15%</strong>')
+    .replace(/40%/g, '<strong class="text-text-primary">40%</strong>')
 }
 
 function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {

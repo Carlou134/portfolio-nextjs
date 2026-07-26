@@ -23,7 +23,7 @@ interface Project {
   description: string;
   metrics: ProjectMetric[];
   stack: string[];
-  image: string;
+  image?: string;
   links: ProjectLink[];
   featured: boolean;
   footer?: string;
@@ -36,16 +36,16 @@ const projects: Project[] = [
     badgeColor: 'blue',
     title: 'Clasificación de alertas con Random Forest',
     description:
-      'Pipeline completo de ML sobre 9.5M incidentes reales (Microsoft GUIDE Dataset). Clasificación automática en tres categorías, priorización por risk score y explicabilidad SHAP con lenguaje natural via Claude API. Desplegado en Azure.',
+      'Sistema jerárquico de dos etapas (Random Forest + LightGBM) frente a baselines XGBoost/SVM, evaluado sobre ~33,000 alertas reales anonimizadas de un SOC de Lima Metropolitana. Priorización por risk score y explicabilidad SHAP con lenguaje natural vía Claude API. Desplegado en Azure.',
     metrics: [
-      { value: '73%', label: 'F1 Macro' },
-      { value: '86.7%', label: 'Validación externa' },
+      { value: '82.91%', label: 'Accuracy' },
+      { value: '83.16%', label: 'F1-Macro' },
     ],
-    stack: ['Python', 'scikit-learn', 'SHAP', 'Django', 'Azure', 'Claude API'],
+    stack: ['Python', 'scikit-learn', 'LightGBM', 'SHAP', 'Django', 'Azure', 'Claude API'],
     image: '/tesis.png',
     links: [{ label: 'GitHub', href: 'https://github.com/Carlou134/soc-alert-prioritization-ml' }],
     featured: true,
-    footer: 'Tesis de grado · UPC · Dataset: Microsoft GUIDE (9.5M incidentes reales)',
+    footer: 'Tesis de grado · UPC · ~33,000 alertas reales de SOC (Lima Metropolitana)',
   },
   {
     id: 2,
@@ -92,6 +92,30 @@ const projects: Project[] = [
     ],
     featured: false,
   },
+  {
+    id: 5,
+    badge: 'Fullstack · IA',
+    badgeColor: 'blue',
+    title: 'Interfaz con estado moderno e integración de IA',
+    description:
+      'Interfaz construida con React 19, shadcn/UI, Zustand y TanStack Query, consumiendo APIs .NET bajo Clean Architecture con integración de servicios OpenAI. Optimización de la carga de archivos sobre almacenamiento en AWS.',
+    metrics: [],
+    stack: ['React 19', 'shadcn/UI', 'Zustand', 'TanStack Query', '.NET', 'Clean Architecture', 'OpenAI', 'AWS'],
+    links: [],
+    featured: false,
+  },
+  {
+    id: 6,
+    badge: 'Backend · Legacy',
+    badgeColor: 'amber',
+    title: 'Análisis y modernización de sistema legacy',
+    description:
+      'Análisis técnico de un sistema legacy en C# y Visual Basic para planificar su migración a una arquitectura moderna. Mantenimiento y soporte en producción sobre IIS y SQL Server.',
+    metrics: [],
+    stack: ['C#', 'Visual Basic', 'IIS', 'SQL Server', 'Legacy Migration'],
+    links: [],
+    featured: false,
+  },
 ];
 
 const cardVariants = {
@@ -113,7 +137,7 @@ function Badge({ color, label }: { color: Project['badgeColor']; label: string }
 function ProjectImage({
   src,
   alt,
-  priority = false,
+  eager = false,
   aspect = 'aspect-video',
   grow = false,
   sizes,
@@ -121,7 +145,7 @@ function ProjectImage({
 }: {
   src: string;
   alt: string;
-  priority?: boolean;
+  eager?: boolean;
   aspect?: string;
   grow?: boolean;
   sizes: string;
@@ -148,7 +172,7 @@ function ProjectImage({
         alt={alt}
         fill
         sizes={sizes}
-        priority={priority}
+        loading={eager ? 'eager' : 'lazy'}
         className={fit === 'contain' ? 'object-contain' : 'object-cover'}
         onError={() => setHasError(true)}
       />
@@ -210,20 +234,22 @@ export default function Projects() {
               </div>
 
               {/* Image */}
-              <ProjectImage
-                src={project.image}
-                alt={project.title}
-                priority={isFeatured}
-                grow={isFeatured}
-                sizes={
-                  isFeatured
-                    ? '(max-width: 768px) 100vw, 66vw'
-                    : isLast
-                      ? '(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1152px'
-                      : '(max-width: 768px) 100vw, 33vw'
-                }
-                fit={isLast ? 'contain' : 'cover'}
-              />
+              {project.image && (
+                <ProjectImage
+                  src={project.image}
+                  alt={project.title}
+                  eager={isFeatured || isLast}
+                  grow={isFeatured}
+                  sizes={
+                    isFeatured
+                      ? '(max-width: 768px) 100vw, 66vw'
+                      : isLast
+                        ? '(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1152px'
+                        : '(max-width: 768px) 100vw, 33vw'
+                  }
+                  fit={isLast ? 'contain' : 'cover'}
+                />
+              )}
 
               {/* Title */}
               <h3

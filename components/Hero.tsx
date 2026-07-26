@@ -41,11 +41,25 @@ export default function Hero() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full relative z-10">
         {/* Left column */}
         <div className="flex flex-col justify-center gap-6">
-          <motion.p
+          <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="visible"
             custom={0}
+            className="badge-green inline-flex items-center gap-1.5 w-fit"
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
+              style={{ backgroundColor: '#00E5A0' }}
+            />
+            Disponible
+          </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
             className="font-mono text-sm text-text-secondary tracking-wide"
           >
             Fullstack Developer · Lima, Perú
@@ -55,7 +69,7 @@ export default function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={1}
+            custom={2}
             className="font-mono font-bold leading-tight"
             style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
           >
@@ -68,10 +82,10 @@ export default function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={2}
+            custom={3}
             className="text-text-secondary text-base font-sans leading-relaxed"
           >
-            .NET · React · Next.js · Python.
+            .NET · React · Next.js · IA aplicada.
             <br />
             +2 años entregando en producción.
           </motion.p>
@@ -80,7 +94,7 @@ export default function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={3}
+            custom={4}
             className="flex gap-4 flex-wrap items-center"
           >
             <motion.button
