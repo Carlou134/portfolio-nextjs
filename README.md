@@ -62,3 +62,14 @@ RESEND_API_KEY=tu_api_key_de_resend
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000).
+
+---
+
+## ✅ Calidad de código
+
+```bash
+pnpm lint   # ESLint (next lint fue removido en Next.js 16)
+pnpm test   # Vitest + React Testing Library
+```
+
+Los tests cubren donde hay lógica real, no marcado estático: validación y envío del formulario de contacto (`app/api/contact/route.test.ts`), y el menú mobile del navbar (`components/Navbar.test.tsx`, `components/Contact.test.tsx`).
