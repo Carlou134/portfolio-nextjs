@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Carlos Vásquez — Portfolio
 
-## Getting Started
+> Portafolio personal construido con Next.js 16 (App Router) — proyectos, stack y contacto con envío real de email, sin `mailto:` de respaldo.
 
-First, run the development server:
+![Hero](docs/screenshots/hero.png)
+
+![Proyectos](docs/screenshots/proyectos.png)
+
+[![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://portfolio-nextjs-sigma-olive.vercel.app/)
+
+---
+
+## 🧩 Problema / Contexto
+
+Portafolio personal para mostrar experiencia como Desarrollador Fullstack (.NET, React/Next.js) con foco en DevOps e IA aplicada. Reemplaza al CV estático con case studies reales, métricas de producción (SOC, migraciones, eficiencia operativa) y un canal de contacto que efectivamente envía el mensaje.
+
+---
+
+## 🛠️ Stack
+
+| Capa            | Tecnología                              |
+|-----------------|------------------------------------------|
+| Frontend        | Next.js 16 (App Router), React 19, TypeScript |
+| Estilos         | Tailwind CSS v4, Framer Motion            |
+| Iconografía     | simple-icons, lucide-react                |
+| Contacto        | Resend (Route Handler, envío real de email) |
+| Analytics       | Vercel Analytics                          |
+| Deploy / Infra  | Vercel                                    |
+| Package manager | pnpm                                      |
+
+---
+
+## 🏗️ Arquitectura
+
+- App Router — una sección por componente en `components/`, ensambladas en `app/page.tsx`.
+- El formulario de contacto no usa `mailto:` — postea a `app/api/contact/route.ts`, que valida los datos en el servidor y envía el correo real vía Resend.
+- El contenido (proyectos, experiencia, stack) vive como arrays tipados dentro de cada componente — sin CMS ni fetch externo; portafolio personal, se actualiza vía PR.
+
+---
+
+## 🧠 Retos técnicos y decisiones
+
+- **Problema:** varios íconos del stack (C#, Java) no existen en `simple-icons`. → **Solución:** fallback a una etiqueta con las 2 primeras letras cuando `icon` es `null`. → **Por qué:** evita romper el build o mostrar un ícono genérico incorrecto.
+- **Problema:** Next.js 16 deprecó la prop `priority` de `next/image` en favor de `loading`/`preload`. → **Solución:** las cards de proyectos usan `loading="eager"` solo en la featured y en la que ocupa el ancho completo (las candidatas reales a LCP). → **Por qué:** esta versión de Next trae breaking changes respecto a la documentación estándar de Next.js — hay que revisar `node_modules/next/dist/docs` antes de asumir comportamiento.
+- **Problema:** el formulario de contacto necesitaba enviar el mensaje de verdad, no depender de que el visitante tenga un cliente de correo configurado. → **Solución:** Route Handler propio + Resend, con validación de email y longitud de mensaje en el servidor. → **Por qué:** un `mailto:` como único canal tiene mala tasa de conversión.
+- **Problema:** soportar español/inglés sin duplicar rutas ni indexación SEO por idioma. → **Solución:** toggle client-side con Context API + `localStorage` (sin `next-intl` ni rutas `/en`), y el idioma actual viaja en el body de `/api/contact` para que los mensajes de error también salgan en el idioma correcto. → **Por qué:** a un portafolio nadie lo encuentra por búsqueda orgánica — llega por link directo —, así que el SEO multi-idioma de una solución con rutas no se paga solo.
+
+---
+
+## 🚀 Cómo correrlo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/Carlou134/portfolio-nextjs.git
+cd portfolio-nextjs
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Variable de entorno necesaria (`.env.local`):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+RESEND_API_KEY=tu_api_key_de_resend
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Abrir [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✅ Calidad de código
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm lint   # ESLint (next lint fue removido en Next.js 16)
+pnpm test   # Vitest + React Testing Library
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Los tests cubren donde hay lógica real, no marcado estático: validación y envío del formulario de contacto (`app/api/contact/route.test.ts`), y el menú mobile del navbar (`components/Navbar.test.tsx`, `components/Contact.test.tsx`).

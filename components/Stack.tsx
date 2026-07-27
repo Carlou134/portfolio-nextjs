@@ -4,8 +4,10 @@ import { motion } from 'framer-motion'
 import {
   siDotnet, siNodedotjs, siSpring, siPython,
   siReact, siNextdotjs, siAngular, siTypescript,
-  siTailwindcss, siShadcnui, siDocker, siGit, siGitlab, siScikitlearn
+  siTailwindcss, siShadcnui, siDocker, siGit, siGitlab, siScikitlearn,
+  siKotlin, siDjango
 } from 'simple-icons'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface StackItem {
   name: string
@@ -61,6 +63,8 @@ const si = {
   git: siGit as { path: string; hex: string },
   gitlab: siGitlab as { path: string; hex: string },
   sklearn: siScikitlearn as { path: string; hex: string },
+  kotlin: siKotlin as { path: string; hex: string },
+  django: siDjango as { path: string; hex: string },
 }
 
 const stackData: StackColumnData[] = [
@@ -74,7 +78,9 @@ const stackData: StackColumnData[] = [
       { name: 'Node.js', icon: si.nodejs },
       { name: 'Java', icon: null },
       { name: 'Spring Boot', icon: si.spring },
+      { name: 'Kotlin', icon: si.kotlin },
       { name: 'Python', icon: si.python },
+      { name: 'Django', icon: si.django },
       { name: 'SQL Server', icon: null },
       { name: 'EF Core', icon: null },
       { name: 'Clean Architecture', icon: null },
@@ -177,10 +183,14 @@ const StackColumn = ({
   </motion.div>
 )
 
+const sectionLabel = { es: 'Con qué trabajo', en: 'What I work with' }
+
 export default function Stack() {
+  const { lang } = useLanguage()
+
   return (
     <section id="stack" className="section">
-      <p className="section-label">Con qué trabajo</p>
+      <p className="section-label">{sectionLabel[lang]}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stackData.map((column, columnIndex) => (

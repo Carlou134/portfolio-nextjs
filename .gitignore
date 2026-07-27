@@ -40,3 +40,19 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .claude
+
+# === Optimizaciones para pnpm ===
+# Directorio de almacenamiento local si pnpm se configura de forma aislada
+.pnpm-store/
+store-dir
+
+# === Optimizaciones para Next.js ===
+# Caché de Turbopack (el nuevo compilador por defecto de Next.js)
+.next/
+!.next/types/
+
+# Archivos locales de entorno (Asegura no subir contraseñas locales)
+.env*.local
+
+# Carpeta de compilación estática si usas "output: export"
+/out

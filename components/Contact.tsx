@@ -3,6 +3,26 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, CheckCircle, AlertCircle, Mail } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
+
+const copy = {
+  sectionLabel: { es: 'Contacto', en: 'Contact' },
+  heading: { es: '¿Tienes un proyecto? Hablemos.', en: 'Have a project? Let\'s talk.' },
+  subheading: {
+    es: 'Disponible para freelance y posiciones de desarrollo fullstack.',
+    en: 'Available for freelance work and fullstack development positions.',
+  },
+  name: { es: 'Nombre', en: 'Name' },
+  namePlaceholder: { es: 'Tu nombre', en: 'Your name' },
+  email: { es: 'Email', en: 'Email' },
+  emailPlaceholder: { es: 'tucorreo@ejemplo.com', en: 'you@example.com' },
+  message: { es: 'Mensaje', en: 'Message' },
+  messagePlaceholder: { es: 'Cuéntame del proyecto...', en: 'Tell me about the project...' },
+  success: { es: '¡Mensaje enviado! Te respondo pronto.', en: "Message sent! I'll get back to you soon." },
+  sending: { es: 'Enviando...', en: 'Sending...' },
+  send: { es: 'Enviar mensaje', en: 'Send message' },
+  connectionError: { es: 'Error de conexión. Intenta nuevamente.', en: 'Connection error. Please try again.' },
+}
 
 function IconLinkedin() {
   return (
@@ -35,6 +55,7 @@ function Spinner() {
 }
 
 export default function Contact() {
+  const { lang } = useLanguage()
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '' })
   const [status, setStatus] = useState<FormStatus>('idle')
   const [errorMessage, setErrorMessage] = useState('')
@@ -47,14 +68,14 @@ export default function Contact() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, lang }),
       })
 
       const data = await res.json() as { error?: string }
 
       if (!res.ok) {
         setStatus('error')
-        setErrorMessage(data.error ?? 'Error al enviar el mensaje.')
+        setErrorMessage(data.error ?? copy.connectionError[lang])
         return
       }
 
@@ -63,7 +84,7 @@ export default function Contact() {
       setTimeout(() => setStatus('idle'), 5000)
     } catch {
       setStatus('error')
-      setErrorMessage('Error de conexión. Intenta nuevamente.')
+      setErrorMessage(copy.connectionError[lang])
     }
   }
 
@@ -71,7 +92,7 @@ export default function Contact() {
 
   return (
     <section id="contacto" className="section">
-      <p className="section-label">Contacto</p>
+      <p className="section-label">{copy.sectionLabel[lang]}</p>
 
       <div className="max-w-2xl mx-auto">
         <motion.div
@@ -84,20 +105,18 @@ export default function Contact() {
         >
           {/* Header */}
           <h2 className="font-mono text-xl font-medium text-text-primary mb-2">
-            ¿Tienes un proyecto? Hablemos.
+            {copy.heading[lang]}
           </h2>
-          <p className="text-sm text-text-secondary mb-8">
-            Disponible para freelance y posiciones de desarrollo fullstack.
-          </p>
+          <p className="text-sm text-text-secondary mb-8">{copy.subheading[lang]}</p>
 
           {/* Formulario */}
           <div className="flex flex-col gap-1.5 mb-4">
             <label className="font-mono text-xs text-text-muted tracking-widest uppercase">
-              Nombre
+              {copy.name[lang]}
             </label>
             <input
               type="text"
-              placeholder="Tu nombre"
+              placeholder={copy.namePlaceholder[lang]}
               value={formData.name}
               onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               disabled={isDisabled}
@@ -107,11 +126,11 @@ export default function Contact() {
 
           <div className="flex flex-col gap-1.5 mb-4">
             <label className="font-mono text-xs text-text-muted tracking-widest uppercase">
-              Email
+              {copy.email[lang]}
             </label>
             <input
               type="email"
-              placeholder="tucorreo@ejemplo.com"
+              placeholder={copy.emailPlaceholder[lang]}
               value={formData.email}
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
               disabled={isDisabled}
@@ -121,10 +140,10 @@ export default function Contact() {
 
           <div className="flex flex-col gap-1.5 mb-4">
             <label className="font-mono text-xs text-text-muted tracking-widest uppercase">
-              Mensaje
+              {copy.message[lang]}
             </label>
             <textarea
-              placeholder="Cuéntame del proyecto..."
+              placeholder={copy.messagePlaceholder[lang]}
               rows={5}
               value={formData.message}
               onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
@@ -141,9 +160,7 @@ export default function Contact() {
               className="w-full mt-6 p-4 rounded-lg bg-accent-green/10 border border-accent-green/30 flex items-center gap-3"
             >
               <CheckCircle size={18} color="#00E5A0" />
-              <span className="font-mono text-sm text-accent-green">
-                ¡Mensaje enviado! Te respondo pronto.
-              </span>
+              <span className="font-mono text-sm text-accent-green">{copy.success[lang]}</span>
             </motion.div>
           ) : status === 'loading' ? (
             <button
@@ -151,7 +168,7 @@ export default function Contact() {
               className="btn-primary w-full mt-6 flex items-center justify-center gap-2 opacity-70 cursor-not-allowed"
             >
               <Spinner />
-              Enviando...
+              {copy.sending[lang]}
             </button>
           ) : (
             <>
@@ -161,7 +178,7 @@ export default function Contact() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Send size={16} />
-                Enviar mensaje
+                {copy.send[lang]}
               </motion.button>
               {status === 'error' && (
                 <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
