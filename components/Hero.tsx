@@ -7,7 +7,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const copy = {
   available: { es: 'Disponible', en: 'Available' },
-  tagline: { es: 'Fullstack Developer · Lima, Perú', en: 'Fullstack Developer · Lima, Peru' },
+  tagline: {
+    es: 'Carlos Vásquez · Fullstack Developer · Lima, Perú',
+    en: 'Carlos Vásquez · Fullstack Developer · Lima, Peru',
+  },
   headline: {
     es: ['Construyo software', 'que funciona.'],
     en: ['I build software', 'that works.'],

@@ -3,7 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const copy = {
-  location: { es: 'cvasquez · Lima, Perú', en: 'cvasquez · Lima, Peru' },
+  location: { es: 'cfvasquez · Lima, Perú', en: 'cfvasquez · Lima, Peru' },
   builtWith: {
     es: 'Construido con Next.js + Tailwind + Framer Motion',
     en: 'Built with Next.js + Tailwind + Framer Motion',
