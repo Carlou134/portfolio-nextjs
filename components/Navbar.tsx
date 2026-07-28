@@ -37,7 +37,7 @@ export default function Navbar() {
     >
       <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
         <a href="#" className="font-mono font-medium text-text-primary text-lg">
-          cvasquez<span className="text-accent-green">.</span>dev
+          cfvasquez<span className="text-accent-green">.</span>dev
         </a>
 
         <ul className="hidden md:flex items-center gap-8">

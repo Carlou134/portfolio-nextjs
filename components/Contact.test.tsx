@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Contact from './Contact'
@@ -13,11 +13,10 @@ async function fillAndSubmit(user: ReturnType<typeof userEvent.setup>, message: 
 
 describe('Contact form', () => {
   beforeEach(() => {
+    // Fresh mock every test — no need to unstub, and unstubAllGlobals() would
+    // also wipe the IntersectionObserver polyfill from vitest.setup.ts that
+    // next/link needs for its viewport-prefetch logic.
     vi.stubGlobal('fetch', vi.fn())
-  })
-
-  afterEach(() => {
-    vi.unstubAllGlobals()
   })
 
   it('submits to /api/contact and shows a success message', async () => {

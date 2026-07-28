@@ -6,7 +6,7 @@
 
 ![Proyectos](docs/screenshots/proyectos.png)
 
-[![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://portfolio-nextjs-sigma-olive.vercel.app/)
+[![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cfvasquez.dev)
 
 ---
 
@@ -24,7 +24,7 @@ Portafolio personal para mostrar experiencia como Desarrollador Fullstack (.NET,
 | Estilos         | Tailwind CSS v4, Framer Motion            |
 | Iconografía     | simple-icons, lucide-react                |
 | Contacto        | Resend (Route Handler, envío real de email) |
-| Analytics       | Vercel Analytics                          |
+| Analytics       | Vercel Analytics + Speed Insights          |
 | Deploy / Infra  | Vercel                                    |
 | Package manager | pnpm                                      |
 

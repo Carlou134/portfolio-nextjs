@@ -22,7 +22,7 @@ const experiences: Experience[] = [
   {
     id: 1,
     company: 'Zoluxiones Latam',
-    role: { es: 'Practicante Pre Profesional', en: 'Pre-Professional Intern' },
+    role: { es: 'Practicante Pre Profesional de desarrollo', en: 'Pre-Professional Developer Intern' },
     period: { es: 'Mar 2026 – Actualidad', en: 'Mar 2026 – Present' },
     current: true,
     bullets: [
@@ -51,7 +51,7 @@ const experiences: Experience[] = [
   {
     id: 2,
     company: 'MSC Perú',
-    role: { es: 'Practicante IT', en: 'IT Intern' },
+    role: { es: 'Practicante de IT', en: 'IT Intern' },
     period: { es: 'Dic 2023 – Feb 2026', en: 'Dec 2023 – Feb 2026' },
     current: false,
     bullets: [

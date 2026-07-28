@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, CheckCircle, AlertCircle, Mail } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import Link from 'next/link'
 
 const copy = {
   sectionLabel: { es: 'Contacto', en: 'Contact' },
@@ -194,23 +195,23 @@ export default function Contact() {
 
           {/* Links sociales */}
           <div className="flex items-center justify-center gap-8 flex-wrap">
-            <a
+            <Link
               href="mailto:carlouvasquez134@gmail.com"
               className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
             >
               <Mail size={16} />
               Email
-            </a>
-            <a
-              href="https://www.linkedin.com/in/carlos-v%C3%A1squez-rodriguez-283a1b23b"
+            </Link>
+            <Link
+              href="https://www.linkedin.com/in/carlos-vasquez-rod/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
             >
               <IconLinkedin />
               LinkedIn
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://github.com/Carlou134"
               target="_blank"
               rel="noopener noreferrer"
@@ -218,7 +219,7 @@ export default function Contact() {
             >
               <IconGithub />
               GitHub
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>
