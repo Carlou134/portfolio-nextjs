@@ -1,53 +1,53 @@
 # Carlos Vásquez — Portfolio
 
-> Portafolio personal construido con Next.js 16 (App Router) — proyectos, stack y contacto con envío real de email, sin `mailto:` de respaldo.
+> Personal portfolio built with Next.js 16 (App Router) — projects, stack, and a contact form with real email delivery, no `mailto:` fallback.
 
 ![Hero](docs/screenshots/hero.png)
 
-![Proyectos](docs/screenshots/proyectos.png)
+![Projects](docs/screenshots/proyectos.png)
 
 [![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cfvasquez.dev)
 
 ---
 
-## 🧩 Problema / Contexto
+## 🧩 Problem / Context
 
-Portafolio personal para mostrar experiencia como Desarrollador Fullstack (.NET, React/Next.js) con foco en DevOps e IA aplicada. Reemplaza al CV estático con case studies reales, métricas de producción (SOC, migraciones, eficiencia operativa) y un canal de contacto que efectivamente envía el mensaje.
+Personal portfolio to showcase experience as a Fullstack Developer (.NET, React/Next.js) with a focus on DevOps and applied AI. Replaces the static résumé with real case studies, production metrics (SOC, migrations, operational efficiency), and a contact channel that actually sends the message.
 
 ---
 
 ## 🛠️ Stack
 
-| Capa            | Tecnología                              |
-|-----------------|------------------------------------------|
+| Layer           | Technology                                |
+|-----------------|--------------------------------------------|
 | Frontend        | Next.js 16 (App Router), React 19, TypeScript |
-| Estilos         | Tailwind CSS v4, Framer Motion            |
-| Iconografía     | simple-icons, lucide-react                |
-| Contacto        | Resend (Route Handler, envío real de email) |
+| Styling         | Tailwind CSS v4, Framer Motion            |
+| Icons           | simple-icons, lucide-react                |
+| Contact         | Resend (Route Handler, real email delivery) |
 | Analytics       | Vercel Analytics + Speed Insights          |
 | Deploy / Infra  | Vercel                                    |
 | Package manager | pnpm                                      |
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
-- App Router — una sección por componente en `components/`, ensambladas en `app/page.tsx`.
-- El formulario de contacto no usa `mailto:` — postea a `app/api/contact/route.ts`, que valida los datos en el servidor y envía el correo real vía Resend.
-- El contenido (proyectos, experiencia, stack) vive como arrays tipados dentro de cada componente — sin CMS ni fetch externo; portafolio personal, se actualiza vía PR.
-
----
-
-## 🧠 Retos técnicos y decisiones
-
-- **Problema:** varios íconos del stack (C#, Java) no existen en `simple-icons`. → **Solución:** fallback a una etiqueta con las 2 primeras letras cuando `icon` es `null`. → **Por qué:** evita romper el build o mostrar un ícono genérico incorrecto.
-- **Problema:** Next.js 16 deprecó la prop `priority` de `next/image` en favor de `loading`/`preload`. → **Solución:** las cards de proyectos usan `loading="eager"` solo en la featured y en la que ocupa el ancho completo (las candidatas reales a LCP). → **Por qué:** esta versión de Next trae breaking changes respecto a la documentación estándar de Next.js — hay que revisar `node_modules/next/dist/docs` antes de asumir comportamiento.
-- **Problema:** el formulario de contacto necesitaba enviar el mensaje de verdad, no depender de que el visitante tenga un cliente de correo configurado. → **Solución:** Route Handler propio + Resend, con validación de email y longitud de mensaje en el servidor. → **Por qué:** un `mailto:` como único canal tiene mala tasa de conversión.
-- **Problema:** soportar español/inglés sin duplicar rutas ni indexación SEO por idioma. → **Solución:** toggle client-side con Context API + `localStorage` (sin `next-intl` ni rutas `/en`), y el idioma actual viaja en el body de `/api/contact` para que los mensajes de error también salgan en el idioma correcto. → **Por qué:** a un portafolio nadie lo encuentra por búsqueda orgánica — llega por link directo —, así que el SEO multi-idioma de una solución con rutas no se paga solo.
+- App Router — one section per component in `components/`, assembled in `app/page.tsx`.
+- The contact form doesn't use `mailto:` — it posts to `app/api/contact/route.ts`, which validates the data server-side and sends the actual email via Resend.
+- Content (projects, experience, stack) lives as typed arrays inside each component — no CMS, no external fetch; it's a personal portfolio, updated via PR.
 
 ---
 
-## 🚀 Cómo correrlo
+## 🧠 Technical challenges and decisions
+
+- **Problem:** several stack icons (C#, Java) don't exist in `simple-icons`. → **Solution:** fall back to a 2-letter tag when `icon` is `null`. → **Why:** avoids breaking the build or showing an incorrect generic icon.
+- **Problem:** Next.js 16 deprecated the `priority` prop on `next/image` in favor of `loading`/`preload`. → **Solution:** project cards use `loading="eager"` only on the featured card and the full-width one (the actual LCP candidates). → **Why:** this Next.js version ships breaking changes relative to the standard docs — you have to check `node_modules/next/dist/docs` before assuming behavior.
+- **Problem:** the contact form needed to actually send the message, not depend on the visitor having a mail client configured. → **Solution:** a dedicated Route Handler + Resend, with server-side email and message-length validation. → **Why:** a `mailto:` as the only channel has a poor conversion rate.
+- **Problem:** supporting Spanish/English without duplicating routes or per-language SEO indexing. → **Solution:** a client-side toggle with Context API + `localStorage` (no `next-intl`, no `/en` routes), and the current language travels in the body of `/api/contact` so error messages also come back in the right language. → **Why:** nobody finds a portfolio through organic search — they arrive via a direct link — so the multi-language SEO of a routed solution doesn't pay for itself.
+
+---
+
+## 🚀 Running it locally
 
 ```bash
 git clone https://github.com/Carlou134/portfolio-nextjs.git
@@ -56,21 +56,21 @@ pnpm install
 pnpm dev
 ```
 
-Variable de entorno necesaria (`.env.local`):
+Required environment variable (`.env.local`):
 
 ```
-RESEND_API_KEY=tu_api_key_de_resend
+RESEND_API_KEY=your_resend_api_key
 ```
 
-Abrir [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## ✅ Calidad de código
+## ✅ Code quality
 
 ```bash
-pnpm lint   # ESLint (next lint fue removido en Next.js 16)
+pnpm lint   # ESLint (next lint was removed in Next.js 16)
 pnpm test   # Vitest + React Testing Library
 ```
 
-Los tests cubren donde hay lógica real, no marcado estático: validación y envío del formulario de contacto (`app/api/contact/route.test.ts`), y el menú mobile del navbar (`components/Navbar.test.tsx`, `components/Contact.test.tsx`).
+Tests cover where the real logic lives, not static markup: contact form validation and submission (`app/api/contact/route.test.ts`), and the navbar's mobile menu (`components/Navbar.test.tsx`, `components/Contact.test.tsx`).
