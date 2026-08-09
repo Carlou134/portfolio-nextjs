@@ -2,9 +2,9 @@
 
 > Personal portfolio built with Next.js 16 (App Router) — projects, stack, and a contact form with real email delivery, no `mailto:` fallback.
 
-![Hero](docs/screenshots/hero.png)
+![Hero](docs/screenshots/hero-section.png)
 
-![Projects](docs/screenshots/proyectos.png)
+![Projects](docs/screenshots/projects-section.png)
 
 [![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cfvasquez.dev)
 
