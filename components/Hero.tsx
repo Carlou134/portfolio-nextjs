@@ -90,18 +90,14 @@ export default function Hero() {
             {copy.tagline[lang]}
           </motion.p>
 
-          <motion.h1
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={2}
+          <h1
             className="font-mono font-bold leading-tight"
             style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
           >
             {copy.headline[lang][0]}
             <br />
             <span style={{ color: '#00E5A0' }}>{copy.headline[lang][1]}</span>
-          </motion.h1>
+          </h1>
 
           <motion.p
             variants={fadeUp}
