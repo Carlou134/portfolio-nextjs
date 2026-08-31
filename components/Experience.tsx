@@ -21,35 +21,64 @@ interface Experience {
 const experiences: Experience[] = [
   {
     id: 1,
-    company: 'Zoluxiones Latam',
-    role: { es: 'Practicante Pre Profesional de desarrollo', en: 'Pre-Professional Developer Intern' },
-    period: { es: 'Mar 2026 – Actualidad', en: 'Mar 2026 – Present' },
+    company: 'Zoluxiones IT Services',
+    role: { es: 'Solutions Center of Excellence Associate', en: 'Solutions Center of Excellence Associate' },
+    period: { es: 'Set 2026 – Actualidad', en: 'Sep 2026 – Present' },
     current: true,
     bullets: [
       {
-        es: 'Desarrollo de aplicaciones con Next.js, Node.js y Redis — mejora de eficiencia del 15%.',
-        en: 'Built applications with Next.js, Node.js, and Redis — 15% efficiency improvement.',
+        es: 'Desarrollo fullstack para soluciones robóticas, integrando APIs de terceros (IA, cloud, robótica).',
+        en: 'Fullstack development for robotics solutions, integrating third-party APIs (AI, cloud, robotics).',
       },
       {
-        es: 'Backend en C# con ADO.NET nativo, endpoints REST y control de roles por tabla vía stored procedures.',
-        en: 'C# backend with native ADO.NET, REST endpoints, and table-level role control via stored procedures.',
-      },
-      {
-        es: 'Herramienta interna estilo Jira que redujo reuniones de coordinación en 40%.',
-        en: 'Internal Jira-style task tool that cut coordination meetings by 40%.',
-      },
-      {
-        es: 'Migración de microservicio legacy a Kotlin; API Kotlin con interfaz visual para robots.',
-        en: 'Migrated a legacy microservice to Kotlin; built a Kotlin API with a visual interface for robot control.',
-      },
-      {
-        es: 'App Android con WebSockets. Contenerización con Docker y pipelines CI/CD en GitLab.',
-        en: 'Android app with WebSockets. Containerization with Docker and CI/CD pipelines in GitLab.',
+        es: 'Aplicación de Clean Code, testing y buenas prácticas de ciberseguridad en el ciclo de desarrollo.',
+        en: 'Applying Clean Code, testing, and cybersecurity best practices across the development cycle.',
       },
     ],
   },
   {
     id: 2,
+    company: 'Zoluxiones Latam',
+    role: { es: 'Practicante Pre Profesional de desarrollo', en: 'Pre-Professional Developer Intern' },
+    period: { es: 'Abr 2026 – Ago 2026', en: 'Apr 2026 – Aug 2026' },
+    current: false,
+    bullets: [
+      {
+        es: 'Fullstack con React 19 en el frontend y C#/.NET (Clean Architecture, SOLID) en el backend — con SQL Server y MySQL corriendo en paralelo vía ADO.NET nativo.',
+        en: 'Fullstack with React 19 on the front end and C#/.NET (Clean Architecture, SOLID) on the back — running SQL Server and MySQL side by side via native ADO.NET.',
+      },
+      {
+        es: 'Endpoints REST documentados con Swagger y control de acceso por roles a nivel de tabla. Sumé envío de correos con Azure Communication Services e IA con la API de OpenAI.',
+        en: 'REST endpoints documented with Swagger and table-level role-based access control. Added email via Azure Communication Services and AI features through the OpenAI API.',
+      },
+      {
+        es: 'Migré la base de datos completa de SQL Server a MySQL sin cortar el servicio — reescribiendo la capa de acceso a datos del backend.',
+        en: "Migrated the entire database from SQL Server to MySQL with zero downtime — rewriting the backend's data access layer.",
+      },
+      {
+        es: 'Encontré y eliminé un cuello de botella en la descarga de archivos desde AWS. De paso, dockericé PostgreSQL para tener entornos reproducibles.',
+        en: 'Found and killed a bottleneck in file retrieval from AWS. Also dockerized PostgreSQL for reproducible environments.',
+      },
+      {
+        es: 'Metí caché con Redis en el frontend Next.js/Node.js — 15% más rápido.',
+        en: 'Added Redis caching to the Next.js/Node.js frontend — 15% faster.',
+      },
+      {
+        es: 'Diseñamos en equipo una herramienta interna estilo Jira que le sacó 40% de reuniones de coordinación al equipo.',
+        en: 'Built an internal Jira-style tool with the team that cut coordination meetings by 40%.',
+      },
+      {
+        es: 'Modernicé un microservicio legacy a Kotlin con arquitectura hexagonal — puertos y adaptadores, Clean Code, tests obligatorios antes de cada deploy vía CI/CD con GitLab.',
+        en: 'Modernized a legacy microservice to Kotlin with hexagonal architecture — ports and adapters, Clean Code, mandatory test coverage before every deploy via GitLab CI/CD.',
+      },
+      {
+        es: 'App Android con WebSockets + API Kotlin con interfaz visual para controlar robots en tiempo real, con jobs que sincronizan cada 5 minutos con las APIs de los proveedores. Presenté el MVP directo a gerencia y clientes.',
+        en: 'Android app with WebSockets + a Kotlin API with a visual interface for real-time robot control, with jobs syncing every 5 minutes against provider APIs. Presented the MVP straight to management and clients.',
+      },
+    ],
+  },
+  {
+    id: 3,
     company: 'MSC Perú',
     role: { es: 'Practicante de IT', en: 'IT Intern' },
     period: { es: 'Dic 2023 – Feb 2026', en: 'Dec 2023 – Feb 2026' },

@@ -42,6 +42,22 @@ export const metadata: Metadata = {
   },
 };
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Carlos Vásquez",
+  jobTitle: "Solutions Center of Excellence Associate",
+  worksFor: {
+    "@type": "Organization",
+    name: "Zoluxiones IT Services",
+  },
+  url: "https://www.cfvasquez.dev",
+  sameAs: [
+    "https://github.com/Carlou134",
+    "https://www.linkedin.com/in/carlos-vasquez-rod/",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,6 +66,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-[#0A0F1E] text-[#F9FAFB] font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <LanguageProvider>
           {children}
           <Analytics />
