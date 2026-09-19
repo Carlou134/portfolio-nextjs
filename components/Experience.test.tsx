@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Experience from "./Experience";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -32,15 +32,28 @@ describe("Experience highlights", () => {
     expect(container.textContent).not.toMatch(/<\/?strong/);
   });
 
-  it("highlights the English variant when the language is en", async () => {
-    window.localStorage.setItem("portfolio-lang", "en");
-    renderExperience();
-    // LanguageProvider syncs from localStorage after mount, so wait for it.
-    expect(
-      await screen.findByText("Built +10 enterprise modules", {
-        exact: false,
-      }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("20%", { selector: "strong" })).toBeInTheDocument();
+  describe("in English", () => {
+    beforeEach(() => {
+      window.localStorage.setItem("portfolio-lang", "en");
+    });
+
+    it("emphasizes the enterprise-modules count", async () => {
+      renderExperience();
+      // LanguageProvider syncs from localStorage after mount, so wait for it.
+      const strong = await screen.findByText("+10 enterprise modules", {
+        selector: "strong",
+      });
+      expect(strong).toHaveClass("text-text-primary");
+      expect(strong.closest("li")).toHaveTextContent(
+        "Built +10 enterprise modules in production under Clean Architecture and CQRS.",
+      );
+    });
+
+    it("keeps emphasizing the percentages", async () => {
+      renderExperience();
+      expect(
+        await screen.findByText("20%", { selector: "strong" }),
+      ).toBeInTheDocument();
+    });
   });
 });

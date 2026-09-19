@@ -115,7 +115,8 @@ const copy = {
   current: { es: "Actual", en: "Current" },
 };
 
-const HIGHLIGHT_PATTERN = /(\+10 (?:módulos|modules)|20%|15%|40%)/g;
+const HIGHLIGHT_PATTERN =
+  /(\+10 (?:módulos|(?:enterprise )?modules)|20%|15%|40%)/g;
 
 function Highlighted({ text }: { text: string }) {
   // split() with a capturing group keeps the matches, always at odd indexes.
