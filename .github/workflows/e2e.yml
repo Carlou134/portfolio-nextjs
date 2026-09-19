@@ -1,0 +1,52 @@
+name: E2E
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# A new push to the same PR makes the previous run obsolete.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    name: Playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # app/api/contact/route.ts does `new Resend(process.env.RESEND_API_KEY)` at
+      # module scope and Resend throws without a key, which would fail
+      # `next build`. The specs mock /api/contact, so a placeholder is enough
+      # and no real secret is exposed to pull requests.
+      RESEND_API_KEY: re_ci_placeholder
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # playwright.config.ts serves the production bundle when CI is set
+      # (`pnpm start`), so the app has to be built first.
+      - run: pnpm build
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

@@ -1,15 +1,16 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
+import { parseContact } from "@/lib/contact-schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const messages = {
-  missingFields: {
+  missing: {
     es: "Todos los campos son requeridos.",
     en: "All fields are required.",
   },
-  invalidEmail: { es: "Email inválido.", en: "Invalid email." },
-  shortMessage: {
+  email: { es: "Email inválido.", en: "Invalid email." },
+  short: {
     es: "El mensaje es muy corto.",
     en: "The message is too short.",
   },
@@ -19,35 +20,37 @@ const messages = {
   },
 };
 
+const htmlEscapes: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => htmlEscapes[char]);
+}
+
 export async function POST(req: NextRequest) {
   let lang: "es" | "en" = "es";
 
   try {
     const body = await req.json();
-    const { name, email, message } = body;
-    lang = body.lang === "en" ? "en" : "es";
+    lang = body?.lang === "en" ? "en" : "es";
 
-    if (!name || !email || !message) {
+    const parsed = parseContact(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: messages.missingFields[lang] },
+        { error: messages[parsed.error][lang] },
         { status: 400 },
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: messages.invalidEmail[lang] },
-        { status: 400 },
-      );
-    }
-
-    if (message.length < 10) {
-      return NextResponse.json(
-        { error: messages.shortMessage[lang] },
-        { status: 400 },
-      );
-    }
+    const { name, email, message } = parsed.data;
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message);
 
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
@@ -69,11 +72,11 @@ export async function POST(req: NextRequest) {
           </h2>
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">De:</span>
-            ${name}
+            ${safeName}
           </p>
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">Email:</span>
-            <a href="mailto:${email}" style="color: #00E5A0;">${email}</a>
+            <a href="mailto:${safeEmail}" style="color: #00E5A0;">${safeEmail}</a>
           </p>
           <div style="margin-top: 24px;
                       padding: 16px;
@@ -88,7 +91,7 @@ export async function POST(req: NextRequest) {
             <p style="color: #F9FAFB;
                       line-height: 1.6;
                       white-space: pre-wrap;">
-              ${message}
+              ${safeMessage}
             </p>
           </div>
         </div>

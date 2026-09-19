@@ -1,0 +1,49 @@
+name: Lighthouse
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# A new push to the same PR makes the previous run obsolete.
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Same reason as in e2e.yml: Resend throws at module scope without a key,
+      # which would fail `next build`. Nothing here calls the real API.
+      RESEND_API_KEY: re_ci_placeholder
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Lighthouse must measure the production bundle, never `next dev`.
+      - run: pnpm build
+
+      # Budgets in lighthouserc.json are all "warn": they annotate the run but
+      # never fail it. They get promoted to "error" once scores are stable.
+      - run: pnpm lhci
+
+      - name: Upload Lighthouse reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 7

@@ -57,3 +57,12 @@ store-dir
 
 # Carpeta de compilación estática si usas "output: export"
 /out
+
+# === Playwright ===
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# === Lighthouse CI ===
+/.lighthouseci/

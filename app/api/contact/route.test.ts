@@ -34,6 +34,22 @@ describe("POST /api/contact", () => {
     expect(sendMock).not.toHaveBeenCalled();
   });
 
+  it("rejects a whitespace-only name", async () => {
+    const res = await POST(
+      makeRequest({ name: "   ", email: "a@b.com", message: "hola que tal" }),
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a JSON null body with 400 instead of crashing", async () => {
+    const res = await POST(makeRequest(null));
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
   it("rejects an invalid email", async () => {
     const res = await POST(
       makeRequest({
@@ -81,6 +97,27 @@ describe("POST /api/contact", () => {
     expect(sendMock).toHaveBeenCalledWith(
       expect.objectContaining({ to: "carlouvasquez134@gmail.com" }),
     );
+  });
+
+  it("escapes user input before interpolating it into the email HTML", async () => {
+    const res = await POST(
+      makeRequest({
+        name: "<script>alert(1)</script>",
+        email: 'a"onmouseover="x@b.com',
+        message: "<img src=x onerror=alert(1)> & más texto",
+      }),
+    );
+    expect(res.status).toBe(200);
+
+    const { html } = sendMock.mock.calls[0][0] as { html: string };
+    expect(html).not.toContain("<script>");
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain('"onmouseover="');
+    expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt;");
+    expect(html).toContain(
+      "&lt;img src=x onerror=alert(1)&gt; &amp; más texto",
+    );
+    expect(html).toContain("&quot;onmouseover=&quot;");
   });
 
   it("returns 500 and logs the error when Resend fails", async () => {
