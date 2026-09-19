@@ -115,15 +115,19 @@ const copy = {
   current: { es: "Actual", en: "Current" },
 };
 
-function highlightBullet(text: string): string {
-  return text
-    .replace(
-      /\+10 (módulos|modules)/g,
-      '<strong class="text-text-primary">+10 $1</strong>',
-    )
-    .replace(/20%/g, '<strong class="text-text-primary">20%</strong>')
-    .replace(/15%/g, '<strong class="text-text-primary">15%</strong>')
-    .replace(/40%/g, '<strong class="text-text-primary">40%</strong>');
+const HIGHLIGHT_PATTERN = /(\+10 (?:módulos|modules)|20%|15%|40%)/g;
+
+function Highlighted({ text }: { text: string }) {
+  // split() with a capturing group keeps the matches, always at odd indexes.
+  return text.split(HIGHLIGHT_PATTERN).map((part, i) =>
+    i % 2 === 1 ? (
+      <strong key={i} className="text-text-primary">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  );
 }
 
 function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
@@ -194,11 +198,9 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
                 className="mt-2 w-1 h-1 rounded-full flex-shrink-0"
                 style={{ backgroundColor: "#00E5A0" }}
               />
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: highlightBullet(bullet[lang]),
-                }}
-              />
+              <span>
+                <Highlighted text={bullet[lang]} />
+              </span>
             </li>
           ))}
         </ul>
