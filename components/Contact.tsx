@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { motion } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -69,6 +69,7 @@ function Spinner() {
 
 export default function Contact() {
   const { lang } = useLanguage();
+  const fieldId = useId();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -130,10 +131,14 @@ export default function Contact() {
 
           {/* Formulario */}
           <div className="flex flex-col gap-1.5 mb-4">
-            <label className="font-mono text-xs text-text-muted tracking-widest uppercase">
+            <label
+              htmlFor={`${fieldId}-name`}
+              className="font-mono text-xs text-text-muted tracking-widest uppercase"
+            >
               {copy.name[lang]}
             </label>
             <input
+              id={`${fieldId}-name`}
               type="text"
               placeholder={copy.namePlaceholder[lang]}
               value={formData.name}
@@ -146,10 +151,14 @@ export default function Contact() {
           </div>
 
           <div className="flex flex-col gap-1.5 mb-4">
-            <label className="font-mono text-xs text-text-muted tracking-widest uppercase">
+            <label
+              htmlFor={`${fieldId}-email`}
+              className="font-mono text-xs text-text-muted tracking-widest uppercase"
+            >
               {copy.email[lang]}
             </label>
             <input
+              id={`${fieldId}-email`}
               type="email"
               placeholder={copy.emailPlaceholder[lang]}
               value={formData.email}
@@ -162,10 +171,14 @@ export default function Contact() {
           </div>
 
           <div className="flex flex-col gap-1.5 mb-4">
-            <label className="font-mono text-xs text-text-muted tracking-widest uppercase">
+            <label
+              htmlFor={`${fieldId}-message`}
+              className="font-mono text-xs text-text-muted tracking-widest uppercase"
+            >
               {copy.message[lang]}
             </label>
             <textarea
+              id={`${fieldId}-message`}
               placeholder={copy.messagePlaceholder[lang]}
               rows={5}
               value={formData.message}
@@ -178,18 +191,25 @@ export default function Contact() {
           </div>
 
           {/* Botón / estado */}
-          {status === "success" ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="w-full mt-6 p-4 rounded-lg bg-accent-green/10 border border-accent-green/30 flex items-center gap-3"
-            >
-              <CheckCircle size={18} color="#00E5A0" />
-              <span className="font-mono text-sm text-accent-green">
-                {copy.success[lang]}
-              </span>
-            </motion.div>
-          ) : status === "loading" ? (
+          {/* Live regions must already be in the DOM when their content changes,
+              or screen readers won't announce it — so they stay mounted and only
+              their children come and go. */}
+          <div role="status" aria-live="polite">
+            {status === "success" && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full mt-6 p-4 rounded-lg bg-accent-green/10 border border-accent-green/30 flex items-center gap-3"
+              >
+                <CheckCircle size={18} color="#00E5A0" />
+                <span className="font-mono text-sm text-accent-green">
+                  {copy.success[lang]}
+                </span>
+              </motion.div>
+            )}
+          </div>
+
+          {status === "loading" && (
             <button
               disabled
               className="btn-primary w-full mt-6 flex items-center justify-center gap-2 opacity-70 cursor-not-allowed"
@@ -197,26 +217,29 @@ export default function Contact() {
               <Spinner />
               {copy.sending[lang]}
             </button>
-          ) : (
-            <>
-              <motion.button
-                onClick={handleSubmit}
-                className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
-                whileTap={{ scale: 0.95 }}
-              >
-                <Send size={16} />
-                {copy.send[lang]}
-              </motion.button>
-              {status === "error" && (
-                <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
-                  <AlertCircle size={14} color="#F87171" />
-                  <span className="text-xs text-red-400 font-mono">
-                    {errorMessage}
-                  </span>
-                </div>
-              )}
-            </>
           )}
+
+          {(status === "idle" || status === "error") && (
+            <motion.button
+              onClick={handleSubmit}
+              className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
+              whileTap={{ scale: 0.95 }}
+            >
+              <Send size={16} />
+              {copy.send[lang]}
+            </motion.button>
+          )}
+
+          <div role="alert">
+            {status === "error" && (
+              <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
+                <AlertCircle size={14} color="#F87171" />
+                <span className="text-xs text-red-400 font-mono">
+                  {errorMessage}
+                </span>
+              </div>
+            )}
+          </div>
 
           {/* Separador */}
           <div className="h-px bg-border my-8" />

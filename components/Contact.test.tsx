@@ -72,4 +72,66 @@ describe("Contact form", () => {
 
     expect(await screen.findByText(/error de conexión/i)).toBeInTheDocument();
   });
+
+  describe("accessibility", () => {
+    it("associates every label with its control", () => {
+      render(<Contact />, { wrapper: LanguageProvider });
+
+      expect(screen.getByLabelText("Nombre")).toHaveAttribute("type", "text");
+      expect(screen.getByLabelText("Email")).toHaveAttribute("type", "email");
+      expect(screen.getByLabelText("Mensaje").tagName).toBe("TEXTAREA");
+    });
+
+    it("focuses the control when its label is clicked", async () => {
+      const user = userEvent.setup();
+      render(<Contact />, { wrapper: LanguageProvider });
+
+      await user.click(screen.getByText("Nombre"));
+      expect(screen.getByLabelText("Nombre")).toHaveFocus();
+    });
+
+    it("keeps an empty status region mounted before any submit", () => {
+      render(<Contact />, { wrapper: LanguageProvider });
+
+      const status = screen.getByRole("status");
+      expect(status).toHaveAttribute("aria-live", "polite");
+      expect(status).toBeEmptyDOMElement();
+    });
+
+    it("announces success through the status region", async () => {
+      vi.mocked(fetch).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true }),
+      } as Response);
+
+      const user = userEvent.setup();
+      render(<Contact />, { wrapper: LanguageProvider });
+      await fillAndSubmit(user, "Quiero hablar de un proyecto");
+
+      expect(await screen.findByRole("status")).toHaveTextContent(
+        /mensaje enviado/i,
+      );
+    });
+
+    it("announces failures through an alert region", async () => {
+      vi.mocked(fetch).mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "El mensaje es muy corto." }),
+      } as Response);
+
+      const user = userEvent.setup();
+      render(<Contact />, { wrapper: LanguageProvider });
+      await fillAndSubmit(user, "corto");
+
+      expect(await screen.findByRole("alert")).toHaveTextContent(
+        "El mensaje es muy corto.",
+      );
+    });
+
+    it("keeps the alert region mounted but empty when there is no error", () => {
+      render(<Contact />, { wrapper: LanguageProvider });
+
+      expect(screen.getByRole("alert")).toBeEmptyDOMElement();
+    });
+  });
 });
