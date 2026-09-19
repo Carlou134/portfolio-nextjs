@@ -1,15 +1,16 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
+import { parseContact } from "@/lib/contact-schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const messages = {
-  missingFields: {
+  missing: {
     es: "Todos los campos son requeridos.",
     en: "All fields are required.",
   },
-  invalidEmail: { es: "Email inválido.", en: "Invalid email." },
-  shortMessage: {
+  email: { es: "Email inválido.", en: "Invalid email." },
+  short: {
     es: "El mensaje es muy corto.",
     en: "The message is too short.",
   },
@@ -36,31 +37,17 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, email, message } = body;
-    lang = body.lang === "en" ? "en" : "es";
+    lang = body?.lang === "en" ? "en" : "es";
 
-    if (!name || !email || !message) {
+    const parsed = parseContact(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: messages.missingFields[lang] },
+        { error: messages[parsed.error][lang] },
         { status: 400 },
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: messages.invalidEmail[lang] },
-        { status: 400 },
-      );
-    }
-
-    if (message.length < 10) {
-      return NextResponse.json(
-        { error: messages.shortMessage[lang] },
-        { status: 400 },
-      );
-    }
-
+    const { name, email, message } = parsed.data;
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);

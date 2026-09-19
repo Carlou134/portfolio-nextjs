@@ -34,6 +34,22 @@ describe("POST /api/contact", () => {
     expect(sendMock).not.toHaveBeenCalled();
   });
 
+  it("rejects a whitespace-only name", async () => {
+    const res = await POST(
+      makeRequest({ name: "   ", email: "a@b.com", message: "hola que tal" }),
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a JSON null body with 400 instead of crashing", async () => {
+    const res = await POST(makeRequest(null));
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
   it("rejects an invalid email", async () => {
     const res = await POST(
       makeRequest({
