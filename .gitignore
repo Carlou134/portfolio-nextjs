@@ -63,3 +63,6 @@ store-dir
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# === Lighthouse CI ===
+/.lighthouseci/
