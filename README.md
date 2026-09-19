@@ -18,15 +18,15 @@ Personal portfolio to showcase experience as a Fullstack Developer (.NET, React/
 
 ## 🛠️ Stack
 
-| Layer           | Technology                                |
-|-----------------|--------------------------------------------|
+| Layer           | Technology                                    |
+| --------------- | --------------------------------------------- |
 | Frontend        | Next.js 16 (App Router), React 19, TypeScript |
-| Styling         | Tailwind CSS v4, Framer Motion            |
-| Icons           | simple-icons, lucide-react                |
-| Contact         | Resend (Route Handler, real email delivery) |
-| Analytics       | Vercel Analytics + Speed Insights          |
-| Deploy / Infra  | Vercel                                    |
-| Package manager | pnpm                                      |
+| Styling         | Tailwind CSS v4, Framer Motion                |
+| Icons           | simple-icons, lucide-react                    |
+| Contact         | Resend (Route Handler, real email delivery)   |
+| Analytics       | Vercel Analytics + Speed Insights             |
+| Deploy / Infra  | Vercel                                        |
+| Package manager | pnpm                                          |
 
 ---
 

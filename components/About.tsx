@@ -1,37 +1,47 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { GraduationCap, BookOpen } from 'lucide-react'
-import Image from 'next/image'
-import { useLanguage } from '@/contexts/LanguageContext'
+import { motion } from "framer-motion";
+import { GraduationCap, BookOpen } from "lucide-react";
+import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const thesisTags = ['Python', 'Random Forest', 'LightGBM', 'SHAP', 'Django', 'Azure']
+const thesisTags = [
+  "Python",
+  "Random Forest",
+  "LightGBM",
+  "SHAP",
+  "Django",
+  "Azure",
+];
 
 const copy = {
-  sectionLabel: { es: 'Sobre mí', en: 'About me' },
+  sectionLabel: { es: "Sobre mí", en: "About me" },
   bio1: {
-    es: 'Desarrollo software desde hace +2 años en entornos reales — no en tutoriales. Trabajo principalmente con .NET y React, aunque me adapto al stack que el proyecto necesite.',
+    es: "Desarrollo software desde hace +2 años en entornos reales — no en tutoriales. Trabajo principalmente con .NET y React, aunque me adapto al stack que el proyecto necesite.",
     en: "I've been building software for +2 years in real production environments — not tutorials. I work mainly with .NET and React, but adapt to whatever stack the project needs.",
   },
   bio2: {
-    es: 'Estudiante de Ingeniería de Sistemas en UPC (10mo ciclo, Quinto Superior). Inglés B2. Autodidacta por convicción.',
-    en: 'Systems Engineering student at UPC (10th semester, top of class). English B2. Self-taught by choice.',
+    es: "Estudiante de Ingeniería de Sistemas en UPC (10mo ciclo, Quinto Superior). Inglés B2. Autodidacta por convicción.",
+    en: "Systems Engineering student at UPC (10th semester, top of class). English B2. Self-taught by choice.",
   },
   availableFor: {
-    es: 'Disponible para proyectos freelance y posiciones de desarrollo.',
-    en: 'Available for freelance projects and development positions.',
+    es: "Disponible para proyectos freelance y posiciones de desarrollo.",
+    en: "Available for freelance projects and development positions.",
   },
-  available: { es: 'Disponible', en: 'Available' },
-  academicBackground: { es: 'Formación académica', en: 'Academic background' },
-  systemsEngineering: { es: 'Ingeniería de Sistemas', en: 'Systems Engineering' },
-  semester: { es: '10mo ciclo', en: '10th semester' },
-  topOfClass: { es: 'Quinto Superior', en: 'Top of class' },
-  thesisResearch: { es: 'Investigación de tesis', en: 'Thesis research' },
+  available: { es: "Disponible", en: "Available" },
+  academicBackground: { es: "Formación académica", en: "Academic background" },
+  systemsEngineering: {
+    es: "Ingeniería de Sistemas",
+    en: "Systems Engineering",
+  },
+  semester: { es: "10mo ciclo", en: "10th semester" },
+  topOfClass: { es: "Quinto Superior", en: "Top of class" },
+  thesisResearch: { es: "Investigación de tesis", en: "Thesis research" },
   thesis: {
-    es: 'Sistema web jerárquico (Random Forest + LightGBM) alineado al NIST Cybersecurity Framework para clasificación automática de alertas de seguridad, evaluado sobre datos reales de un SOC de Lima Metropolitana. Desplegado en Azure.',
-    en: 'Hierarchical web system (Random Forest + LightGBM) aligned with the NIST Cybersecurity Framework for automatic security alert classification, evaluated on real data from a Metropolitan Lima SOC. Deployed on Azure.',
+    es: "Sistema web jerárquico (Random Forest + LightGBM) alineado al NIST Cybersecurity Framework para clasificación automática de alertas de seguridad, evaluado sobre datos reales de un SOC de Lima Metropolitana. Desplegado en Azure.",
+    en: "Hierarchical web system (Random Forest + LightGBM) aligned with the NIST Cybersecurity Framework for automatic security alert classification, evaluated on real data from a Metropolitan Lima SOC. Deployed on Azure.",
   },
-}
+};
 
 function Photo() {
   return (
@@ -40,7 +50,7 @@ function Photo() {
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
       {/* Contenedor con clip para que la imagen respete el border-radius */}
       <div className="relative w-full h-full rounded-xl overflow-hidden">
@@ -58,22 +68,29 @@ function Photo() {
 
       {/* Dot de disponibilidad */}
       <div className="absolute -bottom-2 -right-2 w-5 h-5 rounded-full bg-bg-primary border-2 border-bg-primary flex items-center justify-center">
-        <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: '#00E5A0' }} />
+        <div
+          className="w-3 h-3 rounded-full animate-pulse"
+          style={{ backgroundColor: "#00E5A0" }}
+        />
       </div>
     </motion.div>
-  )
+  );
 }
 
 function PhotoAndText() {
-  const { lang } = useLanguage()
+  const { lang } = useLanguage();
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
       <Photo />
 
       <div className="flex flex-col gap-4">
-        <p className="font-sans text-sm text-text-secondary leading-relaxed">{copy.bio1[lang]}</p>
-        <p className="font-sans text-sm text-text-secondary leading-relaxed">{copy.bio2[lang]}</p>
+        <p className="font-sans text-sm text-text-secondary leading-relaxed">
+          {copy.bio1[lang]}
+        </p>
+        <p className="font-sans text-sm text-text-secondary leading-relaxed">
+          {copy.bio2[lang]}
+        </p>
         <div className="flex flex-col gap-2">
           <p className="font-sans text-sm text-text-secondary leading-relaxed">
             {copy.availableFor[lang]}
@@ -81,18 +98,18 @@ function PhotoAndText() {
           <span className="badge-green inline-flex items-center gap-1.5 w-fit">
             <span
               className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
-              style={{ backgroundColor: '#00E5A0' }}
+              style={{ backgroundColor: "#00E5A0" }}
             />
             {copy.available[lang]}
           </span>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function EducationCard() {
-  const { lang } = useLanguage()
+  const { lang } = useLanguage();
 
   return (
     <motion.div
@@ -125,7 +142,9 @@ function EducationCard() {
           <p className="font-mono text-sm font-medium text-text-primary leading-snug">
             Universidad Peruana de Ciencias Aplicadas
           </p>
-          <p className="text-xs text-text-secondary mt-0.5">{copy.systemsEngineering[lang]}</p>
+          <p className="text-xs text-text-secondary mt-0.5">
+            {copy.systemsEngineering[lang]}
+          </p>
         </div>
       </div>
 
@@ -146,7 +165,9 @@ function EducationCard() {
         </span>
       </div>
 
-      <p className="text-xs text-text-secondary leading-relaxed">{copy.thesis[lang]}</p>
+      <p className="text-xs text-text-secondary leading-relaxed">
+        {copy.thesis[lang]}
+      </p>
 
       <div className="flex flex-wrap gap-1.5 mt-3">
         {thesisTags.map((tag) => (
@@ -159,11 +180,11 @@ function EducationCard() {
         ))}
       </div>
     </motion.div>
-  )
+  );
 }
 
 export default function About() {
-  const { lang } = useLanguage()
+  const { lang } = useLanguage();
 
   return (
     <section id="sobre-mi" className="section">
@@ -174,8 +195,8 @@ export default function About() {
           className="lg:col-span-7 flex flex-col gap-8"
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <PhotoAndText />
         </motion.div>
@@ -184,12 +205,12 @@ export default function About() {
           className="lg:col-span-5"
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
         >
           <EducationCard />
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

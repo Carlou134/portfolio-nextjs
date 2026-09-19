@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { useLanguage } from '@/contexts/LanguageContext'
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const copy = {
-  location: { es: 'cfvasquez · Lima, Perú', en: 'cfvasquez · Lima, Peru' },
+  location: { es: "cfvasquez · Lima, Perú", en: "cfvasquez · Lima, Peru" },
   builtWith: {
-    es: 'Construido con Next.js + Tailwind + Framer Motion',
-    en: 'Built with Next.js + Tailwind + Framer Motion',
+    es: "Construido con Next.js + Tailwind + Framer Motion",
+    en: "Built with Next.js + Tailwind + Framer Motion",
   },
-}
+};
 
 export default function Footer() {
-  const { lang } = useLanguage()
+  const { lang } = useLanguage();
 
   return (
     <footer className="border-t border-border py-8 px-6">
@@ -19,8 +19,10 @@ export default function Footer() {
         <span className="font-mono text-xs text-text-muted">
           {copy.location[lang]} · {new Date().getFullYear()}
         </span>
-        <span className="font-mono text-xs text-text-muted">{copy.builtWith[lang]}</span>
+        <span className="font-mono text-xs text-text-muted">
+          {copy.builtWith[lang]}
+        </span>
       </div>
     </footer>
-  )
+  );
 }

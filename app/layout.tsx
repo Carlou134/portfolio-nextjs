@@ -31,14 +31,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Carlos Vásquez | Fullstack Developer",
-    description: "Desarrollador Fullstack especializado en .NET, React y Next.js.",
+    description:
+      "Desarrollador Fullstack especializado en .NET, React y Next.js.",
     type: "website",
     locale: "es_PE",
   },
   twitter: {
     card: "summary_large_image",
     title: "Carlos Vásquez | Fullstack Developer",
-    description: "Desarrollador Fullstack especializado en .NET, React y Next.js.",
+    description:
+      "Desarrollador Fullstack especializado en .NET, React y Next.js.",
   },
 };
 
@@ -64,7 +66,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="es"
+      className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="bg-[#0A0F1E] text-[#F9FAFB] font-sans antialiased">
         <script
           type="application/ld+json"

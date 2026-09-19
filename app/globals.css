@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #0A0F1E;
-  --color-bg-secondary: #0F1629;
+  --color-bg-primary: #0a0f1e;
+  --color-bg-secondary: #0f1629;
   --color-bg-card: #111827;
-  --color-bg-hover: #1A2236;
+  --color-bg-hover: #1a2236;
 
-  --color-accent-green: #00E5A0;
-  --color-accent-green-dim: #00E5A015;
-  --color-accent-blue: #3B82F6;
-  --color-accent-blue-dim: #3B82F615;
+  --color-accent-green: #00e5a0;
+  --color-accent-green-dim: #00e5a015;
+  --color-accent-blue: #3b82f6;
+  --color-accent-blue-dim: #3b82f615;
 
-  --color-border: #1F2937;
+  --color-border: #1f2937;
   --color-border-hover: #374151;
-  --color-border-accent: #00E5A030;
+  --color-border-accent: #00e5a030;
 
-  --color-text-primary: #F9FAFB;
-  --color-text-secondary: #9CA3AF;
-  --color-text-muted: #4B5563;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #4b5563;
 
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
@@ -54,7 +54,11 @@
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-accent-green) 10%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--color-accent-green) 10%,
+      transparent
+    );
     color: var(--color-accent-green);
   }
 }
@@ -69,7 +73,7 @@
   }
 
   .section-label::after {
-    content: '';
+    content: "";
     display: block;
     height: 1px;
     width: 48px;
@@ -164,11 +168,11 @@
 
 @layer utilities {
   .dot-grid {
-    background-image: radial-gradient(circle, #1F2937 1px, transparent 1px);
+    background-image: radial-gradient(circle, #1f2937 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
   .glow-green {
-    box-shadow: 0 0 20px #00E5A015;
+    box-shadow: 0 0 20px #00e5a015;
   }
 }

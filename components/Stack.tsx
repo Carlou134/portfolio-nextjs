@@ -1,40 +1,52 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 import {
-  siDotnet, siNodedotjs, siSpring, siPython,
-  siReact, siNextdotjs, siAngular, siTypescript,
-  siTailwindcss, siShadcnui, siDocker, siGit, siGitlab, siScikitlearn,
-  siKotlin, siDjango
-} from 'simple-icons'
-import { useLanguage } from '@/contexts/LanguageContext'
+  siDotnet,
+  siNodedotjs,
+  siSpring,
+  siPython,
+  siReact,
+  siNextdotjs,
+  siAngular,
+  siTypescript,
+  siTailwindcss,
+  siShadcnui,
+  siDocker,
+  siGit,
+  siGitlab,
+  siScikitlearn,
+  siKotlin,
+  siDjango,
+} from "simple-icons";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface StackItem {
-  name: string
-  icon: { path: string; hex: string } | null
+  name: string;
+  icon: { path: string; hex: string } | null;
 }
 
 interface StackColumnData {
-  category: string
-  color: string
-  dot: string
-  items: StackItem[]
+  category: string;
+  color: string;
+  dot: string;
+  items: StackItem[];
 }
 
 function getIconFill(hex: string): string {
-  const r = parseInt(hex.slice(0, 2), 16)
-  const g = parseInt(hex.slice(2, 4), 16)
-  const b = parseInt(hex.slice(4, 6), 16)
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000
-  return brightness < 50 ? '#F9FAFB' : `#${hex}`
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness < 50 ? "#F9FAFB" : `#${hex}`;
 }
 
 const SimpleIcon = ({
   icon,
   size = 16,
 }: {
-  icon: { path: string; hex: string }
-  size?: number
+  icon: { path: string; hex: string };
+  size?: number;
 }) => (
   <svg
     width={size}
@@ -46,7 +58,7 @@ const SimpleIcon = ({
   >
     <path d={icon.path} />
   </svg>
-)
+);
 
 const si = {
   dotnet: siDotnet as { path: string; hex: string },
@@ -65,71 +77,65 @@ const si = {
   sklearn: siScikitlearn as { path: string; hex: string },
   kotlin: siKotlin as { path: string; hex: string },
   django: siDjango as { path: string; hex: string },
-}
+};
 
 const stackData: StackColumnData[] = [
   {
-    category: 'Backend',
-    color: 'green',
-    dot: '#00E5A0',
+    category: "Backend",
+    color: "green",
+    dot: "#00E5A0",
     items: [
-      { name: '.NET Core', icon: si.dotnet },
-      { name: 'C#', icon: null },
-      { name: 'Node.js', icon: si.nodejs },
-      { name: 'Java', icon: null },
-      { name: 'Spring Boot', icon: si.spring },
-      { name: 'Kotlin', icon: si.kotlin },
-      { name: 'Python', icon: si.python },
-      { name: 'Django', icon: si.django },
-      { name: 'SQL Server', icon: null },
-      { name: 'EF Core', icon: null },
-      { name: 'Clean Architecture', icon: null },
+      { name: ".NET Core", icon: si.dotnet },
+      { name: "C#", icon: null },
+      { name: "Node.js", icon: si.nodejs },
+      { name: "Java", icon: null },
+      { name: "Spring Boot", icon: si.spring },
+      { name: "Kotlin", icon: si.kotlin },
+      { name: "Python", icon: si.python },
+      { name: "Django", icon: si.django },
+      { name: "SQL Server", icon: null },
+      { name: "EF Core", icon: null },
+      { name: "Clean Architecture", icon: null },
     ],
   },
   {
-    category: 'Frontend',
-    color: 'blue',
-    dot: '#3B82F6',
+    category: "Frontend",
+    color: "blue",
+    dot: "#3B82F6",
     items: [
-      { name: 'React', icon: si.react },
-      { name: 'Next.js', icon: si.nextjs },
-      { name: 'Angular', icon: si.angular },
-      { name: 'TypeScript', icon: si.typescript },
-      { name: 'Tailwind CSS', icon: si.tailwind },
-      { name: 'shadcn/UI', icon: si.shadcn },
-      { name: 'Zustand', icon: null },
+      { name: "React", icon: si.react },
+      { name: "Next.js", icon: si.nextjs },
+      { name: "Angular", icon: si.angular },
+      { name: "TypeScript", icon: si.typescript },
+      { name: "Tailwind CSS", icon: si.tailwind },
+      { name: "shadcn/UI", icon: si.shadcn },
+      { name: "Zustand", icon: null },
     ],
   },
   {
-    category: 'DevOps & ML',
-    color: 'amber',
-    dot: '#F59E0B',
+    category: "DevOps & ML",
+    color: "amber",
+    dot: "#F59E0B",
     items: [
-      { name: 'Azure', icon: null },
-      { name: 'AWS', icon: null },
-      { name: 'Docker', icon: si.docker },
-      { name: 'Git', icon: si.git },
-      { name: 'GitLab CI/CD', icon: si.gitlab },
-      { name: 'scikit-learn', icon: si.sklearn },
-      { name: 'Power BI', icon: null },
-      { name: 'Power Automate', icon: null },
+      { name: "Azure", icon: null },
+      { name: "AWS", icon: null },
+      { name: "Docker", icon: si.docker },
+      { name: "Git", icon: si.git },
+      { name: "GitLab CI/CD", icon: si.gitlab },
+      { name: "scikit-learn", icon: si.sklearn },
+      { name: "Power BI", icon: null },
+      { name: "Power Automate", icon: null },
     ],
   },
-]
+];
 
-const StackTag = ({
-  item,
-  index,
-}: {
-  item: StackItem
-  index: number
-}) => (
+const StackTag = ({ item, index }: { item: StackItem; index: number }) => (
   <motion.div
     className="stack-tag flex items-center gap-1.5 cursor-default"
     initial={{ opacity: 0, y: 8 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.3, delay: index * 0.05, ease: 'easeOut' }}
+    transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
     whileHover={{ scale: 1.05, transition: { duration: 0.15 } }}
   >
     {item.icon ? (
@@ -143,21 +149,21 @@ const StackTag = ({
     )}
     <span>{item.name}</span>
   </motion.div>
-)
+);
 
 const StackColumn = ({
   data,
   columnIndex,
 }: {
-  data: StackColumnData
-  columnIndex: number
+  data: StackColumnData;
+  columnIndex: number;
 }) => (
   <motion.div
     className="card flex flex-col gap-4 hover:border-accent-green/30 hover:glow-green transition-all duration-300"
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: '-50px' }}
-    transition={{ duration: 0.5, delay: columnIndex * 0.15, ease: 'easeOut' }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.5, delay: columnIndex * 0.15, ease: "easeOut" }}
     whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
   >
     <div className="flex items-center gap-2">
@@ -181,12 +187,12 @@ const StackColumn = ({
       ))}
     </div>
   </motion.div>
-)
+);
 
-const sectionLabel = { es: 'Con qué trabajo', en: 'What I work with' }
+const sectionLabel = { es: "Con qué trabajo", en: "What I work with" };
 
 export default function Stack() {
-  const { lang } = useLanguage()
+  const { lang } = useLanguage();
 
   return (
     <section id="stack" className="section">
@@ -202,5 +208,5 @@ export default function Stack() {
         ))}
       </div>
     </section>
-  )
+  );
 }

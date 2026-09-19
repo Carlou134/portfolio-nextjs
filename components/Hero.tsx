@@ -1,29 +1,35 @@
-'use client';
+"use client";
 
-import { motion, type Variants } from 'framer-motion';
-import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
-import Terminal from './Terminal';
+import { motion, type Variants } from "framer-motion";
+import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
+import Terminal from "./Terminal";
 
 const copy = {
-  available: { es: 'Disponible', en: 'Available' },
+  available: { es: "Disponible", en: "Available" },
   tagline: {
-    es: 'Carlos Vásquez · Fullstack Developer · Lima, Perú',
-    en: 'Carlos Vásquez · Fullstack Developer · Lima, Peru',
+    es: "Carlos Vásquez · Fullstack Developer · Lima, Perú",
+    en: "Carlos Vásquez · Fullstack Developer · Lima, Peru",
   },
   headline: {
-    es: ['Construyo software', 'que funciona.'],
-    en: ['I build software', 'that works.'],
+    es: ["Construyo software", "que funciona."],
+    en: ["I build software", "that works."],
   },
   subtext: {
-    es: ['.NET · React · Next.js · IA aplicada.', '+2 años entregando en producción.'],
-    en: ['.NET · React · Next.js · Applied AI.', '+2 years shipping to production.'],
+    es: [
+      ".NET · React · Next.js · IA aplicada.",
+      "+2 años entregando en producción.",
+    ],
+    en: [
+      ".NET · React · Next.js · Applied AI.",
+      "+2 years shipping to production.",
+    ],
   },
-  viewProjects: { es: 'Ver proyectos', en: 'View projects' },
-  downloadCv: { es: 'Descargar CV', en: 'Download CV' },
+  viewProjects: { es: "Ver proyectos", en: "View projects" },
+  downloadCv: { es: "Descargar CV", en: "Download CV" },
   cvFile: {
-    es: '/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf',
-    en: '/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf',
+    es: "/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf",
+    en: "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf",
   },
 };
 
@@ -35,7 +41,7 @@ const fadeUp: Variants = {
     transition: {
       delay: i * 0.15,
       duration: 0.6,
-      ease: 'easeOut' as const,
+      ease: "easeOut" as const,
     },
   }),
 };
@@ -65,7 +71,7 @@ export default function Hero() {
           >
             <span
               className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
-              style={{ backgroundColor: '#00E5A0' }}
+              style={{ backgroundColor: "#00E5A0" }}
             />
             {copy.available[lang]}
           </motion.div>
@@ -82,11 +88,11 @@ export default function Hero() {
 
           <h1
             className="font-mono font-bold leading-tight"
-            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
+            style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
           >
             {copy.headline[lang][0]}
             <br />
-            <span style={{ color: '#00E5A0' }}>{copy.headline[lang][1]}</span>
+            <span style={{ color: "#00E5A0" }}>{copy.headline[lang][1]}</span>
           </h1>
 
           <motion.p
@@ -111,7 +117,9 @@ export default function Hero() {
             <motion.button
               className="btn-primary"
               onClick={() =>
-                document.getElementById('proyectos')?.scrollIntoView({ behavior: 'smooth' })
+                document
+                  .getElementById("proyectos")
+                  ?.scrollIntoView({ behavior: "smooth" })
               }
               whileTap={{ scale: 0.95 }}
             >

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const copy = {
-  available: { es: 'Disponible', en: 'Available' },
-  openMenu: { es: 'Abrir menú', en: 'Open menu' },
-  closeMenu: { es: 'Cerrar menú', en: 'Close menu' },
+  available: { es: "Disponible", en: "Available" },
+  openMenu: { es: "Abrir menú", en: "Open menu" },
+  closeMenu: { es: "Cerrar menú", en: "Close menu" },
 };
 
 export default function Navbar() {
@@ -18,21 +18,23 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
-    { label: { es: 'Proyectos', en: 'Projects' }, href: '#proyectos' },
-    { label: { es: 'Stack', en: 'Stack' }, href: '#stack' },
-    { label: { es: 'Experiencia', en: 'Experience' }, href: '#experiencia' },
-    { label: { es: 'Contacto', en: 'Contact' }, href: '#contacto' },
+    { label: { es: "Proyectos", en: "Projects" }, href: "#proyectos" },
+    { label: { es: "Stack", en: "Stack" }, href: "#stack" },
+    { label: { es: "Experiencia", en: "Experience" }, href: "#experiencia" },
+    { label: { es: "Contacto", en: "Contact" }, href: "#contacto" },
   ];
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled || mobileOpen ? 'backdrop-blur-md bg-bg-primary/80' : 'bg-transparent'
+        scrolled || mobileOpen
+          ? "backdrop-blur-md bg-bg-primary/80"
+          : "bg-transparent"
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
@@ -62,7 +64,7 @@ export default function Navbar() {
             className="nav-link border border-border rounded-md px-2 py-1 text-xs font-mono hover:border-border-hover"
             aria-label="Switch language / Cambiar idioma"
           >
-            {lang === 'es' ? 'EN' : 'ES'}
+            {lang === "es" ? "EN" : "ES"}
           </button>
 
           <button

@@ -1,48 +1,57 @@
-import { Resend } from 'resend'
-import { NextRequest, NextResponse } from 'next/server'
+import { Resend } from "resend";
+import { NextRequest, NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const messages = {
-  missingFields: { es: 'Todos los campos son requeridos.', en: 'All fields are required.' },
-  invalidEmail: { es: 'Email inválido.', en: 'Invalid email.' },
-  shortMessage: { es: 'El mensaje es muy corto.', en: 'The message is too short.' },
-  sendFailed: { es: 'Error al enviar el mensaje.', en: 'Failed to send the message.' },
-}
+  missingFields: {
+    es: "Todos los campos son requeridos.",
+    en: "All fields are required.",
+  },
+  invalidEmail: { es: "Email inválido.", en: "Invalid email." },
+  shortMessage: {
+    es: "El mensaje es muy corto.",
+    en: "The message is too short.",
+  },
+  sendFailed: {
+    es: "Error al enviar el mensaje.",
+    en: "Failed to send the message.",
+  },
+};
 
 export async function POST(req: NextRequest) {
-  let lang: 'es' | 'en' = 'es'
+  let lang: "es" | "en" = "es";
 
   try {
-    const body = await req.json()
-    const { name, email, message } = body
-    lang = body.lang === 'en' ? 'en' : 'es'
+    const body = await req.json();
+    const { name, email, message } = body;
+    lang = body.lang === "en" ? "en" : "es";
 
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: messages.missingFields[lang] },
-        { status: 400 }
-      )
+        { status: 400 },
+      );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: messages.invalidEmail[lang] },
-        { status: 400 }
-      )
+        { status: 400 },
+      );
     }
 
     if (message.length < 10) {
       return NextResponse.json(
         { error: messages.shortMessage[lang] },
-        { status: 400 }
-      )
+        { status: 400 },
+      );
     }
 
     await resend.emails.send({
-      from: 'Portfolio <onboarding@resend.dev>',
-      to: 'carlouvasquez134@gmail.com',
+      from: "Portfolio <onboarding@resend.dev>",
+      to: "carlouvasquez134@gmail.com",
       subject: `Nuevo mensaje de ${name} — Portfolio`,
       html: `
         <div style="font-family: monospace;
@@ -84,14 +93,14 @@ export async function POST(req: NextRequest) {
           </div>
         </div>
       `,
-    })
+    });
 
-    return NextResponse.json({ success: true }, { status: 200 })
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error sending email:', error)
+    console.error("Error sending email:", error);
     return NextResponse.json(
       { error: messages.sendFailed[lang] },
-      { status: 500 }
-    )
+      { status: 500 },
+    );
   }
 }
