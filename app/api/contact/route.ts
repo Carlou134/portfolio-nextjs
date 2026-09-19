@@ -19,6 +19,18 @@ const messages = {
   },
 };
 
+const htmlEscapes: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => htmlEscapes[char]);
+}
+
 export async function POST(req: NextRequest) {
   let lang: "es" | "en" = "es";
 
@@ -49,6 +61,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message);
+
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
       to: "carlouvasquez134@gmail.com",
@@ -69,11 +85,11 @@ export async function POST(req: NextRequest) {
           </h2>
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">De:</span>
-            ${name}
+            ${safeName}
           </p>
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">Email:</span>
-            <a href="mailto:${email}" style="color: #00E5A0;">${email}</a>
+            <a href="mailto:${safeEmail}" style="color: #00E5A0;">${safeEmail}</a>
           </p>
           <div style="margin-top: 24px;
                       padding: 16px;
@@ -88,7 +104,7 @@ export async function POST(req: NextRequest) {
             <p style="color: #F9FAFB;
                       line-height: 1.6;
                       white-space: pre-wrap;">
-              ${message}
+              ${safeMessage}
             </p>
           </div>
         </div>

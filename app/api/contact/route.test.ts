@@ -83,6 +83,27 @@ describe("POST /api/contact", () => {
     );
   });
 
+  it("escapes user input before interpolating it into the email HTML", async () => {
+    const res = await POST(
+      makeRequest({
+        name: "<script>alert(1)</script>",
+        email: 'a"onmouseover="x@b.com',
+        message: "<img src=x onerror=alert(1)> & más texto",
+      }),
+    );
+    expect(res.status).toBe(200);
+
+    const { html } = sendMock.mock.calls[0][0] as { html: string };
+    expect(html).not.toContain("<script>");
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain('"onmouseover="');
+    expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt;");
+    expect(html).toContain(
+      "&lt;img src=x onerror=alert(1)&gt; &amp; más texto",
+    );
+    expect(html).toContain("&quot;onmouseover=&quot;");
+  });
+
   it("returns 500 and logs the error when Resend fails", async () => {
     const consoleError = vi
       .spyOn(console, "error")
