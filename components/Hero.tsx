@@ -1,9 +1,9 @@
 'use client';
 
-import { type ReactNode } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import Terminal from './Terminal';
 
 const copy = {
   available: { es: 'Disponible', en: 'Available' },
@@ -39,16 +39,6 @@ const fadeUp: Variants = {
     },
   }),
 };
-
-const KW = ({ children }: { children: ReactNode }) => (
-  <span style={{ color: '#3B82F6' }}>{children}</span>
-);
-const TY = ({ children }: { children: ReactNode }) => (
-  <span style={{ color: '#A78BFA' }}>{children}</span>
-);
-const AT = ({ children }: { children: ReactNode }) => (
-  <span style={{ color: '#00E5A0' }}>{children}</span>
-);
 
 const GithubIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -150,43 +140,8 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right column — decorative code block */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="hidden md:flex items-center"
-        >
-          <div className="bg-bg-card border border-border rounded-[12px] p-6 w-full">
-            {/* Editor header */}
-            <div className="flex items-center gap-2 mb-5">
-              <span className="w-3 h-3 rounded-full bg-red-500/70" />
-              <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
-              <span className="w-3 h-3 rounded-full bg-green-500/70" />
-              <span className="ml-2 font-mono text-xs text-text-muted">api_controller.cs</span>
-            </div>
-
-            {/* Syntax-highlighted C# snippet */}
-            <code className="font-mono text-sm leading-7 block text-text-primary select-none whitespace-pre overflow-x-auto">
-              <span className="block"><AT>[ApiController]</AT></span>
-              <span className="block"><AT>[Route(&quot;api/[controller]&quot;)]</AT></span>
-              <span className="block"><KW>public</KW>{' '}<KW>class</KW>{' '}AlertsController : ControllerBase</span>
-              <span className="block">{'{'}</span>
-              <span className="block">{'    '}<KW>private</KW>{' '}<KW>readonly</KW>{' '}<TY>IMediator</TY>{' '}_mediator;</span>
-              <span className="block">&nbsp;</span>
-              <span className="block">{'    '}<AT>[HttpPost(&quot;classify&quot;)]</AT></span>
-              <span className="block">{'    '}<KW>public</KW>{' '}<KW>async</KW>{' '}<TY>Task</TY>{'<'}<TY>IActionResult</TY>{'>'}{' '}Classify(</span>
-              <span className="block">{'        '}<AT>[FromBody]</AT>{' '}AlertRequest request)</span>
-              <span className="block">{'    '}{'{'}</span>
-              <span className="block">{'        '}<KW>var</KW>{' '}result = <KW>await</KW>{' '}_mediator</span>
-              <span className="block">{'            '}.Send(<KW>new</KW>{' '}ClassifyAlertCommand(request));</span>
-              <span className="block">&nbsp;</span>
-              <span className="block">{'        '}<KW>return</KW>{' '}Ok(result);</span>
-              <span className="block">{'    '}{'}'}</span>
-              <span className="block">{'}'}</span>
-            </code>
-          </div>
-        </motion.div>
+        {/* Right column — interactive terminal */}
+        <Terminal />
       </div>
     </section>
   );
