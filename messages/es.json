@@ -10,5 +10,22 @@
     "linkStack": "Stack",
     "linkExperience": "Experiencia",
     "linkContact": "Contacto"
+  },
+  "Hero": {
+    "available": "Disponible",
+    "tagline": "Carlos Vásquez · Fullstack Developer · Lima, Perú",
+    "headlineLine1": "Construyo software",
+    "headlineLine2": "que funciona.",
+    "subtextLine1": ".NET · React · Next.js · IA aplicada.",
+    "subtextLine2": "+2 años entregando en producción.",
+    "viewProjects": "Ver proyectos",
+    "downloadCv": "Descargar CV"
+  },
+  "Terminal": {
+    "prompt": "visitante@cfvasquez",
+    "welcome": "Escribí 'help' para empezar.",
+    "help": "Comandos: whoami, about, experience, projects, stack, contact, clear",
+    "whoami": "Carlos Vásquez — Fullstack Developer. .NET · React · Next.js · IA aplicada.",
+    "notFound": "command not found: {cmd} (escribí 'help')"
   }
 }

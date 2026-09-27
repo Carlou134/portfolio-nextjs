@@ -2,30 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslations } from "next-intl";
 
 type Line = { type: "input" | "output"; text: string };
 
-const copy = {
-  prompt: { es: "visitante@cfvasquez", en: "visitor@cfvasquez" },
-  welcome: {
-    es: "Escribí 'help' para empezar.",
-    en: "Type 'help' to get started.",
-  },
-  help: {
-    es: "Comandos: whoami, about, experience, projects, stack, contact, clear",
-    en: "Commands: whoami, about, experience, projects, stack, contact, clear",
-  },
-  whoami: {
-    es: "Carlos Vásquez — Fullstack Developer. .NET · React · Next.js · IA aplicada.",
-    en: "Carlos Vásquez — Fullstack Developer. .NET · React · Next.js · Applied AI.",
-  },
-  notFound: {
-    es: (cmd: string) => `command not found: ${cmd} (escribí 'help')`,
-    en: (cmd: string) => `command not found: ${cmd} ('help' for a list)`,
-  },
-};
-
+// Command aliases the visitor types (English and Spanish both work), mapped
+// to the section's actual DOM id. Not translated UI copy, so it stays out of
+// messages/*.json — a translator would never touch these literal command words.
 const sectionCommands: Record<string, string> = {
   about: "sobre-mi",
   "sobre-mi": "sobre-mi",
@@ -39,7 +22,7 @@ const sectionCommands: Record<string, string> = {
 };
 
 export default function Terminal() {
-  const { lang } = useLanguage();
+  const t = useTranslations("Terminal");
   const [lines, setLines] = useState<Line[]>([]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -59,15 +42,15 @@ export default function Terminal() {
     }
 
     if (cmd === "help") {
-      nextLines.push({ type: "output", text: copy.help[lang] });
+      nextLines.push({ type: "output", text: t("help") });
     } else if (cmd === "whoami") {
-      nextLines.push({ type: "output", text: copy.whoami[lang] });
+      nextLines.push({ type: "output", text: t("whoami") });
     } else if (cmd in sectionCommands) {
       document
         .getElementById(sectionCommands[cmd])
         ?.scrollIntoView({ behavior: "smooth" });
     } else if (cmd.length > 0) {
-      nextLines.push({ type: "output", text: copy.notFound[lang](cmd) });
+      nextLines.push({ type: "output", text: t("notFound", { cmd }) });
     }
 
     setLines(nextLines);
@@ -96,7 +79,7 @@ export default function Terminal() {
           <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
           <span className="w-3 h-3 rounded-full bg-green-500/70" />
           <span className="ml-2 font-mono text-xs text-text-muted">
-            {copy.prompt[lang]}:~
+            {t("prompt")}:~
           </span>
         </div>
 
@@ -104,7 +87,7 @@ export default function Terminal() {
           ref={scrollRef}
           className="font-mono text-sm leading-7 h-64 overflow-y-auto"
         >
-          <div className="text-text-secondary">{copy.welcome[lang]}</div>
+          <div className="text-text-secondary">{t("welcome")}</div>
 
           {lines.map((line, i) => (
             <div

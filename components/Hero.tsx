@@ -2,36 +2,17 @@
 
 import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocale, useTranslations } from "next-intl";
+import { defaultLocale, isLocale } from "@/i18n/locale";
 import Terminal from "./Terminal";
 
-const copy = {
-  available: { es: "Disponible", en: "Available" },
-  tagline: {
-    es: "Carlos Vásquez · Fullstack Developer · Lima, Perú",
-    en: "Carlos Vásquez · Fullstack Developer · Lima, Peru",
-  },
-  headline: {
-    es: ["Construyo software", "que funciona."],
-    en: ["I build software", "that works."],
-  },
-  subtext: {
-    es: [
-      ".NET · React · Next.js · IA aplicada.",
-      "+2 años entregando en producción.",
-    ],
-    en: [
-      ".NET · React · Next.js · Applied AI.",
-      "+2 years shipping to production.",
-    ],
-  },
-  viewProjects: { es: "Ver proyectos", en: "View projects" },
-  downloadCv: { es: "Descargar CV", en: "Download CV" },
-  cvFile: {
-    es: "/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf",
-    en: "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf",
-  },
-};
+// A CV file path is a locale-dependent ASSET, not a translated sentence — it
+// doesn't belong in messages/*.json (a translator would never touch it), so
+// it stays local, keyed the same way the message catalogs are.
+const cvFileByLocale = {
+  es: "/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf",
+  en: "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf",
+} as const;
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -53,7 +34,12 @@ const GithubIcon = () => (
 );
 
 export default function Hero() {
-  const { lang } = useLanguage();
+  const t = useTranslations("Hero");
+  // next-intl's useLocale() types as plain `string` (no module augmentation
+  // configured), so it can't index cvFileByLocale on its own — narrow it with
+  // our own guard instead of casting past the compiler.
+  const rawLocale = useLocale();
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
 
   return (
     <section className="section min-h-screen flex items-center relative">
@@ -73,7 +59,7 @@ export default function Hero() {
               className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
               style={{ backgroundColor: "#00E5A0" }}
             />
-            {copy.available[lang]}
+            {t("available")}
           </motion.div>
 
           <motion.p
@@ -83,16 +69,16 @@ export default function Hero() {
             custom={1}
             className="font-mono text-sm text-text-secondary tracking-wide"
           >
-            {copy.tagline[lang]}
+            {t("tagline")}
           </motion.p>
 
           <h1
             className="font-mono font-bold leading-tight"
             style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
           >
-            {copy.headline[lang][0]}
+            {t("headlineLine1")}
             <br />
-            <span style={{ color: "#00E5A0" }}>{copy.headline[lang][1]}</span>
+            <span style={{ color: "#00E5A0" }}>{t("headlineLine2")}</span>
           </h1>
 
           <motion.p
@@ -102,9 +88,9 @@ export default function Hero() {
             custom={3}
             className="text-text-secondary text-base font-sans leading-relaxed"
           >
-            {copy.subtext[lang][0]}
+            {t("subtextLine1")}
             <br />
-            {copy.subtext[lang][1]}
+            {t("subtextLine2")}
           </motion.p>
 
           <motion.div
@@ -123,17 +109,17 @@ export default function Hero() {
               }
               whileTap={{ scale: 0.95 }}
             >
-              {copy.viewProjects[lang]}
+              {t("viewProjects")}
             </motion.button>
 
             <motion.a
-              href={copy.cvFile[lang]}
+              href={cvFileByLocale[locale]}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
               whileTap={{ scale: 0.95 }}
             >
-              {copy.downloadCv[lang]}
+              {t("downloadCv")}
             </motion.a>
 
             <Link
