@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import "./globals.css";
 
@@ -60,11 +62,19 @@ const personJsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Infra only for now (plan commit 8): nothing renders through next-intl yet,
+  // so `lang` stays hardcoded and LanguageContext keeps driving the visible
+  // UI exactly as before — no behavior change in this commit. Components
+  // migrate to useTranslations() in commits 9-16, and LanguageProvider is
+  // removed once nothing depends on it (commit 17).
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
       lang="es"
@@ -75,11 +85,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
-        <LanguageProvider>
-          {children}
-          <Analytics />
-          <SpeedInsights />
-        </LanguageProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <LanguageProvider>
+            {children}
+            <Analytics />
+            <SpeedInsights />
+          </LanguageProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
