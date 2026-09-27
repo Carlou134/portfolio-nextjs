@@ -1,5 +1,14 @@
 {
   "I18nInfra": {
     "smokeTest": "next-intl está funcionando"
+  },
+  "Nav": {
+    "available": "Disponible",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "linkProjects": "Proyectos",
+    "linkStack": "Stack",
+    "linkExperience": "Experiencia",
+    "linkContact": "Contacto"
   }
 }

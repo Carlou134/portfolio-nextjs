@@ -3,18 +3,21 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-const copy = {
-  available: { es: "Disponible", en: "Available" },
-  openMenu: { es: "Abrir menú", en: "Open menu" },
-  closeMenu: { es: "Cerrar menú", en: "Close menu" },
-};
+import { setLocale } from "@/i18n/actions";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Two i18n systems coexist during the migration (plan commits 9-16):
+  // LanguageContext still drives every not-yet-migrated component, so
+  // `toggle()` keeps flipping it instantly. next-intl (used below via `t`)
+  // resolves its locale from a cookie, so the same click also calls
+  // `setLocale` to keep both in lockstep. LanguageContext is removed once
+  // nothing depends on it anymore (commit 17), and this dual call goes with it.
   const { lang, toggle } = useLanguage();
+  const t = useTranslations("Nav");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
@@ -23,11 +26,16 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: { es: "Proyectos", en: "Projects" }, href: "#proyectos" },
-    { label: { es: "Stack", en: "Stack" }, href: "#stack" },
-    { label: { es: "Experiencia", en: "Experience" }, href: "#experiencia" },
-    { label: { es: "Contacto", en: "Contact" }, href: "#contacto" },
-  ];
+    { labelKey: "linkProjects", href: "#proyectos" },
+    { labelKey: "linkStack", href: "#stack" },
+    { labelKey: "linkExperience", href: "#experiencia" },
+    { labelKey: "linkContact", href: "#contacto" },
+  ] as const;
+
+  const handleToggleLanguage = () => {
+    toggle();
+    void setLocale(lang === "es" ? "en" : "es");
+  };
 
   return (
     <header
@@ -46,7 +54,7 @@ export default function Navbar() {
           {navLinks.map((item) => (
             <li key={item.href}>
               <a href={item.href} className="nav-link">
-                {item.label[lang]}
+                {t(item.labelKey)}
               </a>
             </li>
           ))}
@@ -55,12 +63,12 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <span className="badge-green hidden sm:inline-flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
-            {copy.available[lang]}
+            {t("available")}
           </span>
 
           <button
             type="button"
-            onClick={toggle}
+            onClick={handleToggleLanguage}
             className="nav-link border border-border rounded-md px-2 py-1 text-xs font-mono hover:border-border-hover"
             aria-label="Switch language / Cambiar idioma"
           >
@@ -71,7 +79,7 @@ export default function Navbar() {
             type="button"
             className="md:hidden p-2 -mr-2 text-text-primary"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label={mobileOpen ? copy.closeMenu[lang] : copy.openMenu[lang]}
+            aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -88,7 +96,7 @@ export default function Navbar() {
                 onClick={() => setMobileOpen(false)}
                 className="nav-link block py-3"
               >
-                {item.label[lang]}
+                {t(item.labelKey)}
               </Link>
             </li>
           ))}
