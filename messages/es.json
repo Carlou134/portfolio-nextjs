@@ -33,5 +33,9 @@
   },
   "Stack": {
     "sectionLabel": "Con qué trabajo"
+  },
+  "Experience": {
+    "sectionLabel": "Experiencia",
+    "current": "Actual"
   }
 }
