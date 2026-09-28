@@ -1,8 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { NextIntlClientProvider } from "next-intl";
 import Contact from "./Contact";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import esMessages from "@/messages/es.json";
+
+// Contact no longer touches LanguageContext post-migration, so only
+// NextIntlClientProvider is needed here (matches Hero/Projects/Stack tests).
+// Every existing test exercises the Spanish copy, so locale is fixed to "es".
+function renderContact() {
+  return render(
+    <NextIntlClientProvider locale="es" messages={esMessages}>
+      <Contact />
+    </NextIntlClientProvider>,
+  );
+}
 
 async function fillAndSubmit(
   user: ReturnType<typeof userEvent.setup>,
@@ -35,7 +47,7 @@ describe("Contact form", () => {
     } as Response);
 
     const user = userEvent.setup();
-    render(<Contact />, { wrapper: LanguageProvider });
+    renderContact();
     await fillAndSubmit(user, "Quiero hablar de un proyecto");
 
     expect(await screen.findByText(/mensaje enviado/i)).toBeInTheDocument();
@@ -55,7 +67,7 @@ describe("Contact form", () => {
     } as Response);
 
     const user = userEvent.setup();
-    render(<Contact />, { wrapper: LanguageProvider });
+    renderContact();
     await fillAndSubmit(user, "corto");
 
     expect(
@@ -67,7 +79,7 @@ describe("Contact form", () => {
     vi.mocked(fetch).mockRejectedValueOnce(new Error("network down"));
 
     const user = userEvent.setup();
-    render(<Contact />, { wrapper: LanguageProvider });
+    renderContact();
     await fillAndSubmit(user, "Quiero hablar de un proyecto");
 
     expect(await screen.findByText(/error de conexión/i)).toBeInTheDocument();
@@ -75,7 +87,7 @@ describe("Contact form", () => {
 
   describe("form submission", () => {
     it("exposes a named form landmark", () => {
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
 
       expect(
         screen.getByRole("form", { name: /hablemos/i }),
@@ -89,7 +101,7 @@ describe("Contact form", () => {
       } as Response);
 
       const user = userEvent.setup();
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
       await user.type(screen.getByLabelText("Nombre"), "Carlos");
       await user.type(
         screen.getByLabelText("Mensaje"),
@@ -112,7 +124,7 @@ describe("Contact form", () => {
 
     it("does not treat Enter in the textarea as a submit", async () => {
       const user = userEvent.setup();
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
       await user.type(
         screen.getByLabelText("Mensaje"),
         "línea 1{Enter}línea 2",
@@ -127,7 +139,7 @@ describe("Contact form", () => {
         ok: true,
         json: async () => ({ success: true }),
       } as Response);
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
 
       const notCanceled = fireEvent.submit(screen.getByRole("form"));
 
@@ -138,7 +150,7 @@ describe("Contact form", () => {
       vi.mocked(fetch).mockReturnValue(new Promise(() => {}));
 
       const user = userEvent.setup();
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
       await user.type(screen.getByLabelText("Nombre"), "Carlos");
       await user.type(
         screen.getByLabelText("Mensaje"),
@@ -158,7 +170,7 @@ describe("Contact form", () => {
 
   describe("accessibility", () => {
     it("associates every label with its control", () => {
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
 
       expect(screen.getByLabelText("Nombre")).toHaveAttribute("type", "text");
       expect(screen.getByLabelText("Email")).toHaveAttribute("type", "email");
@@ -167,14 +179,14 @@ describe("Contact form", () => {
 
     it("focuses the control when its label is clicked", async () => {
       const user = userEvent.setup();
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
 
       await user.click(screen.getByText("Nombre"));
       expect(screen.getByLabelText("Nombre")).toHaveFocus();
     });
 
     it("keeps an empty status region mounted before any submit", () => {
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
 
       const status = screen.getByRole("status");
       expect(status).toHaveAttribute("aria-live", "polite");
@@ -188,7 +200,7 @@ describe("Contact form", () => {
       } as Response);
 
       const user = userEvent.setup();
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
       await fillAndSubmit(user, "Quiero hablar de un proyecto");
 
       expect(await screen.findByRole("status")).toHaveTextContent(
@@ -203,7 +215,7 @@ describe("Contact form", () => {
       } as Response);
 
       const user = userEvent.setup();
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
       await fillAndSubmit(user, "corto");
 
       expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -212,7 +224,7 @@ describe("Contact form", () => {
     });
 
     it("keeps the alert region mounted but empty when there is no error", () => {
-      render(<Contact />, { wrapper: LanguageProvider });
+      renderContact();
 
       expect(screen.getByRole("alert")).toBeEmptyDOMElement();
     });

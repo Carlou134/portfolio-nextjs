@@ -3,39 +3,9 @@
 import { useId, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Mail } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocale, useTranslations } from "next-intl";
+import { defaultLocale, isLocale } from "@/i18n/locale";
 import Link from "next/link";
-
-const copy = {
-  sectionLabel: { es: "Contacto", en: "Contact" },
-  heading: {
-    es: "¿Tienes un proyecto? Hablemos.",
-    en: "Have a project? Let's talk.",
-  },
-  subheading: {
-    es: "Disponible para freelance y posiciones de desarrollo fullstack.",
-    en: "Available for freelance work and fullstack development positions.",
-  },
-  name: { es: "Nombre", en: "Name" },
-  namePlaceholder: { es: "Tu nombre", en: "Your name" },
-  email: { es: "Email", en: "Email" },
-  emailPlaceholder: { es: "tucorreo@ejemplo.com", en: "you@example.com" },
-  message: { es: "Mensaje", en: "Message" },
-  messagePlaceholder: {
-    es: "Cuéntame del proyecto...",
-    en: "Tell me about the project...",
-  },
-  success: {
-    es: "¡Mensaje enviado! Te respondo pronto.",
-    en: "Message sent! I'll get back to you soon.",
-  },
-  sending: { es: "Enviando...", en: "Sending..." },
-  send: { es: "Enviar mensaje", en: "Send message" },
-  connectionError: {
-    es: "Error de conexión. Intenta nuevamente.",
-    en: "Connection error. Please try again.",
-  },
-};
 
 function IconLinkedin() {
   return (
@@ -68,7 +38,9 @@ function Spinner() {
 }
 
 export default function Contact() {
-  const { lang } = useLanguage();
+  const t = useTranslations("Contact");
+  const rawLocale = useLocale();
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
   const fieldId = useId();
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -91,14 +63,14 @@ export default function Contact() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, lang }),
+        body: JSON.stringify({ ...formData, lang: locale }),
       });
 
       const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
         setStatus("error");
-        setErrorMessage(data.error ?? copy.connectionError[lang]);
+        setErrorMessage(data.error ?? t("connectionError"));
         return;
       }
 
@@ -107,7 +79,7 @@ export default function Contact() {
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
-      setErrorMessage(copy.connectionError[lang]);
+      setErrorMessage(t("connectionError"));
     }
   };
 
@@ -115,7 +87,7 @@ export default function Contact() {
 
   return (
     <section id="contacto" className="section">
-      <p className="section-label">{copy.sectionLabel[lang]}</p>
+      <p className="section-label">{t("sectionLabel")}</p>
 
       <div className="max-w-2xl mx-auto">
         <motion.div
@@ -131,11 +103,9 @@ export default function Contact() {
             id={`${fieldId}-heading`}
             className="font-mono text-xl font-medium text-text-primary mb-2"
           >
-            {copy.heading[lang]}
+            {t("heading")}
           </h2>
-          <p className="text-sm text-text-secondary mb-8">
-            {copy.subheading[lang]}
-          </p>
+          <p className="text-sm text-text-secondary mb-8">{t("subheading")}</p>
 
           {/* noValidate: validation is the server's job (bilingual messages via
               /api/contact), so the browser's own bubbles must not pre-empt it. */}
@@ -150,12 +120,12 @@ export default function Contact() {
                 htmlFor={`${fieldId}-name`}
                 className="font-mono text-xs text-text-muted tracking-widest uppercase"
               >
-                {copy.name[lang]}
+                {t("name")}
               </label>
               <input
                 id={`${fieldId}-name`}
                 type="text"
-                placeholder={copy.namePlaceholder[lang]}
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
@@ -170,12 +140,12 @@ export default function Contact() {
                 htmlFor={`${fieldId}-email`}
                 className="font-mono text-xs text-text-muted tracking-widest uppercase"
               >
-                {copy.email[lang]}
+                {t("email")}
               </label>
               <input
                 id={`${fieldId}-email`}
                 type="email"
-                placeholder={copy.emailPlaceholder[lang]}
+                placeholder={t("emailPlaceholder")}
                 value={formData.email}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, email: e.target.value }))
@@ -190,11 +160,11 @@ export default function Contact() {
                 htmlFor={`${fieldId}-message`}
                 className="font-mono text-xs text-text-muted tracking-widest uppercase"
               >
-                {copy.message[lang]}
+                {t("message")}
               </label>
               <textarea
                 id={`${fieldId}-message`}
-                placeholder={copy.messagePlaceholder[lang]}
+                placeholder={t("messagePlaceholder")}
                 rows={5}
                 value={formData.message}
                 onChange={(e) =>
@@ -218,7 +188,7 @@ export default function Contact() {
                 >
                   <CheckCircle size={18} color="#00E5A0" />
                   <span className="font-mono text-sm text-accent-green">
-                    {copy.success[lang]}
+                    {t("success")}
                   </span>
                 </motion.div>
               )}
@@ -230,7 +200,7 @@ export default function Contact() {
                 className="btn-primary w-full mt-6 flex items-center justify-center gap-2 opacity-70 cursor-not-allowed"
               >
                 <Spinner />
-                {copy.sending[lang]}
+                {t("sending")}
               </button>
             )}
 
@@ -241,7 +211,7 @@ export default function Contact() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Send size={16} />
-                {copy.send[lang]}
+                {t("send")}
               </motion.button>
             )}
 
