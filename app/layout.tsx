@@ -4,7 +4,6 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import { LanguageProvider } from "@/contexts/LanguageContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -67,17 +66,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Infra only for now (plan commit 8): nothing renders through next-intl yet,
-  // so `lang` stays hardcoded and LanguageContext keeps driving the visible
-  // UI exactly as before — no behavior change in this commit. Components
-  // migrate to useTranslations() in commits 9-16, and LanguageProvider is
-  // removed once nothing depends on it (commit 17).
   const locale = await getLocale();
   const messages = await getMessages();
 
   return (
     <html
-      lang="es"
+      lang={locale}
       className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-[#0A0F1E] text-[#F9FAFB] font-sans antialiased">
@@ -86,11 +80,9 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <LanguageProvider>
-            {children}
-            <Analytics />
-            <SpeedInsights />
-          </LanguageProvider>
+          {children}
+          <Analytics />
+          <SpeedInsights />
         </NextIntlClientProvider>
       </body>
     </html>

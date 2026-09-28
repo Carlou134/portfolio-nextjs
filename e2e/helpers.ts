@@ -1,22 +1,18 @@
 import { expect, type Page, type Route } from "@playwright/test";
 
-const LANG_STORAGE_KEY = "portfolio-lang";
-
 /**
  * Loads the home page and waits until React has hydrated.
  *
  * Clicking before hydration does nothing (no handlers attached yet), which
- * makes e2e flaky in dev mode. LanguageProvider writes the language to
- * localStorage from a post-mount effect, so its presence is a deterministic
- * "hydrated" signal that doesn't need sleeps or `networkidle`. It only holds
- * in a fresh browser context (every Playwright test gets one); after a reload
- * the key already exists, so assert on visible text instead.
+ * makes e2e flaky in dev mode. Navbar sets a `data-hydrated` marker on
+ * `<html>` from a post-mount effect, so its presence is a deterministic
+ * "hydrated" signal that doesn't need sleeps or `networkidle`. Navbar renders
+ * on every page, so the marker holds regardless of which page loaded.
  */
 export async function gotoHydrated(page: Page) {
   await page.goto("/");
   await page.waitForFunction(
-    (key) => window.localStorage.getItem(key) !== null,
-    LANG_STORAGE_KEY,
+    () => document.documentElement.dataset.hydrated === "true",
   );
 }
 

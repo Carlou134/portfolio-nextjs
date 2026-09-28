@@ -7,10 +7,9 @@ import Hero from "./Hero";
 import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
 
-// Hero (and the Terminal it renders) no longer touch LanguageContext at all
-// post-migration, so — unlike test/render.tsx's renderWithProviders — only
-// NextIntlClientProvider is needed here. Locale is a prop, not global state,
-// so switching it per test is just a different render, not a click+wait.
+// Hero (and the Terminal it renders) only need NextIntlClientProvider —
+// LanguageContext is gone (removed in commit 17). Locale is a prop, not
+// global state, so switching it per test is just a different render.
 function renderHero(locale: "es" | "en") {
   const messages = locale === "es" ? esMessages : enMessages;
   return render(
