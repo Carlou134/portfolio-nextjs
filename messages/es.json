@@ -37,5 +37,18 @@
   "Experience": {
     "sectionLabel": "Experiencia",
     "current": "Actual"
+  },
+  "About": {
+    "sectionLabel": "Sobre mí",
+    "bio1": "Desarrollo software desde hace +2 años en entornos reales — no en tutoriales. Trabajo principalmente con .NET y React, aunque me adapto al stack que el proyecto necesite.",
+    "bio2": "Estudiante de Ingeniería de Sistemas en UPC (10mo ciclo, Quinto Superior). Inglés B2. Autodidacta por convicción.",
+    "availableFor": "Disponible para proyectos freelance y posiciones de desarrollo.",
+    "available": "Disponible",
+    "academicBackground": "Formación académica",
+    "systemsEngineering": "Ingeniería de Sistemas",
+    "semester": "10mo ciclo",
+    "topOfClass": "Quinto Superior",
+    "thesisResearch": "Investigación de tesis",
+    "thesis": "Sistema web jerárquico (Random Forest + LightGBM) alineado al NIST Cybersecurity Framework para clasificación automática de alertas de seguridad, evaluado sobre datos reales de un SOC de Lima Metropolitana. Desplegado en Azure."
   }
 }
