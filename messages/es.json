@@ -27,5 +27,8 @@
     "help": "Comandos: whoami, about, experience, projects, stack, contact, clear",
     "whoami": "Carlos Vásquez — Fullstack Developer. .NET · React · Next.js · IA aplicada.",
     "notFound": "command not found: {cmd} (escribí 'help')"
+  },
+  "Projects": {
+    "sectionLabel": "Lo que he construido"
   }
 }
