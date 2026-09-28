@@ -53,6 +53,10 @@
     "send": "Enviar mensaje",
     "connectionError": "Error de conexión. Intenta nuevamente."
   },
+  "Footer": {
+    "location": "cfvasquez · Lima, Perú",
+    "builtWith": "Construido con Next.js + Tailwind + Framer Motion"
+  },
   "About": {
     "sectionLabel": "Sobre mí",
     "bio1": "Desarrollo software desde hace +2 años en entornos reales — no en tutoriales. Trabajo principalmente con .NET y React, aunque me adapto al stack que el proyecto necesite.",

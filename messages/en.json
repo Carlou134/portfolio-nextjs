@@ -53,6 +53,10 @@
     "send": "Send message",
     "connectionError": "Connection error. Please try again."
   },
+  "Footer": {
+    "location": "cfvasquez · Lima, Peru",
+    "builtWith": "Built with Next.js + Tailwind + Framer Motion"
+  },
   "About": {
     "sectionLabel": "About me",
     "bio1": "I've been building software for +2 years in real production environments — not tutorials. I work mainly with .NET and React, but adapt to whatever stack the project needs.",
