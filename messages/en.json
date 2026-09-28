@@ -30,5 +30,8 @@
   },
   "Projects": {
     "sectionLabel": "What I've built"
+  },
+  "Stack": {
+    "sectionLabel": "What I work with"
   }
 }

@@ -19,7 +19,7 @@ import {
   siKotlin,
   siDjango,
 } from "simple-icons";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTranslations } from "next-intl";
 
 interface StackItem {
   name: string;
@@ -189,14 +189,12 @@ const StackColumn = ({
   </motion.div>
 );
 
-const sectionLabel = { es: "Con qué trabajo", en: "What I work with" };
-
 export default function Stack() {
-  const { lang } = useLanguage();
+  const t = useTranslations("Stack");
 
   return (
     <section id="stack" className="section">
-      <p className="section-label">{sectionLabel[lang]}</p>
+      <p className="section-label">{t("sectionLabel")}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stackData.map((column, columnIndex) => (
