@@ -1,24 +1,11 @@
-// Content-as-code: same rationale as content/projects.ts — bullets arrays of
-// differing length per role, locale-neutral fields (company, current) mixed
-// with bilingual ones, doesn't fit a flat message catalog. Bilingual fields
-// stay inline as {es, en}, resolved with next-intl's useLocale() in
-// Experience.tsx. Zod validation is deferred to the same later commit (#18)
-// that will cover content/projects.ts.
-export interface Bilingual {
-  es: string;
-  en: string;
-}
+// Content-as-code: same rationale as content/projects.ts. Bilingual fields stay
+// inline as {es, en}, resolved with next-intl's useLocale() in Experience.tsx.
+// The shape is validated by content/schema.ts at import time.
+import { experiencesSchema, type Experience } from "./schema";
 
-export interface Experience {
-  id: number;
-  company: string;
-  role: Bilingual;
-  period: Bilingual;
-  current: boolean;
-  bullets: Bilingual[];
-}
+export type { Experience } from "./schema";
 
-export const experiences: Experience[] = [
+export const experiences: Experience[] = experiencesSchema.parse([
   {
     id: 1,
     company: "Zoluxiones IT Services",
@@ -108,4 +95,4 @@ export const experiences: Experience[] = [
       },
     ],
   },
-];
+]);

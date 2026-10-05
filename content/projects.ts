@@ -1,40 +1,12 @@
 // Content-as-code: this is real portfolio data, not UI copy, so it lives here
-// instead of messages/*.json — six dissimilar objects (arrays of different
-// lengths, an optional footer, tech names and URLs that have no "translation"
-// at all) don't fit a flat message catalog. Bilingual fields stay inline as
-// {es, en}, resolved with next-intl's useLocale() in Projects.tsx. A Zod
-// schema validating this shape at build time is a later, separate commit
-// (plan #18); this one is the move, not the validation.
-export interface Bilingual {
-  es: string;
-  en: string;
-}
+// instead of messages/*.json. Bilingual fields stay inline as {es, en}, resolved
+// with next-intl's useLocale() in Projects.tsx. The shape is validated by
+// content/schema.ts at import time, so a malformed entry fails the build.
+import { projectsSchema, type Project } from "./schema";
 
-export interface ProjectLink {
-  label: string;
-  href: string;
-}
+export type { Project } from "./schema";
 
-export interface ProjectMetric {
-  value: string;
-  label: string;
-}
-
-export interface Project {
-  id: number;
-  badge: Bilingual;
-  badgeColor: "blue" | "green" | "amber" | "pink";
-  title: Bilingual;
-  description: Bilingual;
-  metrics: ProjectMetric[];
-  stack: string[];
-  image?: string;
-  links: ProjectLink[];
-  featured: boolean;
-  footer?: Bilingual;
-}
-
-export const projects: Project[] = [
+export const projects: Project[] = projectsSchema.parse([
   {
     id: 1,
     badge: { es: "AI & ML", en: "AI & ML" },
@@ -185,4 +157,4 @@ export const projects: Project[] = [
     links: [],
     featured: false,
   },
-];
+]);
