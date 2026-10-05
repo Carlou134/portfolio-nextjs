@@ -99,7 +99,7 @@ export default function Projects() {
                 isFeatured ? "card-featured" : "card",
                 isFeatured ? "md:col-span-2 md:row-span-2" : "",
                 isLast ? "md:col-span-3" : "",
-                "hover:border-accent-green/50 hover:glow-green transition-all duration-300",
+                "hover:border-accent/50 hover:glow-accent transition-all duration-300",
                 "flex flex-col gap-4",
               ]
                 .filter(Boolean)
@@ -132,7 +132,7 @@ export default function Projects() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs font-mono text-text-secondary hover:text-accent-green transition-colors"
+                        className="flex items-center gap-1 text-xs font-mono text-text-secondary hover:text-accent transition-colors"
                       >
                         {link.label}
                         <ExternalLink size={14} />
@@ -185,7 +185,7 @@ export default function Projects() {
                 <div className="bg-bg-secondary border border-border p-3 rounded-lg flex gap-6">
                   {project.metrics.map((m, i) => (
                     <div key={i} className="flex flex-col">
-                      <span className="font-mono text-2xl text-accent-green">
+                      <span className="font-mono text-2xl text-accent">
                         {m.value}
                       </span>
                       <p className="text-xs text-text-muted mt-0.5">

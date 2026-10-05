@@ -39,8 +39,8 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
       <div className="absolute -left-8 md:-left-12 top-1.5 flex items-center justify-center">
         {exp.current ? (
           <div className="relative">
-            <div className="w-2.5 h-2.5 rounded-full bg-accent-green" />
-            <div className="absolute inset-0 rounded-full animate-ping opacity-30 bg-accent-green" />
+            <div className="w-2.5 h-2.5 rounded-full bg-accent" />
+            <div className="absolute inset-0 rounded-full animate-ping opacity-30 bg-accent" />
           </div>
         ) : (
           <div className="w-2.5 h-2.5 rounded-full bg-border" />
@@ -49,7 +49,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 
       {/* Contenido */}
       <motion.div
-        className="card hover:border-accent-green/30 hover:glow-green transition-all duration-300"
+        className="card hover:border-accent/30 hover:glow-accent transition-all duration-300"
         whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
@@ -57,7 +57,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
             <h3 className="font-mono font-medium text-base text-text-primary">
               {exp.company}
             </h3>
-            <p className="font-mono text-sm mt-0.5 text-accent-green">
+            <p className="font-mono text-sm mt-0.5 text-accent">
               {exp.role[locale]}
             </p>
           </div>
@@ -66,7 +66,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
               {exp.period[locale]}
             </span>
             {exp.current && (
-              <span className="badge-green text-[10px] px-2 py-0.5">
+              <span className="badge-accent text-[10px] px-2 py-0.5">
                 {t("current")}
               </span>
             )}
@@ -79,7 +79,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
               key={i}
               className="flex items-start gap-2 text-sm text-text-secondary leading-relaxed"
             >
-              <span className="mt-2 w-1 h-1 rounded-full flex-shrink-0 bg-accent-green" />
+              <span className="mt-2 w-1 h-1 rounded-full flex-shrink-0 bg-accent" />
               <span>
                 <Highlighted text={bullet[locale]} />
               </span>
@@ -120,7 +120,7 @@ export default function Experience() {
 
         {/* Línea animada (verde) */}
         <motion.div
-          className="absolute left-0 top-0 w-px origin-top bg-accent-green"
+          className="absolute left-0 top-0 w-px origin-top bg-accent"
           style={{ scaleY, height: "100%" }}
         />
 

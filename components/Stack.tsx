@@ -83,7 +83,7 @@ const stackData: StackColumnData[] = [
   {
     category: "Backend",
     color: "green",
-    dot: "var(--color-accent-green)",
+    dot: "var(--color-accent)",
     items: [
       { name: ".NET Core", icon: si.dotnet },
       { name: "C#", icon: null },
@@ -159,7 +159,7 @@ const StackColumn = ({
   columnIndex: number;
 }) => (
   <motion.div
-    className="card flex flex-col gap-4 hover:border-accent-green/30 hover:glow-green transition-all duration-300"
+    className="card flex flex-col gap-4 hover:border-accent/30 hover:glow-accent transition-all duration-300"
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}

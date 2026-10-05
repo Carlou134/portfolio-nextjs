@@ -91,7 +91,7 @@ export default function Contact() {
 
       <div className="max-w-2xl mx-auto">
         <motion.div
-          className="card hover:border-accent-green/30 hover:glow-green transition-all duration-300"
+          className="card hover:border-accent/30 hover:glow-accent transition-all duration-300"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
@@ -184,10 +184,10 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="w-full mt-6 p-4 rounded-lg bg-accent-green/10 border border-accent-green/30 flex items-center gap-3"
+                  className="w-full mt-6 p-4 rounded-lg bg-accent/10 border border-accent/30 flex items-center gap-3"
                 >
-                  <CheckCircle size={18} className="text-accent-green" />
-                  <span className="font-mono text-sm text-accent-green">
+                  <CheckCircle size={18} className="text-accent" />
+                  <span className="font-mono text-sm text-accent">
                     {t("success")}
                   </span>
                 </motion.div>
@@ -234,7 +234,7 @@ export default function Contact() {
           <div className="flex items-center justify-center gap-8 flex-wrap">
             <Link
               href="mailto:carlouvasquez134@gmail.com"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
+              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <Mail size={16} />
               Email
@@ -243,7 +243,7 @@ export default function Contact() {
               href="https://www.linkedin.com/in/carlos-vasquez-rod/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
+              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <IconLinkedin />
               LinkedIn
@@ -252,7 +252,7 @@ export default function Contact() {
               href="https://github.com/Carlou134"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
+              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <IconGithub />
               GitHub

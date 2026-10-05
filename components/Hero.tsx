@@ -53,9 +53,9 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0}
-            className="badge-green inline-flex items-center gap-1.5 w-fit"
+            className="badge-accent inline-flex items-center gap-1.5 w-fit"
           >
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent-green" />
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent" />
             {t("available")}
           </motion.div>
 
@@ -75,7 +75,7 @@ export default function Hero() {
           >
             {t("headlineLine1")}
             <br />
-            <span className="text-accent-green">{t("headlineLine2")}</span>
+            <span className="text-accent">{t("headlineLine2")}</span>
           </h1>
 
           <motion.p

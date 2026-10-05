@@ -35,11 +35,11 @@ function Photo() {
       </div>
 
       {/* Borde decorativo — encima de la imagen, fuera del clip */}
-      <div className="absolute inset-0 rounded-xl border-2 border-accent-green/30 group-hover:border-accent-green/60 transition-colors duration-300 pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl border-2 border-accent/30 group-hover:border-accent/60 transition-colors duration-300 pointer-events-none" />
 
       {/* Dot de disponibilidad */}
       <div className="absolute -bottom-2 -right-2 w-5 h-5 rounded-full bg-bg-primary border-2 border-bg-primary flex items-center justify-center">
-        <div className="w-3 h-3 rounded-full animate-pulse bg-accent-green" />
+        <div className="w-3 h-3 rounded-full animate-pulse bg-accent" />
       </div>
     </motion.div>
   );
@@ -63,8 +63,8 @@ function PhotoAndText() {
           <p className="font-sans text-sm text-text-secondary leading-relaxed">
             {t("availableFor")}
           </p>
-          <span className="badge-green inline-flex items-center gap-1.5 w-fit">
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent-green" />
+          <span className="badge-accent inline-flex items-center gap-1.5 w-fit">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent" />
             {t("available")}
           </span>
         </div>
@@ -80,11 +80,11 @@ function EducationCard() {
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="card hover:border-accent-green/30 hover:glow-green cursor-default transition-all duration-300"
+      className="card hover:border-accent/30 hover:glow-accent cursor-default transition-all duration-300"
     >
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <GraduationCap size={18} className="text-accent-green" />
+        <GraduationCap size={18} className="text-accent" />
         <span className="font-mono text-xs text-text-muted tracking-widest uppercase">
           {t("academicBackground")}
         </span>
@@ -117,7 +117,7 @@ function EducationCard() {
       <div className="flex flex-wrap gap-2 mb-4">
         <span className="badge-amber">{t("semester")}</span>
         <span className="badge-amber">{t("topOfClass")}</span>
-        <span className="badge-green">2020 – 2026</span>
+        <span className="badge-accent">2020 – 2026</span>
       </div>
 
       <div className="h-px bg-border my-4" />

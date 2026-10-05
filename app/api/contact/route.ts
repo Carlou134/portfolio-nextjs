@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
                     padding: 32px;
                     border-radius: 12px;
                     border: 1px solid #1F2937;">
-          <h2 style="color: #00E5A0;
+          <h2 style="color: #818cf8;
                      margin-bottom: 24px;
                      font-size: 18px;">
             Nuevo mensaje desde tu portfolio
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
           </p>
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">Email:</span>
-            <a href="mailto:${safeEmail}" style="color: #00E5A0;">${safeEmail}</a>
+            <a href="mailto:${safeEmail}" style="color: #818cf8;">${safeEmail}</a>
           </p>
           <div style="margin-top: 24px;
                       padding: 16px;

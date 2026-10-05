@@ -98,15 +98,13 @@ export default function Terminal() {
                   : "text-text-secondary"
               }
             >
-              {line.type === "input" && (
-                <span className="text-accent-green">$ </span>
-              )}
+              {line.type === "input" && <span className="text-accent">$ </span>}
               {line.text}
             </div>
           ))}
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <span className="text-accent-green">$</span>
+            <span className="text-accent">$</span>
             <input
               ref={inputRef}
               value={input}
