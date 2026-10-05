@@ -72,6 +72,16 @@ describe("Projects", () => {
     );
   });
 
+  it("styles badges with the theme classes their color maps to", () => {
+    renderProjects("es");
+    expect(screen.getByText("Backend", { selector: "span" })).toHaveClass(
+      "badge-accent",
+    );
+    expect(
+      screen.getByText("Backend · Legacy", { selector: "span" }),
+    ).toHaveClass("badge-amber");
+  });
+
   it("renders all six projects", () => {
     renderProjects("es");
     expect(

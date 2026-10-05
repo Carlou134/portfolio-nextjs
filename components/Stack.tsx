@@ -101,7 +101,7 @@ const stackData: StackColumnData[] = [
   {
     category: "Frontend",
     color: "blue",
-    dot: "#3B82F6",
+    dot: "var(--color-accent)",
     items: [
       { name: "React", icon: si.react },
       { name: "Next.js", icon: si.nextjs },

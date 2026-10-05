@@ -6,7 +6,7 @@ import { experiences } from "./experience";
 const validProject = {
   id: 1,
   badge: { es: "Backend", en: "Backend" },
-  badgeColor: "green",
+  badgeColor: "accent",
   title: { es: "Título", en: "Title" },
   description: { es: "Descripción", en: "Description" },
   metrics: [],

@@ -10,7 +10,7 @@ export const projects: Project[] = projectsSchema.parse([
   {
     id: 1,
     badge: { es: "AI & ML", en: "AI & ML" },
-    badgeColor: "blue",
+    badgeColor: "accent",
     title: {
       es: "Clasificación de alertas con Random Forest",
       en: "Alert classification with Random Forest",
@@ -48,7 +48,7 @@ export const projects: Project[] = projectsSchema.parse([
   {
     id: 2,
     badge: { es: "Backend", en: "Backend" },
-    badgeColor: "green",
+    badgeColor: "accent",
     title: {
       es: "API REST con Clean Architecture",
       en: "REST API with Clean Architecture",
@@ -117,7 +117,7 @@ export const projects: Project[] = projectsSchema.parse([
   {
     id: 5,
     badge: { es: "Fullstack · IA", en: "Fullstack · AI" },
-    badgeColor: "blue",
+    badgeColor: "accent",
     title: {
       es: "Interfaz con estado moderno e integración de IA",
       en: "Modern state management UI with AI integration",

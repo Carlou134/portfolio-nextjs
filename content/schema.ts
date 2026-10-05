@@ -10,7 +10,7 @@ const bilingualSchema = z.object({
 const projectSchema = z.object({
   id: z.number().int().positive(),
   badge: bilingualSchema,
-  badgeColor: z.enum(["blue", "green", "amber", "pink"]),
+  badgeColor: z.enum(["accent", "amber", "pink"]),
   title: bilingualSchema,
   description: bilingualSchema,
   metrics: z.array(z.object({ value: nonEmpty, label: nonEmpty })),

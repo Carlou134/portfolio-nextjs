@@ -8,8 +8,6 @@
 
   --color-accent: #818cf8;
   --color-accent-dim: #818cf815;
-  --color-accent-blue: #3b82f6;
-  --color-accent-blue-dim: #3b82f615;
 
   --color-border: #1f2937;
   --color-border-hover: #374151;
@@ -86,7 +84,7 @@
   }
 
   .card-featured {
-    @apply bg-bg-card border-2 border-accent-blue rounded-[12px] p-6 transition-all duration-300;
+    @apply bg-bg-card border-2 border-accent rounded-[12px] p-6 transition-all duration-300;
   }
 
   .card-featured:hover {
@@ -100,11 +98,6 @@
   .badge-accent {
     @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
     @apply bg-accent-dim border-accent text-accent;
-  }
-
-  .badge-blue {
-    @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
-    @apply bg-accent-blue-dim border-accent-blue text-accent-blue;
   }
 
   .badge-amber {
