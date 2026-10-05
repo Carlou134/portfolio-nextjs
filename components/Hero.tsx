@@ -55,10 +55,7 @@ export default function Hero() {
             custom={0}
             className="badge-green inline-flex items-center gap-1.5 w-fit"
           >
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
-              style={{ backgroundColor: "#00E5A0" }}
-            />
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent-green" />
             {t("available")}
           </motion.div>
 
@@ -78,7 +75,7 @@ export default function Hero() {
           >
             {t("headlineLine1")}
             <br />
-            <span style={{ color: "#00E5A0" }}>{t("headlineLine2")}</span>
+            <span className="text-accent-green">{t("headlineLine2")}</span>
           </h1>
 
           <motion.p

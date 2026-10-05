@@ -99,14 +99,14 @@ export default function Terminal() {
               }
             >
               {line.type === "input" && (
-                <span style={{ color: "#00E5A0" }}>$ </span>
+                <span className="text-accent-green">$ </span>
               )}
               {line.text}
             </div>
           ))}
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <span style={{ color: "#00E5A0" }}>$</span>
+            <span className="text-accent-green">$</span>
             <input
               ref={inputRef}
               value={input}

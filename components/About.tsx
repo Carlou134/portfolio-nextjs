@@ -39,10 +39,7 @@ function Photo() {
 
       {/* Dot de disponibilidad */}
       <div className="absolute -bottom-2 -right-2 w-5 h-5 rounded-full bg-bg-primary border-2 border-bg-primary flex items-center justify-center">
-        <div
-          className="w-3 h-3 rounded-full animate-pulse"
-          style={{ backgroundColor: "#00E5A0" }}
-        />
+        <div className="w-3 h-3 rounded-full animate-pulse bg-accent-green" />
       </div>
     </motion.div>
   );
@@ -67,10 +64,7 @@ function PhotoAndText() {
             {t("availableFor")}
           </p>
           <span className="badge-green inline-flex items-center gap-1.5 w-fit">
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
-              style={{ backgroundColor: "#00E5A0" }}
-            />
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent-green" />
             {t("available")}
           </span>
         </div>
@@ -90,7 +84,7 @@ function EducationCard() {
     >
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <GraduationCap size={18} color="#00E5A0" />
+        <GraduationCap size={18} className="text-accent-green" />
         <span className="font-mono text-xs text-text-muted tracking-widest uppercase">
           {t("academicBackground")}
         </span>

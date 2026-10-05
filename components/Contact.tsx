@@ -186,7 +186,7 @@ export default function Contact() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-full mt-6 p-4 rounded-lg bg-accent-green/10 border border-accent-green/30 flex items-center gap-3"
                 >
-                  <CheckCircle size={18} color="#00E5A0" />
+                  <CheckCircle size={18} className="text-accent-green" />
                   <span className="font-mono text-sm text-accent-green">
                     {t("success")}
                   </span>

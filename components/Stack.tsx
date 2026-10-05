@@ -83,7 +83,7 @@ const stackData: StackColumnData[] = [
   {
     category: "Backend",
     color: "green",
-    dot: "#00E5A0",
+    dot: "var(--color-accent-green)",
     items: [
       { name: ".NET Core", icon: si.dotnet },
       { name: "C#", icon: null },

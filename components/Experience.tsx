@@ -39,14 +39,8 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
       <div className="absolute -left-8 md:-left-12 top-1.5 flex items-center justify-center">
         {exp.current ? (
           <div className="relative">
-            <div
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: "#00E5A0" }}
-            />
-            <div
-              className="absolute inset-0 rounded-full animate-ping opacity-30"
-              style={{ backgroundColor: "#00E5A0" }}
-            />
+            <div className="w-2.5 h-2.5 rounded-full bg-accent-green" />
+            <div className="absolute inset-0 rounded-full animate-ping opacity-30 bg-accent-green" />
           </div>
         ) : (
           <div className="w-2.5 h-2.5 rounded-full bg-border" />
@@ -63,10 +57,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
             <h3 className="font-mono font-medium text-base text-text-primary">
               {exp.company}
             </h3>
-            <p
-              className="font-mono text-sm mt-0.5"
-              style={{ color: "#00E5A0" }}
-            >
+            <p className="font-mono text-sm mt-0.5 text-accent-green">
               {exp.role[locale]}
             </p>
           </div>
@@ -88,10 +79,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
               key={i}
               className="flex items-start gap-2 text-sm text-text-secondary leading-relaxed"
             >
-              <span
-                className="mt-2 w-1 h-1 rounded-full flex-shrink-0"
-                style={{ backgroundColor: "#00E5A0" }}
-              />
+              <span className="mt-2 w-1 h-1 rounded-full flex-shrink-0 bg-accent-green" />
               <span>
                 <Highlighted text={bullet[locale]} />
               </span>
@@ -132,8 +120,8 @@ export default function Experience() {
 
         {/* Línea animada (verde) */}
         <motion.div
-          className="absolute left-0 top-0 w-px origin-top"
-          style={{ scaleY, height: "100%", backgroundColor: "#00E5A0" }}
+          className="absolute left-0 top-0 w-px origin-top bg-accent-green"
+          style={{ scaleY, height: "100%" }}
         />
 
         {/* Items */}
