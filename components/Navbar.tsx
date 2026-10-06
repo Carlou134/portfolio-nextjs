@@ -47,14 +47,20 @@ export default function Navbar() {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
-        <a href="#" className="font-mono font-medium text-text-primary text-lg">
+        <a
+          href="#"
+          className="inline-flex items-center min-h-11 font-mono font-medium text-text-primary text-lg"
+        >
           cfvasquez<span className="text-accent">.</span>dev
         </a>
 
         <ul className="hidden md:flex items-center gap-8">
           {navLinks.map((item) => (
             <li key={item.href}>
-              <a href={item.href} className="nav-link">
+              <a
+                href={item.href}
+                className="nav-link inline-flex items-center min-h-11"
+              >
                 {t(item.labelKey)}
               </a>
             </li>
@@ -70,7 +76,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={handleToggleLanguage}
-            className="nav-link border border-border rounded-md px-2 py-1 text-xs font-mono hover:border-border-hover"
+            className="nav-link inline-flex items-center justify-center min-h-11 min-w-11 border border-border rounded-md px-2 text-xs font-mono hover:border-border-hover"
             aria-label="Switch language / Cambiar idioma"
           >
             {locale === "es" ? "EN" : "ES"}
@@ -78,7 +84,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="md:hidden p-2 -mr-2 text-text-primary"
+            className="md:hidden inline-flex items-center justify-center min-h-11 min-w-11 -mr-2 text-text-primary"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={mobileOpen}

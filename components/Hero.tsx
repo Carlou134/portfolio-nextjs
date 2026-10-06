@@ -123,7 +123,7 @@ export default function Hero() {
               href="https://github.com/Carlou134"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 p-3 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
               aria-label="GitHub"
             >
               <GithubIcon />

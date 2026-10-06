@@ -2,6 +2,9 @@
   "I18nInfra": {
     "smokeTest": "next-intl está funcionando"
   },
+  "A11y": {
+    "skipToContent": "Saltar al contenido"
+  },
   "Nav": {
     "available": "Disponible",
     "openMenu": "Abrir menú",

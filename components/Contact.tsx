@@ -234,7 +234,7 @@ export default function Contact() {
           <div className="flex items-center justify-center gap-8 flex-wrap">
             <Link
               href="mailto:carlouvasquez134@gmail.com"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <Mail size={16} />
               Email
@@ -243,7 +243,7 @@ export default function Contact() {
               href="https://www.linkedin.com/in/carlos-vasquez-rod/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <IconLinkedin />
               LinkedIn
@@ -252,7 +252,7 @@ export default function Contact() {
               href="https://github.com/Carlou134"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <IconGithub />
               GitHub

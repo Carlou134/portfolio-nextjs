@@ -3,7 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 
 const inter = Inter({
@@ -68,6 +68,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const t = await getTranslations("A11y");
 
   return (
     <html
@@ -75,6 +76,10 @@ export default async function RootLayout({
       className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-[#0A0F1E] text-[#F9FAFB] font-sans antialiased">
+        {/* Every page must render <main id="contenido"> for this to land. */}
+        <a href="#contenido" className="skip-link">
+          {t("skipToContent")}
+        </a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

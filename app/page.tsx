@@ -9,15 +9,18 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Navbar />
-      <Hero />
-      <Projects />
-      <Stack />
-      <Experience />
-      <About />
-      <Contact />
+      {/* tabIndex={-1} lets the skip link move focus here, not just scroll. */}
+      <main id="contenido" tabIndex={-1} className="outline-none">
+        <Hero />
+        <Projects />
+        <Stack />
+        <Experience />
+        <About />
+        <Contact />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }
