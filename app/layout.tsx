@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { MotionConfig } from "framer-motion";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
@@ -85,7 +86,11 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          {/* One switch for the whole tree: with the OS "reduce motion" setting
+              on, framer drops transform animations (movement) and keeps
+              opacity fades. MotionConfig ships its own "use client", so a
+              server layout can render it directly. */}
+          <MotionConfig reducedMotion="user">{children}</MotionConfig>
           <Analytics />
           <SpeedInsights />
         </NextIntlClientProvider>
