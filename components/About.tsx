@@ -77,11 +77,7 @@ function EducationCard() {
   const t = useTranslations("About");
 
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
-      className="card hover:border-accent/30 hover:glow-accent cursor-default transition-all duration-300"
-    >
+    <div className="card hover:border-accent/30 hover:glow-accent motion-safe:hover:scale-102 cursor-default transition-all duration-300">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <GraduationCap size={18} className="text-accent" />
@@ -144,7 +140,7 @@ function EducationCard() {
           </span>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 

@@ -113,7 +113,7 @@
   }
 
   .stack-tag {
-    @apply text-xs font-mono px-2 py-1 rounded bg-bg-secondary border border-border text-text-secondary transition-colors duration-200;
+    @apply text-xs font-mono px-2 py-1 rounded bg-bg-secondary border border-border text-text-secondary transition-[color,border-color,scale] duration-200;
   }
 
   .stack-tag:hover {

@@ -99,6 +99,9 @@ export default function Projects() {
                 isFeatured ? "card-featured" : "card",
                 isFeatured ? "md:col-span-2 md:row-span-2" : "",
                 isLast ? "md:col-span-3" : "",
+                isFeatured
+                  ? "motion-safe:hover:scale-101"
+                  : "motion-safe:hover:scale-102",
                 "hover:border-accent/50 hover:glow-accent transition-all duration-300",
                 "flex flex-col gap-4",
               ]
@@ -112,10 +115,6 @@ export default function Projects() {
                 duration: 0.5,
                 delay: index * 0.1,
                 ease: "easeOut",
-              }}
-              whileHover={{
-                scale: isFeatured ? 1.01 : 1.02,
-                transition: { duration: 0.2 },
               }}
             >
               {/* Badge + Links */}

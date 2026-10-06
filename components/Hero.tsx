@@ -97,27 +97,26 @@ export default function Hero() {
             custom={4}
             className="flex gap-4 flex-wrap items-center"
           >
-            <motion.button
+            <button
+              type="button"
               className="btn-primary"
               onClick={() =>
                 document
                   .getElementById("proyectos")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              whileTap={{ scale: 0.95 }}
             >
               {t("viewProjects")}
-            </motion.button>
+            </button>
 
-            <motion.a
+            <a
               href={cvFileByLocale[locale]}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
-              whileTap={{ scale: 0.95 }}
             >
               {t("downloadCv")}
-            </motion.a>
+            </a>
 
             <Link
               href="https://github.com/Carlou134"

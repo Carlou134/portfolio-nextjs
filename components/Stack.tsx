@@ -131,12 +131,11 @@ const stackData: StackColumnData[] = [
 
 const StackTag = ({ item, index }: { item: StackItem; index: number }) => (
   <motion.div
-    className="stack-tag flex items-center gap-1.5 cursor-default"
+    className="stack-tag flex items-center gap-1.5 cursor-default motion-safe:hover:scale-105"
     initial={{ opacity: 0, y: 8 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
-    whileHover={{ scale: 1.05, transition: { duration: 0.15 } }}
   >
     {item.icon ? (
       <SimpleIcon icon={item.icon} size={14} />
@@ -159,12 +158,11 @@ const StackColumn = ({
   columnIndex: number;
 }) => (
   <motion.div
-    className="card flex flex-col gap-4 hover:border-accent/30 hover:glow-accent transition-all duration-300"
+    className="card flex flex-col gap-4 hover:border-accent/30 hover:glow-accent motion-safe:hover:scale-102 transition-all duration-300"
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}
     transition={{ duration: 0.5, delay: columnIndex * 0.15, ease: "easeOut" }}
-    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
   >
     <div className="flex items-center gap-2">
       <span

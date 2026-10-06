@@ -91,12 +91,11 @@ export default function Contact() {
 
       <div className="max-w-2xl mx-auto">
         <motion.div
-          className="card hover:border-accent/30 hover:glow-accent transition-all duration-300"
+          className="card hover:border-accent/30 hover:glow-accent motion-safe:hover:scale-101 transition-all duration-300"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
         >
           {/* Header */}
           <h2
@@ -205,14 +204,13 @@ export default function Contact() {
             )}
 
             {(status === "idle" || status === "error") && (
-              <motion.button
+              <button
                 type="submit"
                 className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
-                whileTap={{ scale: 0.95 }}
               >
                 <Send size={16} />
                 {t("send")}
-              </motion.button>
+              </button>
             )}
 
             <div role="alert">
