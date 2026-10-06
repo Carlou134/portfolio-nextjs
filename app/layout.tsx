@@ -76,7 +76,7 @@ export default async function RootLayout({
       lang={locale}
       className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="bg-[#0A0F1E] text-[#F9FAFB] font-sans antialiased">
+      <body>
         {/* Every page must render <main id="contenido"> for this to land. */}
         <a href="#contenido" className="skip-link">
           {t("skipToContent")}

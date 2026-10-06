@@ -216,7 +216,7 @@ export default function Contact() {
             <div role="alert">
               {status === "error" && (
                 <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
-                  <AlertCircle size={14} color="#F87171" />
+                  <AlertCircle size={14} className="text-red-400" />
                   <span className="text-xs text-red-400 font-mono">
                     {errorMessage}
                   </span>

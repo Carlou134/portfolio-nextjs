@@ -173,11 +173,15 @@
 
 @layer utilities {
   .dot-grid {
-    background-image: radial-gradient(circle, #1f2937 1px, transparent 1px);
+    background-image: radial-gradient(
+      circle,
+      var(--color-border) 1px,
+      transparent 1px
+    );
     background-size: 32px 32px;
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px #818cf815;
+    box-shadow: 0 0 20px var(--color-accent-dim);
   }
 }

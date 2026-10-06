@@ -120,7 +120,7 @@ function EducationCard() {
 
       {/* Tesis */}
       <div className="flex items-center gap-2 mb-3">
-        <BookOpen size={14} color="#9CA3AF" />
+        <BookOpen size={14} className="text-text-secondary" />
         <span className="font-mono text-xs text-text-muted tracking-widest uppercase">
           {t("thesisResearch")}
         </span>
