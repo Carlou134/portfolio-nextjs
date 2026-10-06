@@ -1,15 +1,14 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { render } from "@testing-library/react";
 import Hero from "./Hero";
 import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
 
-// Hero (and the Terminal it renders) only need NextIntlClientProvider —
-// LanguageContext is gone (removed in commit 17). Locale is a prop, not
-// global state, so switching it per test is just a different render.
+// Hero only needs NextIntlClientProvider — LanguageContext is gone (removed
+// in commit 17). Locale is a prop, not global state, so switching it per test
+// is just a different render.
 function renderHero(locale: "es" | "en") {
   const messages = locale === "es" ? esMessages : enMessages;
   return render(
@@ -19,29 +18,71 @@ function renderHero(locale: "es" | "en") {
   );
 }
 
+// The kicker renders each segment in its own <span> (one per line), so plain
+// getByText — which only reads an element's own text nodes — can't see it.
+// Match the paragraph's full text instead.
+const kicker = (text: string) =>
+  screen.getByText(
+    (_, element) => element?.tagName === "P" && element.textContent === text,
+  );
+
 describe("Hero", () => {
-  it("renders the Spanish headline, tagline and badge", () => {
+  it("renders the Spanish kicker, headline and meta line", () => {
     renderHero("es");
 
+    expect(kicker("Full Stack Developer · Lima, Perú")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 1, name: /construyo software/i }),
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Construyo sistemas C#/.NET y Next.js que llegan a producción y se mantienen ahí.",
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Carlos Vásquez · Fullstack Developer · Lima, Perú"),
+      screen.getByText("Disponible para propuestas · Lima, UTC−5 · inglés B2"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Disponible")).toBeInTheDocument();
   });
 
-  it("renders the English headline, tagline and badge", () => {
+  it("renders the English kicker, headline and meta line", () => {
     renderHero("en");
 
+    expect(kicker("Full Stack Developer · Lima, Peru")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 1, name: /i build software/i }),
+      screen.getByRole("heading", {
+        level: 1,
+        name: "I build C#/.NET and Next.js systems that reach production and stay there.",
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Carlos Vásquez · Fullstack Developer · Lima, Peru"),
+      screen.getByText("Open to offers · Lima, UTC−5 · English B2"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Available")).toBeInTheDocument();
+  });
+
+  it("shows the name above the kicker", () => {
+    renderHero("es");
+    expect(screen.getByText("Carlos Vásquez")).toBeInTheDocument();
+  });
+
+  it("renders the profile photo with a translated alt text", () => {
+    renderHero("en");
+    expect(
+      screen.getByRole("img", { name: "Profile photo of Carlos Vásquez" }),
+    ).toBeInTheDocument();
+  });
+
+  it("describes the convergence motif to assistive tech", () => {
+    renderHero("es");
+    expect(
+      screen.getByRole("img", { name: /cuatro trazos de origen distinto/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("links the projects CTA to the projects section", () => {
+    renderHero("es");
+    // The arrow is aria-hidden, so it's not part of the accessible name.
+    expect(screen.getByRole("link", { name: "Ver proyectos" })).toHaveAttribute(
+      "href",
+      "#proyectos",
+    );
   });
 
   it("points the CV download link at the Spanish PDF in es", () => {
@@ -62,6 +103,16 @@ describe("Hero", () => {
     );
   });
 
+  it("renders the static perfil.sh terminal, translated", () => {
+    renderHero("en");
+
+    const terminal = screen.getByRole("figure", { name: "perfil.sh" });
+    expect(terminal).toHaveTextContent("whoami");
+    expect(terminal).toHaveTextContent("open to offers");
+    // Static: nothing to type into.
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
+
   it("links to the GitHub profile", () => {
     renderHero("es");
 
@@ -69,23 +120,5 @@ describe("Hero", () => {
       "href",
       "https://github.com/Carlou134",
     );
-  });
-
-  it("scrolls to the projects section when its CTA is clicked", async () => {
-    const scrollIntoView = vi.mocked(Element.prototype.scrollIntoView);
-    scrollIntoView.mockClear();
-    document.body.insertAdjacentHTML("beforeend", '<div id="proyectos"></div>');
-
-    const user = userEvent.setup();
-    renderHero("es");
-    await user.click(screen.getByRole("button", { name: "Ver proyectos" }));
-
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
-  });
-
-  it("renders the Terminal alongside it, translated in the same locale", () => {
-    renderHero("en");
-    expect(screen.getByLabelText("terminal input")).toBeInTheDocument();
-    expect(screen.getByText("Type 'help' to get started.")).toBeInTheDocument();
   });
 });

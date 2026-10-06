@@ -21,9 +21,3 @@ class IntersectionObserverMock {
   thresholds: number[] = [];
 }
 vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
-
-// jsdom doesn't implement either of these; Hero/Terminal's "scroll to
-// section" commands call scrollIntoView, and Terminal's own output pane
-// autoscrolls itself on new lines via scrollTo.
-Element.prototype.scrollIntoView = vi.fn();
-Element.prototype.scrollTo = vi.fn();

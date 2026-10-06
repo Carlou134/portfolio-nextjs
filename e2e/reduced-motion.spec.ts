@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const TAGLINE = "Carlos Vásquez · Fullstack Developer · Lima, Perú";
+const KICKER = "Full Stack Developer · Lima, Perú";
 
 declare global {
   interface Window {
@@ -9,7 +9,7 @@ declare global {
 }
 
 /**
- * The Hero tagline fades in (opacity) while sliding up (transform). Normally
+ * The Hero kicker fades in (opacity) while sliding up (transform). Normally
  * both finish together, so the transform only settles once opacity is 1.
  * With reduced motion, framer snaps the transform and keeps the fade, so the
  * transform settles while the element is still fading in.
@@ -18,10 +18,10 @@ declare global {
  * depend on how fast the test process polls.
  */
 async function opacityWhenTransformSettles(page: Page) {
-  await page.addInitScript((tagline) => {
+  await page.addInitScript((kicker) => {
     const sample = () => {
       const el = [...document.querySelectorAll("p")].find(
-        (p) => p.textContent === tagline,
+        (p) => p.textContent === kicker,
       );
       if (
         el &&
@@ -34,7 +34,7 @@ async function opacityWhenTransformSettles(page: Page) {
       requestAnimationFrame(sample);
     };
     requestAnimationFrame(sample);
-  }, TAGLINE);
+  }, KICKER);
 
   await page.goto("/");
   await page.waitForFunction(() => window.__opacityWhenSettled !== undefined);

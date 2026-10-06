@@ -9,7 +9,7 @@ test.describe("language toggle", () => {
   test("starts in Spanish", async ({ page }) => {
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Construyo software",
+      "Construyo sistemas",
     );
     await expect(
       page.getByRole("link", { name: "Proyectos", exact: true }),
@@ -25,7 +25,7 @@ test.describe("language toggle", () => {
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "I build software",
+      "I build C#/.NET",
     );
     await expect(
       page.getByRole("link", { name: "Projects", exact: true }),
@@ -43,7 +43,7 @@ test.describe("language toggle", () => {
     await languageOption(page, "ES").click();
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Construyo software",
+      "Construyo sistemas",
     );
   });
 
@@ -55,7 +55,7 @@ test.describe("language toggle", () => {
 
     // The server renders Spanish; the saved language is applied after hydration.
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "I build software",
+      "I build C#/.NET",
     );
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
   });

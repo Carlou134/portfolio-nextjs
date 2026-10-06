@@ -18,21 +18,19 @@
     "linkContact": "Contact"
   },
   "Hero": {
-    "available": "Available",
-    "tagline": "Carlos Vásquez · Fullstack Developer · Lima, Peru",
-    "headlineLine1": "I build software",
-    "headlineLine2": "that works.",
-    "subtextLine1": ".NET · React · Next.js · Applied AI.",
-    "subtextLine2": "+2 years shipping to production.",
-    "viewProjects": "View projects",
-    "downloadCv": "Download CV"
-  },
-  "Terminal": {
-    "prompt": "visitor@cfvasquez",
-    "welcome": "Type 'help' to get started.",
-    "help": "Commands: whoami, about, experience, projects, stack, contact, clear",
-    "whoami": "Carlos Vásquez — Fullstack Developer. .NET · React · Next.js · Applied AI.",
-    "notFound": "command not found: {cmd} ('help' for a list)"
+    "kicker": "Full Stack Developer · Lima, Peru",
+    "headline": "I build C#/.NET and Next.js systems that reach production and stay there.",
+    "subtitle": "2+ years across the .NET, React/Next.js and Kotlin ecosystems: REST API design, clean and hexagonal architectures, CI/CD and applied AI. BSc in Information Systems Engineering (UPC, top 20%).",
+    "viewProjects": "See projects",
+    "downloadCv": "Download CV",
+    "meta": "Open to offers · Lima, UTC−5 · English B2",
+    "photoAlt": "Profile photo of Carlos Vásquez",
+    "convergeAlt": "Four strokes from different origins converging on one point: .NET, React, Kotlin and data resolved with a single architectural criterion.",
+    "terminal": {
+      "whoami": "carlos vásquez · lima, perú · utc−5",
+      "stack": "c# / .net · next.js · kotlin · sql",
+      "status": "open to offers"
+    }
   },
   "Projects": {
     "sectionLabel": "What I've built"
