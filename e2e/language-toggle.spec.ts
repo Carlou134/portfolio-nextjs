@@ -1,8 +1,5 @@
-import { test, expect, type Page } from "@playwright/test";
-import { gotoHydrated } from "./helpers";
-
-const toggle = (page: Page) =>
-  page.getByRole("button", { name: /switch language/i });
+import { test, expect } from "@playwright/test";
+import { gotoHydrated, languageOption } from "./helpers";
 
 test.describe("language toggle", () => {
   test.beforeEach(async ({ page }) => {
@@ -17,11 +14,14 @@ test.describe("language toggle", () => {
     await expect(
       page.getByRole("link", { name: "Proyectos", exact: true }),
     ).toBeVisible();
-    await expect(toggle(page)).toHaveText("EN");
+    await expect(languageOption(page, "ES")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   });
 
   test("switches the whole page to English", async ({ page }) => {
-    await toggle(page).click();
+    await languageOption(page, "EN").click();
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
@@ -30,14 +30,17 @@ test.describe("language toggle", () => {
     await expect(
       page.getByRole("link", { name: "Projects", exact: true }),
     ).toBeVisible();
-    await expect(toggle(page)).toHaveText("ES");
+    await expect(languageOption(page, "EN")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   });
 
   test("switches back to Spanish", async ({ page }) => {
-    await toggle(page).click();
+    await languageOption(page, "EN").click();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
-    await toggle(page).click();
+    await languageOption(page, "ES").click();
     await expect(page.locator("html")).toHaveAttribute("lang", "es");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
       "Construyo software",
@@ -45,7 +48,7 @@ test.describe("language toggle", () => {
   });
 
   test("remembers the choice after a reload", async ({ page }) => {
-    await toggle(page).click();
+    await languageOption(page, "EN").click();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
     await page.reload();
@@ -58,7 +61,7 @@ test.describe("language toggle", () => {
   });
 
   test("translates the contact form labels", async ({ page }) => {
-    await toggle(page).click();
+    await languageOption(page, "EN").click();
 
     const form = page.getByRole("form", { name: /let's talk/i });
     await expect(form.getByLabel("Name", { exact: true })).toBeVisible();

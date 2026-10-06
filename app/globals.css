@@ -205,6 +205,12 @@
     @apply text-text-primary;
   }
 
+  /* Active section: keyed off aria-current so the visual state can't drift
+     from what assistive tech announces. */
+  .nav-link[aria-current="location"] {
+    @apply text-text-primary underline decoration-accent decoration-2 underline-offset-8;
+  }
+
   .timeline-dot {
     @apply w-2 h-2 rounded-full bg-accent ring-4 ring-accent/20 flex-shrink-0;
   }

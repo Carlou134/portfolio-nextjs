@@ -4,15 +4,8 @@ import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
+import { cvFileByLocale } from "@/lib/cv";
 import Terminal from "./Terminal";
-
-// A CV file path is a locale-dependent ASSET, not a translated sentence — it
-// doesn't belong in messages/*.json (a translator would never touch it), so
-// it stays local, keyed the same way the message catalogs are.
-const cvFileByLocale = {
-  es: "/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf",
-  en: "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf",
-} as const;
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },

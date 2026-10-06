@@ -3,6 +3,7 @@ import {
   contactForm,
   fillContactForm,
   gotoHydrated,
+  languageOption,
   mockContactApi,
 } from "./helpers";
 
@@ -87,7 +88,7 @@ test.describe("contact form", () => {
   test("sends the English language flag after toggling", async ({ page }) => {
     const requests = await mockContactApi(page);
     await gotoHydrated(page);
-    await page.getByRole("button", { name: /switch language/i }).click();
+    await languageOption(page, "EN").click();
 
     await fillContactForm(page, valid, {
       name: "Name",

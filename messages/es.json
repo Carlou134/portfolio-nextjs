@@ -6,9 +6,12 @@
     "skipToContent": "Saltar al contenido"
   },
   "Nav": {
-    "available": "Disponible",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
+    "language": "Idioma",
+    "cv": "CV",
+    "cvLabel": "Descargar CV (PDF)",
+    "linkAbout": "Sobre mí",
     "linkProjects": "Proyectos",
     "linkStack": "Stack",
     "linkExperience": "Experiencia",

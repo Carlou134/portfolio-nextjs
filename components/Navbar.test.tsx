@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import Navbar from "./Navbar";
@@ -24,9 +24,30 @@ function renderNavbar(locale: "es" | "en" = "es") {
 }
 
 describe("Navbar", () => {
-  it("renders the desktop nav links", () => {
+  it("renders the desktop nav links in page order", () => {
     renderNavbar();
-    expect(screen.getByRole("link", { name: "Proyectos" })).toBeInTheDocument();
+    const links = within(screen.getAllByRole("list")[0])
+      .getAllByRole("link")
+      .map((link) => link.textContent);
+    expect(links).toEqual([
+      "Sobre mí",
+      "Stack",
+      "Proyectos",
+      "Experiencia",
+      "Contacto",
+    ]);
+  });
+
+  it("no longer shows the availability badge", () => {
+    renderNavbar();
+    expect(screen.queryByText("Disponible")).not.toBeInTheDocument();
+  });
+
+  it("links the CV for the current locale", () => {
+    renderNavbar("en");
+    expect(
+      screen.getByRole("link", { name: "Download CV (PDF)" }),
+    ).toHaveAttribute("href", "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf");
   });
 
   it("opens the mobile menu on hamburger click and closes it when a link is clicked", async () => {
@@ -50,56 +71,124 @@ describe("Navbar", () => {
     expect(screen.getAllByRole("link", { name: "Proyectos" })).toHaveLength(1);
   });
 
-  describe("language toggle", () => {
-    // Post-migration, the EN/ES indicator, the nav links, and the "Disponible"
-    // badge are all driven by next-intl, whose locale is resolved server-side
-    // from a cookie (see i18n/request.ts). A unit test renders once with a
-    // fixed locale and no real Next.js server, so it cannot observe a click
-    // actually flipping that locale — there's nothing here to re-run the
-    // server and hand down new messages. The full flip is verified for real,
-    // against a real server, in e2e/language-toggle.spec.ts.
+  describe("active-section indicator", () => {
+    // The global IntersectionObserver mock in vitest.setup.ts never fires.
+    // Here we keep the callback so a test can say "this section is now in
+    // the middle of the viewport".
+    let fire: (target: Element, isIntersecting: boolean) => void;
+    const sections: HTMLElement[] = [];
+    // Restored by hand: vi.unstubAllGlobals() would also wipe the setup-file
+    // mock, and every later test that renders Navbar needs it.
+    const setupObserver = globalThis.IntersectionObserver;
+
+    beforeEach(() => {
+      vi.stubGlobal(
+        "IntersectionObserver",
+        class {
+          constructor(callback: IntersectionObserverCallback) {
+            fire = (target, isIntersecting) =>
+              callback(
+                [{ target, isIntersecting } as IntersectionObserverEntry],
+                this as unknown as IntersectionObserver,
+              );
+          }
+          observe = vi.fn();
+          disconnect = vi.fn();
+        },
+      );
+      for (const id of ["sobre-mi", "proyectos"]) {
+        const section = document.createElement("section");
+        section.id = id;
+        document.body.append(section);
+        sections.push(section);
+      }
+    });
+
+    afterEach(() => {
+      sections.splice(0).forEach((section) => section.remove());
+      vi.stubGlobal("IntersectionObserver", setupObserver);
+    });
+
+    it("marks the link of the section in view as the current location", () => {
+      renderNavbar();
+      const projects = screen.getByRole("link", { name: "Proyectos" });
+      expect(projects).not.toHaveAttribute("aria-current");
+
+      act(() => fire(sections[1], true));
+
+      expect(projects).toHaveAttribute("aria-current", "location");
+      expect(
+        screen.getByRole("link", { name: "Sobre mí" }),
+      ).not.toHaveAttribute("aria-current");
+    });
+
+    it("clears it when that section leaves the viewport", () => {
+      renderNavbar();
+      act(() => fire(sections[1], true));
+      act(() => fire(sections[1], false));
+
+      expect(
+        screen.getByRole("link", { name: "Proyectos" }),
+      ).not.toHaveAttribute("aria-current");
+    });
+  });
+
+  describe("language segmented control", () => {
+    // Post-migration, the locale is resolved server-side from a cookie (see
+    // i18n/request.ts). A unit test renders once with a fixed locale and no
+    // real Next.js server, so it cannot observe a click actually flipping
+    // the page — that's verified for real in e2e/language-toggle.spec.ts.
     //
-    // What a unit test CAN still verify: the indicator matches whatever
-    // locale it was rendered with, and clicking it calls the next-intl
-    // Server Action with the correct next locale.
+    // What a unit test CAN verify: the pressed button matches the locale it
+    // was rendered with, and clicking the other one calls the next-intl
+    // Server Action with that locale.
+    const option = (name: "ES" | "EN") =>
+      within(screen.getByRole("group", { name: /idioma|language/i })).getByRole(
+        "button",
+        { name },
+      );
+
     beforeEach(() => {
       setLocaleMock.mockClear();
     });
 
-    it("shows EN when rendered in Spanish", () => {
+    it("presses ES when rendered in Spanish", () => {
       renderNavbar("es");
-      expect(
-        screen.getByRole("button", { name: /switch language/i }),
-      ).toHaveTextContent("EN");
+      expect(option("ES")).toHaveAttribute("aria-pressed", "true");
+      expect(option("EN")).toHaveAttribute("aria-pressed", "false");
     });
 
-    it("shows ES when rendered in English", () => {
+    it("presses EN when rendered in English", () => {
       renderNavbar("en");
-      expect(
-        screen.getByRole("button", { name: /switch language/i }),
-      ).toHaveTextContent("ES");
+      expect(option("EN")).toHaveAttribute("aria-pressed", "true");
+      expect(option("ES")).toHaveAttribute("aria-pressed", "false");
     });
 
-    it("calls setLocale with 'en' when toggled from Spanish", async () => {
+    it("calls setLocale with 'en' when EN is clicked from Spanish", async () => {
       const user = userEvent.setup();
       renderNavbar("es");
 
-      await user.click(
-        screen.getByRole("button", { name: /switch language/i }),
-      );
+      await user.click(option("EN"));
 
       expect(setLocaleMock).toHaveBeenCalledExactlyOnceWith("en");
     });
 
-    it("calls setLocale with 'es' when toggled from English", async () => {
+    it("calls setLocale with 'es' when ES is clicked from English", async () => {
       const user = userEvent.setup();
       renderNavbar("en");
 
-      await user.click(
-        screen.getByRole("button", { name: /switch language/i }),
-      );
+      await user.click(option("ES"));
 
       expect(setLocaleMock).toHaveBeenCalledExactlyOnceWith("es");
+    });
+
+    it("does nothing when the already-active language is clicked", async () => {
+      const user = userEvent.setup();
+      renderNavbar("es");
+
+      await user.click(option("ES"));
+
+      expect(setLocaleMock).not.toHaveBeenCalled();
     });
   });
 });

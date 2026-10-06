@@ -16,6 +16,13 @@ export async function gotoHydrated(page: Page) {
   );
 }
 
+/** One button of the navbar's ES / EN segmented control. */
+export function languageOption(page: Page, name: "ES" | "EN") {
+  return page
+    .getByRole("group", { name: /idioma|language/i })
+    .getByRole("button", { name, exact: true });
+}
+
 export interface ContactRequest {
   name: string;
   email: string;
