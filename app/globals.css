@@ -33,9 +33,35 @@
 
   --radius-card: 12px;
   --radius-pill: 9999px;
+
+  /* Motion: one curve, two durations. ease-standard → `ease-standard`
+     utility; the animations → `animate-enter` / `animate-caret`. */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-enter: enter var(--duration-base) var(--ease-standard) both;
+  --animate-caret: caret 1s steps(1) infinite;
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {
+  /* Tailwind v4 has no duration namespace in @theme, so these live here.
+     Use as duration-(--duration-fast) or var(--duration-base). */
+  :root {
+    --duration-fast: 220ms;
+    --duration-base: 300ms;
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
@@ -72,6 +98,22 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+  }
+
+  /* CSS half of reduced motion (framer's half is MotionConfig in the
+     layout). 0.01ms instead of 0 so animationend/transitionend still fire. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
@@ -178,7 +220,118 @@
   }
 
   .skip-link:focus {
-    @apply not-sr-only fixed top-4 left-4 z-[100] bg-accent text-on-accent font-mono font-medium text-sm px-6 py-3 rounded-lg;
+    @apply not-sr-only fixed top-4 left-4 z-100 bg-accent text-on-accent font-mono font-medium text-sm px-6 py-3 rounded-lg;
+  }
+
+  /* ── Mockup base classes ──────────────────────────────────────────────
+     Modifiers compose with their base (`tag tag-accent`) because Tailwind v4
+     can't @apply a class declared in @layer components. */
+
+  /* Mono label above a heading. */
+  .kicker {
+    @apply font-mono text-[12px] uppercase tracking-[0.14em] text-text-muted;
+  }
+
+  /* Small mono label. Neutral by default. */
+  .tag {
+    @apply inline-flex items-center gap-1 font-mono text-[11px] leading-none px-2 py-1 rounded-md border;
+    @apply bg-bg-secondary border-transparent text-text-secondary;
+  }
+
+  .tag-accent {
+    @apply bg-accent-dim border-accent/30 text-accent;
+  }
+
+  .tag-outline {
+    @apply bg-transparent border-border-hover;
+  }
+
+  /* Toggleable chip for filtering lists. State lives in aria-pressed so the
+     style can't drift from what screen readers announce. */
+  .filter {
+    @apply inline-flex items-center min-h-11 px-4 rounded-full border border-border font-mono text-xs text-text-secondary;
+    @apply transition-colors duration-(--duration-fast) ease-standard;
+  }
+
+  .filter:hover {
+    @apply border-border-hover text-text-primary;
+  }
+
+  .filter[aria-pressed="true"] {
+    @apply bg-accent-dim border-accent text-accent;
+  }
+
+  /* Segmented control (e.g. ES / EN): a .seg wrapper of buttons; the active
+     one carries aria-pressed="true". */
+  .seg {
+    @apply inline-flex p-0.5 rounded-lg border border-border;
+  }
+
+  .seg > button {
+    @apply inline-flex items-center justify-center min-h-11 min-w-11 px-3 rounded-md font-mono text-xs text-text-secondary;
+    @apply transition-colors duration-(--duration-fast) ease-standard;
+  }
+
+  .seg > button:hover {
+    @apply text-text-primary;
+  }
+
+  .seg > button[aria-pressed="true"] {
+    @apply bg-accent text-on-accent;
+  }
+
+  /* Horizontal rule that fades out over its last 48px on each side. */
+  .hr {
+    @apply h-px border-0 bg-border;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 48px,
+      #000 calc(100% - 48px),
+      transparent
+    );
+  }
+
+  /* Code block: .code > .code-header (file name + version) + .code-body. */
+  .code {
+    @apply bg-bg-card border border-border rounded-[14px] overflow-hidden font-mono text-sm;
+  }
+
+  .code-header {
+    @apply flex items-center justify-between gap-4 px-4 py-2 border-b border-border text-xs text-text-muted;
+  }
+
+  .code-body {
+    @apply p-4 overflow-x-auto leading-relaxed text-text-secondary;
+  }
+
+  /* 92px duotone avatar: grayscale photo + accent in soft-light. */
+  .avatar {
+    @apply relative size-[92px] shrink-0 rounded-full overflow-hidden;
+  }
+
+  .avatar img {
+    @apply size-full object-cover grayscale;
+  }
+
+  .avatar::after {
+    content: "";
+    @apply absolute inset-0 bg-accent mix-blend-soft-light pointer-events-none;
+  }
+
+  /* Convergence motif: four strokes resolving into one node. The SVG paths
+     get no fill/stroke of their own; this class owns the look. */
+  .converge {
+    @apply pointer-events-none;
+    fill: none;
+    stroke: var(--color-brand);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  .converge .converge-node {
+    fill: var(--color-accent);
+    stroke: none;
   }
 }
 
