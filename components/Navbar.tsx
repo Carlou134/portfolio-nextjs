@@ -28,8 +28,8 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { labelKey: "linkProjects", href: "#proyectos" },
     { labelKey: "linkStack", href: "#stack" },
+    { labelKey: "linkProjects", href: "#proyectos" },
     { labelKey: "linkExperience", href: "#experiencia" },
     { labelKey: "linkContact", href: "#contacto" },
   ] as const;
@@ -48,7 +48,7 @@ export default function Navbar() {
     >
       <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
         <a
-          href="#"
+          href="#inicio"
           className="inline-flex items-center min-h-11 font-mono font-medium text-text-primary text-lg"
         >
           cfvasquez<span className="text-accent">.</span>dev

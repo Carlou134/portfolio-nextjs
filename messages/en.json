@@ -57,8 +57,8 @@
     "connectionError": "Connection error. Please try again."
   },
   "Footer": {
-    "location": "cfvasquez · Lima, Peru",
-    "builtWith": "Built with Next.js + Tailwind + Framer Motion"
+    "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Peru",
+    "builtWith": "Hand-built · no template · dark mode by default"
   },
   "About": {
     "sectionLabel": "About me",

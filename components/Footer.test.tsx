@@ -17,30 +17,26 @@ function renderFooter(locale: "es" | "en") {
   );
 }
 
+const year = new Date().getFullYear();
+
 describe("Footer", () => {
-  it("renders the Spanish location and built-with strings", () => {
+  it("renders the Spanish copyright and tagline", () => {
     renderFooter("es");
     expect(
-      screen.getByText(new RegExp("cfvasquez · Lima, Perú")),
+      screen.getByText(`© ${year} Carlos Vásquez Rodriguez · Lima, Perú`),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Construido con Next.js + Tailwind + Framer Motion"),
+      screen.getByText("Hecho a mano · sin plantilla · dark mode por defecto"),
     ).toBeInTheDocument();
   });
 
-  it("renders the English location and built-with strings", () => {
+  it("renders the English copyright and tagline", () => {
     renderFooter("en");
     expect(
-      screen.getByText(new RegExp("cfvasquez · Lima, Peru")),
+      screen.getByText(`© ${year} Carlos Vásquez Rodriguez · Lima, Peru`),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Built with Next.js + Tailwind + Framer Motion"),
+      screen.getByText("Hand-built · no template · dark mode by default"),
     ).toBeInTheDocument();
-  });
-
-  it("appends the current year next to the location", () => {
-    renderFooter("es");
-    const year = new Date().getFullYear().toString();
-    expect(screen.getByText(new RegExp(year))).toBeInTheDocument();
   });
 });

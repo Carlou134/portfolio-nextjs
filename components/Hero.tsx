@@ -42,7 +42,10 @@ export default function Hero() {
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
 
   return (
-    <section className="section min-h-screen flex items-center relative">
+    <section
+      id="inicio"
+      className="section min-h-screen flex items-center relative"
+    >
       <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full relative z-10">
