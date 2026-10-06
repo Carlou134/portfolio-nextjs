@@ -39,50 +39,59 @@ function StackedSegments({ text }: { text: string }) {
   ));
 }
 
-function ConvergeMotif({ label }: { label: string }) {
+// Pure decoration: it points at the meta line, which carries the actual
+// information, so assistive tech skips it.
+function ConvergeMotif() {
   return (
+    // viewBox cropped right after the halo so the node sits flush against
+    // whatever follows the motif.
     <svg
-      className="converge max-w-85"
-      viewBox="0 0 320 84"
-      role="img"
-      aria-label={label}
+      className="converge w-24 shrink-0"
+      viewBox="0 0 260 84"
+      aria-hidden="true"
+      focusable="false"
     >
       <path className="ln" d="M4 12 C 120 12, 170 42, 246 42" />
       <path className="ln" d="M4 32 C 110 32, 168 42, 246 42" />
       <path className="ln ln-soft" d="M4 52 C 110 52, 168 42, 246 42" />
       <path className="ln ln-soft" d="M4 72 C 120 72, 170 42, 246 42" />
-      <circle className="halo" cx="246" cy="42" r="11" />
-      <circle className="node" cx="246" cy="42" r="3.5" />
+      {/* Node and halo are larger than the mockup's (3.5 / 11) because the
+          motif now renders ~96px wide; at mockup size the node was ~1px. */}
+      <circle className="halo" cx="244" cy="42" r="14" />
+      <circle className="node" cx="244" cy="42" r="7" />
     </svg>
   );
 }
 
 // Static on purpose: a recruiter scans the hero in seconds and won't type
-// commands, so the facts are shown, not hidden behind an input.
+// commands, so the facts are shown, not hidden behind an input. It only
+// carries proof that appears nowhere else in the hero — location and
+// availability live in the kicker and the meta line.
 function ProfileTerminal() {
   const t = useTranslations("Hero.terminal");
   const titleId = useId();
   const lines = [
-    { command: "whoami", output: t("whoami") },
-    { command: "stack --core", output: t("stack") },
-    { command: "cat estado.txt", output: t("status") },
+    { command: t("thesisCommand"), output: t("thesis") },
+    { command: t("nowCommand"), output: t("now") },
   ];
 
   return (
     <figure
-      className="card p-0 overflow-hidden self-center"
+      className="card p-0 overflow-hidden md:mt-1"
       aria-labelledby={titleId}
     >
       <figcaption className="flex items-center gap-2 px-4 py-3 border-b border-border">
-        <span className="w-3 h-3 rounded-full bg-error/70" aria-hidden="true" />
+        {/* Mockup's window dots: two neutral, one accent — no colors the
+            rest of the page doesn't use. */}
         <span
-          className="w-3 h-3 rounded-full bg-warning/70"
+          className="size-2.5 rounded-full bg-text-muted/40"
           aria-hidden="true"
         />
         <span
-          className="w-3 h-3 rounded-full bg-success/70"
+          className="size-2.5 rounded-full bg-text-muted/40"
           aria-hidden="true"
         />
+        <span className="size-2.5 rounded-full bg-accent" aria-hidden="true" />
         <span id={titleId} className="ml-2 font-mono text-xs text-text-muted">
           perfil.sh
         </span>
@@ -124,129 +133,132 @@ export default function Hero() {
     >
       <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full relative z-10">
-        {/* Left column */}
-        <div className="flex flex-col justify-center gap-6">
-          <div className="flex items-center gap-5 md:gap-7">
-            {/* Same framing as the About photo: square, top-anchored so the
+      <div className="relative z-10 w-full flex flex-col gap-6">
+        {/* Identity spans the full width, above both columns, so the
+            headline and the terminal can start on the same line. */}
+        <div className="flex items-center gap-5 md:gap-7">
+          {/* Same framing as the About photo: square, top-anchored so the
                 face and shoulders fill it, accent hairline on top. */}
-            <div className="relative shrink-0 size-32 md:size-44">
-              <div className="relative size-full rounded-xl overflow-hidden">
-                <Image
-                  src="/Foto-Linkedin.jpeg"
-                  alt={t("photoAlt")}
-                  fill
-                  sizes="(min-width: 768px) 176px, 128px"
-                  loading="eager"
-                  className="object-cover object-top"
-                />
-              </div>
-              <div
-                className="absolute inset-0 rounded-xl border-2 border-brand/45 pointer-events-none"
-                aria-hidden="true"
+          <div className="relative shrink-0 size-32 md:size-44">
+            <div className="relative size-full rounded-xl overflow-hidden">
+              <Image
+                src="/Foto-Linkedin.jpeg"
+                alt={t("photoAlt")}
+                fill
+                sizes="(min-width: 768px) 176px, 128px"
+                loading="eager"
+                className="object-cover object-top"
               />
-              {/* Echoes the meta line's "open to offers". */}
-              <div
-                className="absolute -bottom-2 -right-2 flex items-center justify-center size-5 rounded-full bg-bg-primary"
-                aria-hidden="true"
-              >
-                <div className="size-3 rounded-full bg-success animate-pulse" />
-              </div>
             </div>
-
-            <div className="flex flex-col gap-2 min-w-0">
-              {/* A proper name isn't translated, so it isn't a message. */}
-              <motion.p
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                custom={0}
-                className="text-2xl md:text-3xl font-semibold tracking-tight text-text-primary"
-              >
-                Carlos Vásquez
-              </motion.p>
-
-              <motion.p
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                custom={1}
-                className="kicker text-[13px] md:text-sm"
-              >
-                <StackedSegments text={t("kicker")} />
-              </motion.p>
+            <div
+              className="absolute inset-0 rounded-xl border-2 border-brand/45 pointer-events-none"
+              aria-hidden="true"
+            />
+            {/* Echoes the meta line's "open to offers". */}
+            <div
+              className="absolute -bottom-2 -right-2 flex items-center justify-center size-5 rounded-full bg-bg-primary"
+              aria-hidden="true"
+            >
+              <div className="size-3 rounded-full bg-success animate-pulse" />
             </div>
           </div>
 
-          {/* Not animated: the h1 is the LCP element, and fading it in
-              would delay the metric. */}
-          <h1 className="font-sans font-medium leading-tight text-[clamp(2rem,5vw,2.625rem)]">
-            {t("headline")}
-          </h1>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={2}
-            className="text-text-secondary text-[17px] leading-[1.6]"
-          >
-            {t("subtitle")}
-          </motion.p>
-
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={3}
-            className="flex gap-4 flex-wrap items-center"
-          >
-            <a href="#proyectos" className="btn-primary">
-              {t("viewProjects")} <span aria-hidden="true">↓</span>
-            </a>
-
-            <a
-              href={cvFileByLocale[locale]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary"
+          <div className="flex flex-col gap-2 min-w-0">
+            {/* A proper name isn't translated, so it isn't a message. */}
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={0}
+              className="text-2xl md:text-3xl font-semibold tracking-tight text-text-primary"
             >
-              {t("downloadCv")}
-            </a>
+              Carlos Vásquez
+            </motion.p>
 
-            <Link
-              href="https://github.com/Carlou134"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center min-h-11 min-w-11 p-3 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
-              aria-label="GitHub"
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={1}
+              className="kicker text-[13px] md:text-sm"
             >
-              <GithubIcon />
-            </Link>
-          </motion.div>
-
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={4}
-          >
-            <ConvergeMotif label={t("convergeAlt")} />
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={5}
-            className="font-mono text-xs text-text-muted"
-          >
-            {t("meta")}
-          </motion.p>
+              <StackedSegments text={t("kicker")} />
+            </motion.p>
+          </div>
         </div>
 
-        {/* Right column — static profile terminal */}
-        <ProfileTerminal />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          <div className="flex flex-col gap-6">
+            {/* Not animated: the h1 is the LCP element, and fading it in
+              would delay the metric. */}
+            <h1 className="font-sans font-medium leading-tight text-[clamp(2rem,5vw,2.625rem)]">
+              {t("headline")}
+            </h1>
+
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={2}
+              className="text-text-secondary text-[17px] leading-[1.6]"
+            >
+              {t("subtitle")}
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={3}
+              // Phones: primary CTA full width, then CV + GitHub sharing a
+              // row — otherwise GitHub wrapped alone onto a third line.
+              className="grid grid-cols-[1fr_auto] gap-3 sm:flex sm:gap-4 sm:items-center"
+            >
+              <a
+                href="#proyectos"
+                className="btn-primary col-span-2 inline-flex items-center justify-center gap-2"
+              >
+                {t("viewProjects")} <span aria-hidden="true">↓</span>
+              </a>
+
+              <a
+                href={cvFileByLocale[locale]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary inline-flex items-center justify-center"
+              >
+                {t("downloadCv")}
+              </a>
+
+              <Link
+                href="https://github.com/Carlou134"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center min-h-11 min-w-11 p-3 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
+                aria-label="GitHub"
+              >
+                <GithubIcon />
+              </Link>
+            </motion.div>
+
+            {/* The motif's node points at the meta line: the drawing marks
+              where everything converges instead of floating on its own. */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={4}
+              className="flex items-center gap-3"
+            >
+              <ConvergeMotif />
+              <p className="font-mono text-xs text-text-muted">{t("meta")}</p>
+            </motion.div>
+          </div>
+
+          {/* Right column — static profile terminal, top-aligned with the
+            headline so the two read as one composition. */}
+          <ProfileTerminal />
+        </div>
       </div>
     </section>
   );

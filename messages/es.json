@@ -23,13 +23,13 @@
     "subtitle": "Más de 2 años en el ecosistema .NET, React/Next.js y Kotlin: diseño de APIs REST, arquitecturas limpias y hexagonales, CI/CD e IA aplicada. Bachiller en Ingeniería de Sistemas (UPC, Quinto Superior).",
     "viewProjects": "Ver proyectos",
     "downloadCv": "Descargar CV",
-    "meta": "Disponible para propuestas · Lima, UTC−5 · inglés B2",
+    "meta": "Disponible para propuestas · UTC−5 · inglés B2",
     "photoAlt": "Foto de perfil de Carlos Vásquez",
-    "convergeAlt": "Cuatro trazos de origen distinto que convergen en un punto: .NET, React, Kotlin y datos resueltos con un mismo criterio de arquitectura.",
     "terminal": {
-      "whoami": "carlos vásquez · lima, perú · utc−5",
-      "stack": "c# / .net · next.js · kotlin · sql",
-      "status": "abierto a propuestas"
+      "thesisCommand": "cat tesis.txt",
+      "thesis": "98.9% recall en alertas maliciosas · SOC + ML",
+      "nowCommand": "cat ahora.txt",
+      "now": "arquitectura hexagonal en producción · Zoluxiones"
     }
   },
   "Projects": {

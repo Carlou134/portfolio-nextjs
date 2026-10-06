@@ -23,13 +23,13 @@
     "subtitle": "2+ years across the .NET, React/Next.js and Kotlin ecosystems: REST API design, clean and hexagonal architectures, CI/CD and applied AI. BSc in Information Systems Engineering (UPC, top 20%).",
     "viewProjects": "See projects",
     "downloadCv": "Download CV",
-    "meta": "Open to offers · Lima, UTC−5 · English B2",
+    "meta": "Open to offers · UTC−5 · English B2",
     "photoAlt": "Profile photo of Carlos Vásquez",
-    "convergeAlt": "Four strokes from different origins converging on one point: .NET, React, Kotlin and data resolved with a single architectural criterion.",
     "terminal": {
-      "whoami": "carlos vásquez · lima, perú · utc−5",
-      "stack": "c# / .net · next.js · kotlin · sql",
-      "status": "open to offers"
+      "thesisCommand": "cat thesis.txt",
+      "thesis": "98.9% recall on malicious alerts · SOC + ML",
+      "nowCommand": "cat now.txt",
+      "now": "hexagonal architecture in production · Zoluxiones"
     }
   },
   "Projects": {

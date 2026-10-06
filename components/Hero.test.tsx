@@ -38,7 +38,7 @@ describe("Hero", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Disponible para propuestas · Lima, UTC−5 · inglés B2"),
+      screen.getByText("Disponible para propuestas · UTC−5 · inglés B2"),
     ).toBeInTheDocument();
   });
 
@@ -53,7 +53,7 @@ describe("Hero", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Open to offers · Lima, UTC−5 · English B2"),
+      screen.getByText("Open to offers · UTC−5 · English B2"),
     ).toBeInTheDocument();
   });
 
@@ -69,11 +69,10 @@ describe("Hero", () => {
     ).toBeInTheDocument();
   });
 
-  it("describes the convergence motif to assistive tech", () => {
+  it("keeps the decorative motif out of the accessibility tree", () => {
     renderHero("es");
-    expect(
-      screen.getByRole("img", { name: /cuatro trazos de origen distinto/i }),
-    ).toBeInTheDocument();
+    // The photo is the hero's only image; the motif is aria-hidden.
+    expect(screen.getAllByRole("img")).toHaveLength(1);
   });
 
   it("links the projects CTA to the projects section", () => {
@@ -107,8 +106,11 @@ describe("Hero", () => {
     renderHero("en");
 
     const terminal = screen.getByRole("figure", { name: "perfil.sh" });
-    expect(terminal).toHaveTextContent("whoami");
-    expect(terminal).toHaveTextContent("open to offers");
+    expect(terminal).toHaveTextContent("cat thesis.txt");
+    expect(terminal).toHaveTextContent("98.9% recall on malicious alerts");
+    expect(terminal).toHaveTextContent("cat now.txt");
+    // Only facts found nowhere else in the hero: no location, no availability.
+    expect(terminal).not.toHaveTextContent(/lima|open to offers/i);
     // Static: nothing to type into.
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
