@@ -75,9 +75,9 @@ export default function Terminal() {
         onClick={() => inputRef.current?.focus()}
       >
         <div className="flex items-center gap-2 mb-4">
-          <span className="w-3 h-3 rounded-full bg-red-500/70" />
-          <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
-          <span className="w-3 h-3 rounded-full bg-green-500/70" />
+          <span className="w-3 h-3 rounded-full bg-error/70" />
+          <span className="w-3 h-3 rounded-full bg-warning/70" />
+          <span className="w-3 h-3 rounded-full bg-success/70" />
           <span className="ml-2 font-mono text-xs text-text-muted">
             {t("prompt")}:~
           </span>

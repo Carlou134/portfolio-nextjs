@@ -1,21 +1,32 @@
 @import "tailwindcss";
 
+/* Contrast ratios below are WCAG, measured against bg-primary / bg-card /
+   bg-hover. Text tokens must stay >= 4.5:1 on all three. */
 @theme {
-  --color-bg-primary: #0a0f1e;
-  --color-bg-secondary: #0f1629;
-  --color-bg-card: #111827;
-  --color-bg-hover: #1a2236;
+  --color-bg-primary: #161826;
+  --color-bg-secondary: #1d1f2c; /* midpoint bg-primary/bg-card: inputs, tags */
+  --color-bg-card: #232532;
+  --color-bg-hover: #272936; /* bg-card + 2% text */
 
-  --color-accent: #818cf8;
-  --color-accent-dim: #818cf815;
+  /* accent-500: text and fills. brand: lines, borders, glow ONLY — it's
+     3.9:1 on bg-primary, so never use it for text. */
+  --color-accent: #8b8cf5; /* 6.0 / 5.2 / 4.9 */
+  --color-accent-dim: #8b8cf50d; /* 5%: badge-accent text still >= 4.5 */
+  --color-on-accent: #0a0c12; /* text on accent fills: 6.7 */
+  --color-brand: #6366f1;
 
-  --color-border: #1f2937;
-  --color-border-hover: #374151;
-  --color-border-accent: #818cf830;
+  --color-border: #e9e9ed1a; /* hairline: text at 10% */
+  --color-border-hover: #e9e9ed2e; /* text at 18% */
 
-  --color-text-primary: #f9fafb;
-  --color-text-secondary: #9ca3af;
-  --color-text-muted: #4b5563;
+  --color-text-primary: #e9e9ed; /* 14.5 / 12.6 / 11.8 */
+  --color-text-secondary: #aeaeb5; /* text at 72%: 8.0 / 6.9 / 6.5 */
+  /* The mockup's 55% alpha is 4.48 on bg-card — fails. 60% passes everywhere. */
+  --color-text-muted: #95959d; /* text at 60%: 5.9 / 5.1 / 4.9 */
+
+  --color-success: #34d399;
+  --color-warning: #ffc857;
+  --color-error: #ff6b6b;
+  --color-info: #7dd3fc;
 
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
@@ -109,7 +120,7 @@
 
   .badge-amber {
     @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
-    @apply bg-amber-900/20 border-amber-500/40 text-amber-400;
+    @apply bg-warning/10 border-warning/40 text-warning;
   }
 
   .stack-tag {
@@ -121,7 +132,7 @@
   }
 
   .btn-primary {
-    @apply bg-accent text-bg-primary font-mono font-medium text-sm px-6 py-3 rounded-lg transition-all duration-200 select-none;
+    @apply bg-accent text-on-accent font-mono font-medium text-sm px-6 py-3 rounded-lg transition-all duration-200 select-none;
   }
 
   .btn-primary:hover {
@@ -167,7 +178,7 @@
   }
 
   .skip-link:focus {
-    @apply not-sr-only fixed top-4 left-4 z-[100] bg-accent text-bg-primary font-mono font-medium text-sm px-6 py-3 rounded-lg;
+    @apply not-sr-only fixed top-4 left-4 z-[100] bg-accent text-on-accent font-mono font-medium text-sm px-6 py-3 rounded-lg;
   }
 }
 
@@ -182,6 +193,6 @@
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px var(--color-accent-dim);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-brand) 15%, transparent);
   }
 }

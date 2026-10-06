@@ -183,10 +183,10 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="w-full mt-6 p-4 rounded-lg bg-accent/10 border border-accent/30 flex items-center gap-3"
+                  className="w-full mt-6 p-4 rounded-lg bg-success/10 border border-success/30 flex items-center gap-3"
                 >
-                  <CheckCircle size={18} className="text-accent" />
-                  <span className="font-mono text-sm text-accent">
+                  <CheckCircle size={18} className="text-success" />
+                  <span className="font-mono text-sm text-success">
                     {t("success")}
                   </span>
                 </motion.div>
@@ -215,9 +215,9 @@ export default function Contact() {
 
             <div role="alert">
               {status === "error" && (
-                <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
-                  <AlertCircle size={14} className="text-red-400" />
-                  <span className="text-xs text-red-400 font-mono">
+                <div className="mt-3 p-3 rounded-lg bg-error/10 border border-error/30 flex items-center gap-2">
+                  <AlertCircle size={14} className="text-error" />
+                  <span className="text-xs text-error font-mono">
                     {errorMessage}
                   </span>
                 </div>
