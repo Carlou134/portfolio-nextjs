@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useId } from "react";
+import { useId } from "react";
 import { motion, type Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,15 +8,17 @@ import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
 import { cvFileByLocale } from "@/lib/cv";
 
+// Same entrance as the `enter` keyframes in globals.css: fade + 6px,
+// --duration-base (300ms) on the standard curve.
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 6 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     transition: {
-      delay: i * 0.15,
-      duration: 0.6,
-      ease: "easeOut" as const,
+      delay: i * 0.1,
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
     },
   }),
 };
@@ -27,92 +29,113 @@ const GithubIcon = () => (
   </svg>
 );
 
-// "Role · City, Country" never fits one line beside the photo, and wrapping
-// it left a dangling "·". So each segment gets its own line; the separator
-// stays for screen readers (and textContent stays identical to the message).
-function StackedSegments({ text }: { text: string }) {
-  return text.split(" · ").map((segment, i) => (
-    <Fragment key={segment}>
-      {i > 0 && <span className="sr-only"> · </span>}
-      <span className="block">{segment}</span>
-    </Fragment>
-  ));
+// Availability is the first segment of the meta line; it reads as the
+// status, the rest (timezone, English level) as secondary detail. The dot
+// repeats it visually, so the status never depends on color alone.
+function Availability({ text }: { text: string }) {
+  const [status, ...rest] = text.split(" · ");
+  return (
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[13px] text-text-primary">
+      <span
+        className="size-2 rounded-full bg-accent ring-[3px] ring-accent/25"
+        aria-hidden="true"
+      />
+      {status}
+      {rest.length > 0 && (
+        // Own line on purpose: wrapping naturally left a dangling "·" at
+        // the start of the second line. The separator stays for screen
+        // readers, so textContent still equals the message.
+        <span className="basis-full pl-4 text-text-muted">
+          <span className="sr-only"> · </span>
+          {rest.join(" · ")}
+        </span>
+      )}
+    </p>
+  );
 }
 
-// Pure decoration: it points at the meta line, which carries the actual
-// information, so assistive tech skips it.
-function ConvergeMotif() {
+function ProfileCard() {
+  const t = useTranslations("Hero");
+
   return (
-    // viewBox cropped right after the halo so the node sits flush against
-    // whatever follows the motif.
-    <svg
-      className="converge w-24 shrink-0"
-      viewBox="0 0 260 84"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path className="ln" d="M4 12 C 120 12, 170 42, 246 42" />
-      <path className="ln" d="M4 32 C 110 32, 168 42, 246 42" />
-      <path className="ln ln-soft" d="M4 52 C 110 52, 168 42, 246 42" />
-      <path className="ln ln-soft" d="M4 72 C 120 72, 170 42, 246 42" />
-      {/* Node and halo are larger than the mockup's (3.5 / 11) because the
-          motif now renders ~96px wide; at mockup size the node was ~1px. */}
-      <circle className="halo" cx="244" cy="42" r="14" />
-      <circle className="node" cx="244" cy="42" r="7" />
-    </svg>
+    // Photo beside the text from sm up, never wrapped below it: the
+    // availability line wraps inside its own <p> instead.
+    <div className="card flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+      {/* The photo's white backdrop was the brightest area on screen and
+          pulled focus from the headline: dim it slightly and edge it. */}
+      <div className="relative shrink-0 size-28 md:size-30 lg:size-34 rounded-xl overflow-hidden ring-1 ring-border brightness-90">
+        <Image
+          src="/Foto-Linkedin.jpeg"
+          alt={t("photoAlt")}
+          fill
+          sizes="136px"
+          loading="eager"
+          className="object-cover object-top"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2.5 min-w-0">
+        {/* A proper name isn't translated, so it isn't a message. */}
+        {/* Same weight as the h1 (500): heavier here inverted the hierarchy. */}
+        <p className="text-2xl font-medium tracking-tight text-text-primary">
+          Carlos Vásquez
+        </p>
+        <p className="kicker">{t("kicker")}</p>
+        <Availability text={t("meta")} />
+      </div>
+    </div>
   );
 }
 
 // Static on purpose: a recruiter scans the hero in seconds and won't type
-// commands, so the facts are shown, not hidden behind an input. It only
-// carries proof that appears nowhere else in the hero — location and
-// availability live in the kicker and the meta line.
+// commands. Each line carries a plain-language label so the shell framing
+// adds flavor without hiding what the fact is about.
 function ProfileTerminal() {
   const t = useTranslations("Hero.terminal");
   const titleId = useId();
   const lines = [
-    { command: t("thesisCommand"), output: t("thesis") },
-    { command: t("nowCommand"), output: t("now") },
+    {
+      label: t("thesisLabel"),
+      command: t("thesisCommand"),
+      output: t.rich("thesis", {
+        hl: (chunks) => (
+          <strong className="font-medium text-accent">{chunks}</strong>
+        ),
+      }),
+    },
+    { label: t("nowLabel"), command: t("nowCommand"), output: t("now") },
   ];
 
   return (
-    <figure
-      className="card p-0 overflow-hidden md:mt-1"
-      aria-labelledby={titleId}
-    >
+    <figure className="card p-0 overflow-hidden" aria-labelledby={titleId}>
       <figcaption className="flex items-center gap-2 px-4 py-3 border-b border-border">
-        {/* Mockup's window dots: two neutral, one accent — no colors the
-            rest of the page doesn't use. */}
-        <span
-          className="size-2.5 rounded-full bg-text-muted/40"
-          aria-hidden="true"
-        />
-        <span
-          className="size-2.5 rounded-full bg-text-muted/40"
-          aria-hidden="true"
-        />
-        <span className="size-2.5 rounded-full bg-accent" aria-hidden="true" />
+        {[0, 1, 2].map((dot) => (
+          <span
+            key={dot}
+            className="size-2.5 rounded-full bg-text-muted/40"
+            aria-hidden="true"
+          />
+        ))}
         <span id={titleId} className="ml-2 font-mono text-xs text-text-muted">
           perfil.sh
         </span>
       </figcaption>
 
-      <div className="p-5 font-mono text-sm leading-relaxed">
+      <div className="flex flex-col gap-5 p-5 lg:p-6 font-mono text-sm lg:text-[15px] leading-relaxed">
         {lines.map((line) => (
           <div key={line.command}>
+            <p className="mb-1 font-sans text-[13px] lg:text-sm text-text-secondary">
+              {line.label}
+            </p>
             <p>
-              <span className="text-accent">$</span>{" "}
+              <span className="text-accent" aria-hidden="true">
+                ${" "}
+              </span>
               <span className="text-text-primary">{line.command}</span>
             </p>
             <p className="text-text-secondary">{line.output}</p>
           </div>
         ))}
-        <p>
-          <span className="text-accent">$</span>{" "}
-          <span className="animate-caret text-text-primary" aria-hidden="true">
-            ▌
-          </span>
-        </p>
       </div>
     </figure>
   );
@@ -129,136 +152,93 @@ export default function Hero() {
   return (
     <section
       id="inicio"
-      className="section min-h-screen flex items-center relative"
+      // Fills the first screen: the hero is the whole first impression, so
+      // the next section only starts below the fold. pt-20 clears the fixed
+      // h-20 navbar; svh (not vh) so mobile browser chrome doesn't cut it.
+      className="section relative min-h-svh flex flex-col justify-center pt-20"
     >
       <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" />
 
-      <div className="relative z-10 w-full flex flex-col gap-6">
-        {/* Identity spans the full width, above both columns, so the
-            headline and the terminal can start on the same line. */}
-        <div className="flex items-center gap-5 md:gap-7">
-          {/* Same framing as the About photo: square, top-anchored so the
-                face and shoulders fill it, accent hairline on top. */}
-          <div className="relative shrink-0 size-32 md:size-44">
-            <div className="relative size-full rounded-xl overflow-hidden">
-              <Image
-                src="/Foto-Linkedin.jpeg"
-                alt={t("photoAlt")}
-                fill
-                sizes="(min-width: 768px) 176px, 128px"
-                loading="eager"
-                className="object-cover object-top"
-              />
-            </div>
-            <div
-              className="absolute inset-0 rounded-xl border-2 border-brand/45 pointer-events-none"
-              aria-hidden="true"
-            />
-            {/* Echoes the meta line's "open to offers". */}
-            <div
-              className="absolute -bottom-2 -right-2 flex items-center justify-center size-5 rounded-full bg-bg-primary"
-              aria-hidden="true"
-            >
-              <div className="size-3 rounded-full bg-success animate-pulse" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 min-w-0">
-            {/* A proper name isn't translated, so it isn't a message. */}
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={0}
-              className="text-2xl md:text-3xl font-semibold tracking-tight text-text-primary"
-            >
-              Carlos Vásquez
-            </motion.p>
-
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={1}
-              className="kicker text-[13px] md:text-sm"
-            >
-              <StackedSegments text={t("kicker")} />
-            </motion.p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          <div className="flex flex-col gap-6">
-            {/* Not animated: the h1 is the LCP element, and fading it in
+      {/* The headline opens the page; identity and proof sit in the right
+          column, centered against the left one so neither leaves a gap
+          below it when their heights differ. */}
+      {/* Two columns only from lg: below that each column is ~330px and the
+          headline crowds the profile card, so they stack instead. */}
+      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start lg:items-center">
+        <div className="flex flex-col gap-8 lg:gap-10">
+          {/* Not animated: the h1 is the LCP element, and fading it in
               would delay the metric. */}
-            <h1 className="font-sans font-medium leading-tight text-[clamp(2rem,5vw,2.625rem)]">
-              {t("headline")}
-            </h1>
+          {/* 42px (the guide's H1) up to laptop widths; from lg it scales
+              up to 48px. Capped there: at 56px the half-width column broke
+              it into 6 lines and the left column towered over the right. */}
+          <h1 className="font-sans font-medium leading-tight tracking-tight text-balance text-[clamp(2rem,5vw,2.625rem)] lg:text-[clamp(2.625rem,3vw,3rem)]">
+            {t("headline")}
+          </h1>
 
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={2}
-              className="text-text-secondary text-[17px] leading-[1.6]"
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0}
+            className="text-text-secondary text-[17px] lg:text-[19px] leading-[1.6] max-w-[56ch] text-pretty"
+          >
+            {t("subtitle")}
+          </motion.p>
+
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+            // Phones: primary CTA full width, then CV + GitHub sharing a
+            // row — otherwise GitHub wrapped alone onto a third line.
+            className="grid grid-cols-[1fr_auto] gap-3 sm:flex sm:items-stretch"
+          >
+            <a
+              href="#proyectos"
+              className="btn-primary col-span-2 inline-flex items-center justify-center gap-2"
             >
-              {t("subtitle")}
-            </motion.p>
+              {t("viewProjects")} <span aria-hidden="true">↓</span>
+            </a>
 
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={3}
-              // Phones: primary CTA full width, then CV + GitHub sharing a
-              // row — otherwise GitHub wrapped alone onto a third line.
-              className="grid grid-cols-[1fr_auto] gap-3 sm:flex sm:gap-4 sm:items-center"
+            <a
+              href={cvFileByLocale[locale]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary inline-flex items-center justify-center gap-2"
             >
-              <a
-                href="#proyectos"
-                className="btn-primary col-span-2 inline-flex items-center justify-center gap-2"
+              {t("downloadCv")}
+              <span
+                className="font-mono text-xs text-text-muted"
+                aria-hidden="true"
               >
-                {t("viewProjects")} <span aria-hidden="true">↓</span>
-              </a>
+                PDF
+              </span>
+            </a>
 
-              <a
-                href={cvFileByLocale[locale]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary inline-flex items-center justify-center"
-              >
-                {t("downloadCv")}
-              </a>
-
-              <Link
-                href="https://github.com/Carlou134"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center min-h-11 min-w-11 p-3 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
-                aria-label="GitHub"
-              >
-                <GithubIcon />
-              </Link>
-            </motion.div>
-
-            {/* The motif's node points at the meta line: the drawing marks
-              where everything converges instead of floating on its own. */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={4}
-              className="flex items-center gap-3"
+            <Link
+              href="https://github.com/Carlou134"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 px-4 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
+              aria-label="GitHub"
             >
-              <ConvergeMotif />
-              <p className="font-mono text-xs text-text-muted">{t("meta")}</p>
-            </motion.div>
-          </div>
-
-          {/* Right column — static profile terminal, top-aligned with the
-            headline so the two read as one composition. */}
-          <ProfileTerminal />
+              <GithubIcon />
+            </Link>
+          </motion.div>
         </div>
+
+        <motion.aside
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          aria-label={t("profileLabel")}
+          className="flex flex-col gap-5"
+        >
+          <ProfileCard />
+          <ProfileTerminal />
+        </motion.aside>
       </div>
     </section>
   );

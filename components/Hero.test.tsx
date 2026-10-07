@@ -18,10 +18,10 @@ function renderHero(locale: "es" | "en") {
   );
 }
 
-// The kicker renders each segment in its own <span> (one per line), so plain
-// getByText — which only reads an element's own text nodes — can't see it.
-// Match the paragraph's full text instead.
-const kicker = (text: string) =>
+// Some lines split their text across spans (the availability line puts the
+// timezone in a muted span), so plain getByText — which only reads an
+// element's own text nodes — can't see them. Match the paragraph's full text.
+const paragraph = (text: string) =>
   screen.getByText(
     (_, element) => element?.tagName === "P" && element.textContent === text,
   );
@@ -30,7 +30,7 @@ describe("Hero", () => {
   it("renders the Spanish kicker, headline and meta line", () => {
     renderHero("es");
 
-    expect(kicker("Full Stack Developer · Lima, Perú")).toBeInTheDocument();
+    expect(paragraph("Full Stack Developer · Lima, Perú")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
         level: 1,
@@ -38,14 +38,14 @@ describe("Hero", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Disponible para propuestas · UTC−5 · inglés B2"),
+      paragraph("Disponible para propuestas · UTC−5 · inglés B2"),
     ).toBeInTheDocument();
   });
 
   it("renders the English kicker, headline and meta line", () => {
     renderHero("en");
 
-    expect(kicker("Full Stack Developer · Lima, Peru")).toBeInTheDocument();
+    expect(paragraph("Full Stack Developer · Lima, Peru")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
         level: 1,
@@ -53,7 +53,7 @@ describe("Hero", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Open to offers · UTC−5 · English B2"),
+      paragraph("Open to offers · UTC−5 · English B2"),
     ).toBeInTheDocument();
   });
 
@@ -69,9 +69,8 @@ describe("Hero", () => {
     ).toBeInTheDocument();
   });
 
-  it("keeps the decorative motif out of the accessibility tree", () => {
+  it("renders the photo as the hero's only image", () => {
     renderHero("es");
-    // The photo is the hero's only image; the motif is aria-hidden.
     expect(screen.getAllByRole("img")).toHaveLength(1);
   });
 
@@ -106,8 +105,12 @@ describe("Hero", () => {
     renderHero("en");
 
     const terminal = screen.getByRole("figure", { name: "perfil.sh" });
+    expect(terminal).toHaveTextContent(
+      "Thesis (UPC) · alert detection with machine learning",
+    );
     expect(terminal).toHaveTextContent("cat thesis.txt");
     expect(terminal).toHaveTextContent("98.9% recall on malicious alerts");
+    expect(terminal).toHaveTextContent("Current work · Zoluxiones");
     expect(terminal).toHaveTextContent("cat now.txt");
     // Only facts found nowhere else in the hero: no location, no availability.
     expect(terminal).not.toHaveTextContent(/lima|open to offers/i);

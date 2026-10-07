@@ -25,11 +25,14 @@
     "downloadCv": "Download CV",
     "meta": "Open to offers · UTC−5 · English B2",
     "photoAlt": "Profile photo of Carlos Vásquez",
+    "profileLabel": "Profile",
     "terminal": {
+      "thesisLabel": "Thesis (UPC) · alert detection with machine learning",
       "thesisCommand": "cat thesis.txt",
-      "thesis": "98.9% recall on malicious alerts · SOC + ML",
+      "thesis": "<hl>98.9% recall</hl> on malicious alerts · SOC + ML",
+      "nowLabel": "Current work · Zoluxiones",
       "nowCommand": "cat now.txt",
-      "now": "hexagonal architecture in production · Zoluxiones"
+      "now": "hexagonal architecture in production"
     }
   },
   "Projects": {

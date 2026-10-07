@@ -282,8 +282,10 @@
     @apply text-text-primary;
   }
 
+  /* Tinted, not filled: a solid accent block here competed with the hero's
+     primary CTA, which should be the only filled accent on screen. */
   .seg > button[aria-pressed="true"] {
-    @apply bg-accent text-on-accent;
+    @apply bg-accent/15 text-accent;
   }
 
   /* Horizontal rule that fades out over its last 48px on each side. */
