@@ -118,8 +118,10 @@
 }
 
 @layer components {
+  /* 72px vertical per the style guide. py-24 (96px) stacked to ~190px
+     between sections and cut the hero off from what follows. */
   .section {
-    @apply py-24 px-6 max-w-6xl mx-auto;
+    @apply py-18 px-6 max-w-6xl mx-auto;
   }
 
   .section-label {
