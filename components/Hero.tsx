@@ -54,6 +54,25 @@ function Availability({ text }: { text: string }) {
   );
 }
 
+// "Role · City, Country". On one line when the card is wide enough (~18rem);
+// below that each part gets its own line instead of wrapping mid-way and
+// leaving the "·" dangling. The separator stays for screen readers, so
+// textContent always equals the message.
+function Kicker({ text }: { text: string }) {
+  const [role, ...rest] = text.split(" · ");
+  return (
+    <p className="kicker">
+      {role}
+      {rest.length > 0 && (
+        <>
+          <span className="sr-only @[18rem]:not-sr-only"> · </span>
+          <span className="block @[18rem]:inline">{rest.join(" · ")}</span>
+        </>
+      )}
+    </p>
+  );
+}
+
 function ProfileCard() {
   const t = useTranslations("Hero");
 
@@ -74,13 +93,16 @@ function ProfileCard() {
         />
       </div>
 
-      <div className="flex flex-col gap-2.5 min-w-0">
+      {/* A size container so the kicker can react to its own width.
+          flex-1 + self-stretch give it a real width: inline-size
+          containment would otherwise size it to zero. */}
+      <div className="@container flex flex-col justify-center gap-2.5 min-w-0 flex-1 self-stretch">
         {/* A proper name isn't translated, so it isn't a message. */}
         {/* Same weight as the h1 (500): heavier here inverted the hierarchy. */}
         <p className="text-2xl font-medium tracking-tight text-text-primary">
           Carlos Vásquez
         </p>
-        <p className="kicker">{t("kicker")}</p>
+        <Kicker text={t("kicker")} />
         <Availability text={t("meta")} />
       </div>
     </div>
@@ -155,7 +177,9 @@ export default function Hero() {
       // Fills the first screen: the hero is the whole first impression, so
       // the next section only starts below the fold. pt-20 clears the fixed
       // h-20 navbar; svh (not vh) so mobile browser chrome doesn't cut it.
-      className="section relative min-h-svh flex flex-col justify-center pt-20"
+      // Below lg the stacked content outgrows the screen, so centering adds
+      // no air: pt-28 leaves 32px between the navbar and the headline.
+      className="section relative min-h-svh flex flex-col justify-center pt-28 lg:pt-20"
     >
       <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" />
 

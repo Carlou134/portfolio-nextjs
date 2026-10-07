@@ -81,7 +81,10 @@ export default function Navbar() {
           cfvasquez<span className="text-accent">.</span>dev
         </a>
 
-        <ul className="hidden md:flex items-center gap-8">
+        {/* From lg, not md: at 768px the five links plus logo, CV and the
+            language toggle don't fit — "Sobre mí" wrapped and the toggle
+            was clipped off the right edge. */}
+        <ul className="hidden lg:flex items-center gap-8">
           {navLinks.map((item) => (
             <li key={item.id}>
               <a
@@ -130,7 +133,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="md:hidden inline-flex items-center justify-center min-h-11 min-w-11 -mr-2 text-text-primary"
+            className="lg:hidden inline-flex items-center justify-center min-h-11 min-w-11 -mr-2 text-text-primary"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={mobileOpen}
@@ -141,7 +144,7 @@ export default function Navbar() {
       </nav>
 
       {mobileOpen && (
-        <ul className="md:hidden flex flex-col px-6 pb-4 border-t border-border">
+        <ul className="lg:hidden flex flex-col px-6 pb-4 border-t border-border">
           {navLinks.map((item) => (
             <li key={item.id}>
               <Link
