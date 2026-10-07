@@ -133,6 +133,59 @@ describe("Navbar", () => {
     });
   });
 
+  describe("CV button while the hero's is on screen", () => {
+    let fire: (isIntersecting: boolean) => void;
+    let heroCv: Element;
+    const setupObserver = globalThis.IntersectionObserver;
+    const headerCv = () =>
+      screen.getByRole("link", { name: "Descargar CV (PDF)" });
+
+    beforeEach(() => {
+      vi.stubGlobal(
+        "IntersectionObserver",
+        class {
+          constructor(callback: IntersectionObserverCallback) {
+            // Only the hero-CV observer matters here; the section observer
+            // has no sections to watch in this block.
+            fire = (isIntersecting) =>
+              callback(
+                [
+                  {
+                    target: heroCv,
+                    isIntersecting,
+                  } as IntersectionObserverEntry,
+                ],
+                this as unknown as IntersectionObserver,
+              );
+          }
+          observe = vi.fn();
+          disconnect = vi.fn();
+        },
+      );
+      heroCv = document.createElement("a");
+      heroCv.id = "hero-cv";
+      document.body.append(heroCv);
+    });
+
+    afterEach(() => {
+      heroCv.remove();
+      vi.stubGlobal("IntersectionObserver", setupObserver);
+    });
+
+    it("hides the header CV while the hero's CV is in view", () => {
+      renderNavbar();
+      act(() => fire(true));
+      expect(headerCv()).toHaveClass("invisible");
+    });
+
+    it("shows it once the hero's CV scrolls away", () => {
+      renderNavbar();
+      act(() => fire(true));
+      act(() => fire(false));
+      expect(headerCv()).not.toHaveClass("invisible");
+    });
+  });
+
   describe("language segmented control", () => {
     // Post-migration, the locale is resolved server-side from a cookie (see
     // i18n/request.ts). A unit test renders once with a fixed locale and no

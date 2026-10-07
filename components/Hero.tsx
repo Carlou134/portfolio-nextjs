@@ -202,6 +202,9 @@ export default function Hero() {
             </a>
 
             <a
+              // The navbar watches this id to hide its own CV button while
+              // this one is on screen.
+              id="hero-cv"
               href={cvFileByLocale[locale]}
               target="_blank"
               rel="noopener noreferrer"

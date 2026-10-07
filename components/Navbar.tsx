@@ -34,6 +34,25 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // The hero has its own "Download CV" button. While it's on screen the
+  // header one would offer the same action twice, so it only shows once the
+  // hero's has scrolled away. Starts hidden so it doesn't flash on load.
+  // Assumes the hero is on the page: app/page.tsx is the only route today.
+  // A page without #hero-cv would keep this hidden — revisit if one appears.
+  const [heroCvInView, setHeroCvInView] = useState(true);
+
+  useEffect(() => {
+    const heroCv = document.getElementById("hero-cv");
+    if (!heroCv) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeroCvInView(entry.isIntersecting),
+      // The fixed h-20 header covers the top 80px of the viewport.
+      { rootMargin: "-80px 0px 0px 0px" },
+    );
+    observer.observe(heroCv);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     // e2e/helpers.ts's gotoHydrated() waits on this marker to know click
     // handlers are attached — it used to piggyback on LanguageContext's own
@@ -81,7 +100,12 @@ export default function Navbar() {
             href={cvFileByLocale[locale]}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary hidden sm:inline-flex items-center gap-2 min-h-11 px-4"
+            // invisible, not hidden: it keeps its width so the nav links
+            // don't shift, and visibility drops it from tab order and the
+            // accessibility tree while the hero's button is on screen.
+            className={`btn-secondary hidden sm:inline-flex items-center gap-2 min-h-11 px-4 transition-[opacity,visibility] duration-(--duration-base) ${
+              heroCvInView ? "invisible opacity-0" : "opacity-100"
+            }`}
             aria-label={t("cvLabel")}
           >
             <Download size={14} aria-hidden="true" />
