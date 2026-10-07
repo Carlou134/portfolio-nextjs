@@ -1,148 +1,21 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { GraduationCap, BookOpen } from "lucide-react";
-import Image from "next/image";
+import { motion, type Variants } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-const thesisTags = [
-  "Python",
-  "Random Forest",
-  "LightGBM",
-  "SHAP",
-  "Django",
-  "Azure",
-];
+// Same entrance as the Hero: fade + 6px, 300ms on the standard curve.
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+  }),
+};
 
-function Photo() {
-  return (
-    <motion.div
-      className="relative w-32 h-32 md:w-44 md:h-44 shrink-0 group"
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      {/* Contenedor con clip para que la imagen respete el border-radius */}
-      <div className="relative w-full h-full rounded-xl overflow-hidden">
-        <Image
-          src="/Foto-Linkedin.jpeg"
-          alt="Carlos Vásquez — Fullstack Developer"
-          fill
-          sizes="(max-width: 768px) 128px, 176px"
-          className="object-cover object-top"
-        />
-      </div>
-
-      {/* Borde decorativo — encima de la imagen, fuera del clip */}
-      <div className="absolute inset-0 rounded-xl border-2 border-accent/30 group-hover:border-accent/60 transition-colors duration-300 pointer-events-none" />
-
-      {/* Dot de disponibilidad */}
-      <div className="absolute -bottom-2 -right-2 w-5 h-5 rounded-full bg-bg-primary border-2 border-bg-primary flex items-center justify-center">
-        <div className="w-3 h-3 rounded-full animate-pulse bg-accent" />
-      </div>
-    </motion.div>
-  );
-}
-
-function PhotoAndText() {
-  const t = useTranslations("About");
-
-  return (
-    <div className="flex flex-col md:flex-row gap-8">
-      <Photo />
-
-      <div className="flex flex-col gap-4">
-        <p className="font-sans text-sm text-text-secondary leading-relaxed">
-          {t("bio1")}
-        </p>
-        <p className="font-sans text-sm text-text-secondary leading-relaxed">
-          {t("bio2")}
-        </p>
-        <div className="flex flex-col gap-2">
-          <p className="font-sans text-sm text-text-secondary leading-relaxed">
-            {t("availableFor")}
-          </p>
-          <span className="badge-accent inline-flex items-center gap-1.5 w-fit">
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 bg-accent" />
-            {t("available")}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EducationCard() {
-  const t = useTranslations("About");
-
-  return (
-    <div className="card hover:border-accent/30 hover:glow-accent motion-safe:hover:scale-102 cursor-default transition-all duration-300">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <GraduationCap size={18} className="text-accent" />
-        <span className="font-mono text-xs text-text-muted tracking-widest uppercase">
-          {t("academicBackground")}
-        </span>
-      </div>
-
-      <div className="h-px bg-border mb-4" />
-
-      {/* Universidad */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-lg bg-bg-secondary border border-border overflow-hidden shrink-0 flex items-center justify-center p-1">
-          <Image
-            src="/upc.png"
-            alt="UPC"
-            width={40}
-            height={40}
-            className="object-contain w-full h-full"
-          />
-        </div>
-        <div>
-          <p className="font-mono text-sm font-medium text-text-primary leading-snug">
-            Universidad Peruana de Ciencias Aplicadas
-          </p>
-          <p className="text-xs text-text-secondary mt-0.5">
-            {t("systemsEngineering")}
-          </p>
-        </div>
-      </div>
-
-      {/* Badges */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <span className="badge-amber">{t("semester")}</span>
-        <span className="badge-amber">{t("topOfClass")}</span>
-        <span className="badge-accent">2020 – 2026</span>
-      </div>
-
-      <div className="h-px bg-border my-4" />
-
-      {/* Tesis */}
-      <div className="flex items-center gap-2 mb-3">
-        <BookOpen size={14} className="text-text-secondary" />
-        <span className="font-mono text-xs text-text-muted tracking-widest uppercase">
-          {t("thesisResearch")}
-        </span>
-      </div>
-
-      <p className="text-xs text-text-secondary leading-relaxed">
-        {t("thesis")}
-      </p>
-
-      <div className="flex flex-wrap gap-1.5 mt-3">
-        {thesisTags.map((tag) => (
-          <span
-            key={tag}
-            className="text-[10px] font-mono px-2 py-0.5 bg-bg-secondary border border-border rounded text-text-muted"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
+// Every figure here is sourced from content/experience.ts — no invented
+// numbers. Years and English level live in the Hero, so they're left out.
+const metrics = ["modules", "speed", "meetings"] as const;
 
 export default function About() {
   const t = useTranslations("About");
@@ -151,27 +24,44 @@ export default function About() {
     <section id="sobre-mi" className="section">
       <p className="section-label">{t("sectionLabel")}</p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        <motion.div
-          className="lg:col-span-7 flex flex-col gap-8"
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <PhotoAndText />
-        </motion.div>
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        custom={0}
+        className="flex flex-col gap-5"
+      >
+        <h2 className="font-sans font-medium leading-tight text-balance text-[clamp(1.75rem,4vw,2rem)] max-w-[26ch]">
+          {t("heading")}
+        </h2>
+        <p className="text-text-secondary text-[17px] leading-[1.6] max-w-[62ch] text-pretty">
+          {t("bio")}
+        </p>
+      </motion.div>
 
-        <motion.div
-          className="lg:col-span-5"
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-        >
-          <EducationCard />
-        </motion.div>
-      </div>
+      <motion.ul
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        custom={1}
+        className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6"
+      >
+        {metrics.map((key, i) => (
+          <li
+            key={key}
+            className={`pl-4 border-l-2 ${i === 0 ? "border-accent" : "border-brand/50"}`}
+          >
+            <p className="font-mono text-[26px] text-accent leading-tight mb-1">
+              {t(`metrics.${key}.value`)}
+            </p>
+            <p className="text-sm text-text-secondary leading-snug">
+              {t(`metrics.${key}.label`)}
+            </p>
+          </li>
+        ))}
+      </motion.ul>
     </section>
   );
 }

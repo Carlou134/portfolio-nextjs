@@ -66,15 +66,21 @@
   },
   "About": {
     "sectionLabel": "About me",
-    "bio1": "I've been building software for +2 years in real production environments — not tutorials. I work mainly with .NET and React, but adapt to whatever stack the project needs.",
-    "bio2": "Systems Engineering student at UPC (10th semester, top of class). English B2. Self-taught by choice.",
-    "availableFor": "Available for freelance projects and development positions.",
-    "available": "Available",
-    "academicBackground": "Academic background",
-    "systemsEngineering": "Systems Engineering",
-    "semester": "10th semester",
-    "topOfClass": "Top of class",
-    "thesisResearch": "Thesis research",
-    "thesis": "Hierarchical web system (Random Forest + LightGBM) aligned with the NIST Cybersecurity Framework for automatic security alert classification, evaluated on real data from a Metropolitan Lima SOC. Deployed on Azure."
+    "heading": "I work end to end: data model, API, interface and the deploy.",
+    "bio": "I build software in real production environments — not tutorials. I work mainly with .NET and React, but adapt to whatever stack the project needs.",
+    "metrics": {
+      "modules": {
+        "value": "+10",
+        "label": "enterprise modules in production under Clean Architecture and CQRS (MSC)"
+      },
+      "speed": {
+        "value": "20%",
+        "label": "estimated response-speed gain migrating jQuery to Angular (MSC)"
+      },
+      "meetings": {
+        "value": "−40%",
+        "label": "coordination meetings with an internal Jira-style tool (Zoluxiones)"
+      }
+    }
   }
 }
