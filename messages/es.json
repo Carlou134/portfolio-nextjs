@@ -39,7 +39,15 @@
     "sectionLabel": "Lo que he construido"
   },
   "Stack": {
-    "sectionLabel": "Con qué trabajo"
+    "sectionLabel": "Con qué trabajo",
+    "subtitle": "Agrupado por capa. Lo que uso a diario está primero en cada categoría.",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "data": "Datos",
+      "devops": "DevOps / Cloud",
+      "ai": "IA"
+    }
   },
   "Experience": {
     "sectionLabel": "Experiencia",

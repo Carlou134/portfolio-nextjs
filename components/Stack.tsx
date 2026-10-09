@@ -1,191 +1,91 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  siDotnet,
-  siNodedotjs,
-  siSpring,
-  siPython,
-  siReact,
-  siNextdotjs,
-  siAngular,
-  siTypescript,
-  siTailwindcss,
-  siShadcnui,
-  siDocker,
-  siGit,
-  siGitlab,
-  siScikitlearn,
-  siKotlin,
-  siDjango,
-} from "simple-icons";
+import { motion, type Variants } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-interface StackItem {
-  name: string;
-  icon: { path: string; hex: string } | null;
-}
-
-interface StackColumnData {
-  category: string;
-  color: string;
-  dot: string;
-  items: StackItem[];
-}
-
-function getIconFill(hex: string): string {
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness < 50 ? "#F9FAFB" : `#${hex}`;
-}
-
-const SimpleIcon = ({
-  icon,
-  size = 16,
-}: {
-  icon: { path: string; hex: string };
-  size?: number;
-}) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill={getIconFill(icon.hex)}
-    xmlns="http://www.w3.org/2000/svg"
-    className="flex-shrink-0"
-  >
-    <path d={icon.path} />
-  </svg>
-);
-
-const si = {
-  dotnet: siDotnet as { path: string; hex: string },
-  nodejs: siNodedotjs as { path: string; hex: string },
-  spring: siSpring as { path: string; hex: string },
-  python: siPython as { path: string; hex: string },
-  react: siReact as { path: string; hex: string },
-  nextjs: siNextdotjs as { path: string; hex: string },
-  angular: siAngular as { path: string; hex: string },
-  typescript: siTypescript as { path: string; hex: string },
-  tailwind: siTailwindcss as { path: string; hex: string },
-  shadcn: siShadcnui as { path: string; hex: string },
-  docker: siDocker as { path: string; hex: string },
-  git: siGit as { path: string; hex: string },
-  gitlab: siGitlab as { path: string; hex: string },
-  sklearn: siScikitlearn as { path: string; hex: string },
-  kotlin: siKotlin as { path: string; hex: string },
-  django: siDjango as { path: string; hex: string },
+// Same entrance as the other sections: fade + 6px, 300ms on the standard curve.
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+  }),
 };
 
-const stackData: StackColumnData[] = [
+// Grouped by layer, mockup order. Within each layer, what's used daily goes
+// first. Text-only tags: brand-colored icons clashed with the indigo palette
+// and left gaps where a technology had no icon.
+const layers = [
   {
-    category: "Backend",
-    color: "green",
-    dot: "var(--color-accent)",
+    key: "frontend",
     items: [
-      { name: ".NET Core", icon: si.dotnet },
-      { name: "C#", icon: null },
-      { name: "Node.js", icon: si.nodejs },
-      { name: "Java", icon: null },
-      { name: "Spring Boot", icon: si.spring },
-      { name: "Kotlin", icon: si.kotlin },
-      { name: "Python", icon: si.python },
-      { name: "Django", icon: si.django },
-      { name: "SQL Server", icon: null },
-      { name: "EF Core", icon: null },
-      { name: "Clean Architecture", icon: null },
+      "React 19",
+      "Next.js",
+      "Angular",
+      "TypeScript",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "Zustand",
+      "TanStack Query",
     ],
   },
   {
-    category: "Frontend",
-    color: "blue",
-    dot: "var(--color-accent)",
+    key: "backend",
     items: [
-      { name: "React", icon: si.react },
-      { name: "Next.js", icon: si.nextjs },
-      { name: "Angular", icon: si.angular },
-      { name: "TypeScript", icon: si.typescript },
-      { name: "Tailwind CSS", icon: si.tailwind },
-      { name: "shadcn/UI", icon: si.shadcn },
-      { name: "Zustand", icon: null },
+      "C# / .NET",
+      "ASP.NET MVC",
+      "Kotlin / Ktor",
+      "Node.js",
+      "Python / Django",
+      "Java / Spring Boot",
+      "REST + Swagger",
+      "Clean Architecture",
+      "Hexagonal",
+      "CQRS",
+      "xUnit",
     ],
   },
   {
-    category: "DevOps & ML",
-    color: "amber",
-    dot: "#F59E0B",
+    key: "data",
     items: [
-      { name: "Azure", icon: null },
-      { name: "AWS", icon: null },
-      { name: "Docker", icon: si.docker },
-      { name: "Git", icon: si.git },
-      { name: "GitLab CI/CD", icon: si.gitlab },
-      { name: "scikit-learn", icon: si.sklearn },
-      { name: "Power BI", icon: null },
-      { name: "Power Automate", icon: null },
+      "SQL Server",
+      "PostgreSQL",
+      "MySQL",
+      "Redis",
+      "Entity Framework",
+      "ADO.NET",
+      "Pandas",
+      "Power BI",
     ],
   },
-];
-
-const StackTag = ({ item, index }: { item: StackItem; index: number }) => (
-  <motion.div
-    className="stack-tag flex items-center gap-1.5 cursor-default motion-safe:hover:scale-105"
-    initial={{ opacity: 0, y: 8 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
-  >
-    {item.icon ? (
-      <SimpleIcon icon={item.icon} size={14} />
-    ) : (
-      <div className="w-4 h-4 bg-bg-secondary border border-border rounded flex items-center justify-center flex-shrink-0">
-        <span className="font-mono text-[9px] text-text-muted leading-none">
-          {item.name.slice(0, 2).toUpperCase()}
-        </span>
-      </div>
-    )}
-    <span>{item.name}</span>
-  </motion.div>
-);
-
-const StackColumn = ({
-  data,
-  columnIndex,
-}: {
-  data: StackColumnData;
-  columnIndex: number;
-}) => (
-  <motion.div
-    className="card flex flex-col gap-4 hover:border-accent/30 hover:glow-accent motion-safe:hover:scale-102 transition-all duration-300"
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.5, delay: columnIndex * 0.15, ease: "easeOut" }}
-  >
-    <div className="flex items-center gap-2">
-      <span
-        className="w-2 h-2 rounded-full flex-shrink-0"
-        style={{ backgroundColor: data.dot }}
-      />
-      <span
-        className="font-mono text-xs font-medium tracking-widest uppercase"
-        style={{ color: data.dot }}
-      >
-        {data.category}
-      </span>
-    </div>
-
-    <div className="h-px bg-border w-full" />
-
-    <div className="flex flex-wrap gap-2">
-      {data.items.map((item, index) => (
-        <StackTag key={item.name} item={item} index={index} />
-      ))}
-    </div>
-  </motion.div>
-);
+  {
+    key: "devops",
+    items: [
+      "Azure",
+      "Azure DevOps",
+      "GitLab CI/CD",
+      "Docker",
+      "Git",
+      "AWS",
+      "MinIO",
+      "Blob Storage",
+      "IIS",
+      "Power Automate",
+    ],
+  },
+  {
+    key: "ai",
+    items: [
+      "scikit-learn",
+      "Random Forest",
+      "LightGBM",
+      "SHAP",
+      "NIST CSF",
+      "Claude API",
+    ],
+  },
+] as const;
 
 export default function Stack() {
   const t = useTranslations("Stack");
@@ -193,14 +93,35 @@ export default function Stack() {
   return (
     <section id="stack" className="section">
       <p className="section-label">{t("sectionLabel")}</p>
+      <p className="text-text-secondary text-[15.5px] leading-[1.6] max-w-[62ch] -mt-4 mb-8">
+        {t("subtitle")}
+      </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {stackData.map((column, columnIndex) => (
-          <StackColumn
-            key={column.category}
-            data={column}
-            columnIndex={columnIndex}
-          />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {layers.map(({ key, items }, i) => (
+          <motion.div
+            key={key}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            custom={i}
+            className="card flex flex-col gap-3 hover:border-brand/45"
+          >
+            <h3 className="flex items-center gap-2 font-sans font-medium text-[17px] text-text-primary">
+              <span className="font-mono text-[13px] text-accent">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {t(`categories.${key}`)}
+            </h3>
+            <ul className="flex flex-wrap gap-1.5">
+              {items.map((item) => (
+                <li key={item} className="tag">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
         ))}
       </div>
     </section>

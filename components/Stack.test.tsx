@@ -28,13 +28,33 @@ describe("Stack", () => {
     expect(screen.getByText("What I work with")).toBeInTheDocument();
   });
 
-  it("renders each category and a sample of its items", () => {
+  it("groups the stack into five layers, in mockup order", () => {
     renderStack("es");
-    expect(screen.getByText("Backend")).toBeInTheDocument();
-    expect(screen.getByText(".NET Core")).toBeInTheDocument();
-    expect(screen.getByText("Frontend")).toBeInTheDocument();
-    expect(screen.getByText("React")).toBeInTheDocument();
-    expect(screen.getByText("DevOps & ML")).toBeInTheDocument();
-    expect(screen.getByText("Docker")).toBeInTheDocument();
+    const headings = screen.getAllByRole("heading", { level: 3 });
+    expect(headings.map((h) => h.textContent)).toEqual([
+      "01Frontend",
+      "02Backend",
+      "03Datos",
+      "04DevOps / Cloud",
+      "05IA",
+    ]);
+  });
+
+  it("translates the Data and AI layer names", () => {
+    renderStack("en");
+    expect(
+      screen.getByRole("heading", { level: 3, name: /Data$/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: /AI$/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders text-only tags, without brand icons", () => {
+    const { container } = renderStack("es");
+    expect(screen.getByText("C# / .NET")).toBeInTheDocument();
+    expect(screen.getByText("PostgreSQL")).toBeInTheDocument();
+    expect(screen.getByText("SHAP")).toBeInTheDocument();
+    expect(container.querySelector("section#stack svg")).toBeNull();
   });
 });
