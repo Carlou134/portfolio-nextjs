@@ -45,6 +45,28 @@
     "sectionLabel": "Experiencia",
     "current": "Actual"
   },
+  "Education": {
+    "sectionLabel": "Educación y certificaciones",
+    "cards": {
+      "degree": {
+        "kicker": "2020 — 2026",
+        "title": "Bachiller en Ingeniería de Sistemas de Información",
+        "body": "Universidad Peruana de Ciencias Aplicadas (UPC) · Quinto Superior",
+        "note": "Tesis: Sistema web basado en el framework NIST y el algoritmo Random Forest para optimizar las alertas en Centros de Operaciones de Seguridad (SOC) de Lima Metropolitana"
+      },
+      "english": {
+        "kicker": "Certificación",
+        "title": "Inglés B2 — Avanzado",
+        "body": "We Talk · UPC.\nPrograma Intermedio completo en el Británico (2022–2024).",
+        "note": "Japonés básico"
+      },
+      "focus": {
+        "kicker": "Enfoque",
+        "title": "Arquitectura e IA aplicada",
+        "body": "Clean Architecture, Hexagonal, SOLID, CQRS y Scrum aplicados en producción; scikit-learn, LightGBM y SHAP en el lado de IA."
+      }
+    }
+  },
   "Contact": {
     "sectionLabel": "Contacto",
     "heading": "¿Tienes un proyecto? Hablemos.",

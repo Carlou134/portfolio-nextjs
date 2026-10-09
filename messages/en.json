@@ -45,6 +45,28 @@
     "sectionLabel": "Experience",
     "current": "Current"
   },
+  "Education": {
+    "sectionLabel": "Education and certifications",
+    "cards": {
+      "degree": {
+        "kicker": "2020 — 2026",
+        "title": "BSc in Information Systems Engineering",
+        "body": "Universidad Peruana de Ciencias Aplicadas (UPC) · Top 20% of class",
+        "note": "Thesis: Web system based on the NIST framework and the Random Forest algorithm to optimize alerts in Security Operations Centers (SOC) in Metropolitan Lima"
+      },
+      "english": {
+        "kicker": "Certification",
+        "title": "English B2 — Advanced",
+        "body": "We Talk · UPC.\nCompleted the Intermediate program at Británico (2022–2024).",
+        "note": "Basic Japanese"
+      },
+      "focus": {
+        "kicker": "Focus",
+        "title": "Architecture and applied AI",
+        "body": "Clean Architecture, Hexagonal, SOLID, CQRS and Scrum applied in production; scikit-learn, LightGBM and SHAP on the AI side."
+      }
+    }
+  },
   "Contact": {
     "sectionLabel": "Contact",
     "heading": "Have a project? Let's talk.",
