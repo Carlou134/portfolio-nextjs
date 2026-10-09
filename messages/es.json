@@ -40,7 +40,7 @@
   },
   "Stack": {
     "sectionLabel": "Con qué trabajo",
-    "subtitle": "Agrupado por capa. Lo que uso a diario está primero en cada categoría.",
+    "subtitle": "Agrupado por capa. En color, lo que uso a diario; el resto va en orden de uso.",
     "categories": {
       "frontend": "Frontend",
       "backend": "Backend",

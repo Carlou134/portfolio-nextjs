@@ -40,7 +40,7 @@
   },
   "Stack": {
     "sectionLabel": "What I work with",
-    "subtitle": "Grouped by layer. What I use daily comes first in each category.",
+    "subtitle": "Grouped by layer. Highlighted is what I use daily; the rest follows in order of use.",
     "categories": {
       "frontend": "Frontend",
       "backend": "Backend",

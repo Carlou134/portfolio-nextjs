@@ -57,4 +57,17 @@ describe("Stack", () => {
     expect(screen.getByText("SHAP")).toBeInTheDocument();
     expect(container.querySelector("section#stack svg")).toBeNull();
   });
+
+  it("highlights only the daily core with the accent tag", () => {
+    const { container } = renderStack("es");
+    const accented = [...container.querySelectorAll(".tag-accent")].map(
+      (el) => el.textContent,
+    );
+    expect(accented).toEqual([
+      "React 19",
+      "Next.js",
+      "C# / .NET",
+      "Kotlin / Ktor",
+    ]);
+  });
 });

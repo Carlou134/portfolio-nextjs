@@ -16,6 +16,9 @@ const fadeUp: Variants = {
 // Grouped by layer, mockup order. Within each layer, what's used daily goes
 // first. Text-only tags: brand-colored icons clashed with the indigo palette
 // and left gaps where a technology had no icon.
+// The daily core gets the accent tag so a reader spots the strongest skills
+// at a glance; everything else stays neutral.
+const core = new Set(["C# / .NET", "Next.js", "React 19", "Kotlin / Ktor"]);
 const layers = [
   {
     key: "frontend",
@@ -116,7 +119,10 @@ export default function Stack() {
             </h3>
             <ul className="flex flex-wrap gap-1.5">
               {items.map((item) => (
-                <li key={item} className="tag">
+                <li
+                  key={item}
+                  className={core.has(item) ? "tag tag-accent" : "tag"}
+                >
                   {item}
                 </li>
               ))}
