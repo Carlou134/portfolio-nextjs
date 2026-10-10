@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
 import { isLiveDemo } from "@/lib/live-demo";
+import { caseStudies } from "@/content/case-studies";
 import {
   gridTodo,
   projects,
@@ -47,7 +48,13 @@ const statusText: Record<Project["status"], string> = {
 // The case study route lands with commits 37-42; keep the URL in one place.
 const caseStudyHref = (slug: string) => `/case-study/${slug}`;
 
-function PendingNotice({ items }: { items: string[] }) {
+function PendingNotice({
+  items,
+  previewHref,
+}: {
+  items: string[];
+  previewHref?: string;
+}) {
   return (
     <div
       role="note"
@@ -62,6 +69,14 @@ function PendingNotice({ items }: { items: string[] }) {
           <li key={item}>{item}</li>
         ))}
       </ul>
+      {previewHref && (
+        <Link
+          href={previewHref}
+          className="inline-flex items-center gap-2 min-h-11 mt-2 font-mono text-sm text-warning underline underline-offset-4"
+        >
+          Ver vista preliminar del case study →
+        </Link>
+      )}
     </div>
   );
 }
@@ -94,6 +109,11 @@ function ProjectCard({
   const t = useTranslations("Projects");
   const title = project.title[locale];
   const live = isLiveDemo(project.demo, today);
+  // Unpublished case study: reachable from the dev-only notice, never from
+  // the public "Read case study" button (that one needs caseSlug).
+  const preview = project.caseSlug
+    ? undefined
+    : caseStudies.find((c) => c.projectId === project.id);
 
   return (
     <motion.article
@@ -200,7 +220,10 @@ function ProjectCard({
       )}
 
       {showPending && project.pending && (
-        <PendingNotice items={project.pending} />
+        <PendingNotice
+          items={project.pending}
+          previewHref={preview ? caseStudyHref(preview.slug) : undefined}
+        />
       )}
     </motion.article>
   );
