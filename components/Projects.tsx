@@ -1,80 +1,208 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
-import { projects, type Project } from "@/content/projects";
+import { isLiveDemo } from "@/lib/live-demo";
+import {
+  gridTodo,
+  projects,
+  type Project,
+  type ProjectCategory,
+} from "@/content/projects";
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
+// Pending-content notices are a dev aid; production never renders them.
+const showPending = process.env.NODE_ENV !== "production";
+
+// Enter animation: fade + 6px on the standard curve, staggered by grid
+// position. Cards that come back after a filter change remount, so they
+// replay it.
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+  }),
 };
 
-function Badge({
-  color,
-  label,
-}: {
-  color: Project["badgeColor"];
-  label: string;
-}) {
-  if (color === "pink") {
-    return (
-      <span className="badge bg-pink-900/20 border border-pink-500/40 text-pink-400 text-xs font-mono px-3 py-1 rounded-full tracking-wide">
-        {label}
-      </span>
-    );
-  }
-  return <span className={`badge-${color}`}>{label}</span>;
+type Filter = "all" | ProjectCategory;
+const filters: Filter[] = ["all", "front", "back", "data", "ops", "ai"];
+
+const statusDot: Record<Project["status"], string> = {
+  done: "bg-success",
+  prod: "bg-success",
+  wip: "bg-warning",
+};
+const statusText: Record<Project["status"], string> = {
+  done: "text-success",
+  prod: "text-success",
+  wip: "text-warning",
+};
+
+// The case study route lands with commits 37-42; keep the URL in one place.
+const caseStudyHref = (slug: string) => `/case-study/${slug}`;
+
+function PendingNotice({ items }: { items: string[] }) {
+  return (
+    <div
+      role="note"
+      data-testid="pending-notice"
+      className="rounded-lg border-2 border-dashed border-warning bg-warning/10 p-4"
+    >
+      <p className="font-mono text-sm font-medium text-warning mb-2">
+        FALTA (solo visible en desarrollo)
+      </p>
+      <ul className="list-disc pl-5 text-sm text-text-primary flex flex-col gap-1">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-function ProjectImage({
-  src,
-  alt,
-  eager = false,
-  aspect = "aspect-video",
-  grow = false,
-  sizes,
-  fit = "cover",
-}: {
-  src: string;
-  alt: string;
-  eager?: boolean;
-  aspect?: string;
-  grow?: boolean;
-  sizes: string;
-  fit?: "cover" | "contain";
-}) {
-  const [hasError, setHasError] = useState(false);
-  const fileName = src.split("/").pop() ?? src;
-  const containerClass = grow
-    ? "relative w-full flex-1 min-h-0"
-    : `relative w-full ${aspect}`;
+function EvidenceLink({ href, children }: { href: string; children: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="btn-secondary inline-flex items-center gap-2 min-h-11 px-4 py-2 hover:bg-bg-hover"
+    >
+      {children}
+      <ExternalLink size={14} aria-hidden="true" />
+    </a>
+  );
+}
 
-  if (hasError) {
-    return (
-      <div
-        className={`${containerClass} rounded-lg bg-bg-secondary overflow-hidden flex items-center justify-center`}
-      >
-        <span className="font-mono text-xs text-text-muted">{fileName}</span>
-      </div>
-    );
-  }
+function ProjectCard({
+  project,
+  index,
+  locale,
+  today,
+}: {
+  project: Project;
+  index: number;
+  locale: "es" | "en";
+  today: string;
+}) {
+  const t = useTranslations("Projects");
+  const title = project.title[locale];
+  const live = isLiveDemo(project.demo, today);
 
   return (
-    <div className={`${containerClass} rounded-lg overflow-hidden`}>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        loading={eager ? "eager" : "lazy"}
-        className={fit === "contain" ? "object-contain" : "object-cover"}
-        onError={() => setHasError(true)}
-      />
-    </div>
+    <motion.article
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+      custom={index}
+      className="card flex flex-col gap-4 hover:border-brand/45 motion-safe:hover:-translate-y-0.5"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span
+          className={`inline-flex items-center gap-2 font-mono text-xs ${statusText[project.status]}`}
+        >
+          <span
+            aria-hidden="true"
+            className={`w-1.5 h-1.5 rounded-full ${statusDot[project.status]}`}
+          />
+          {t(`status.${project.status}`)}
+        </span>
+        <span className="font-mono text-xs text-text-muted">
+          {project.year} · {t(`kind.${project.kind}`)}
+        </span>
+      </div>
+
+      {/* Every screenshot gets the same 16:9 frame, cropped from the top, so
+          captures from different apps still line up across the grid. */}
+      {project.image && (
+        <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-bg-secondary">
+          <Image
+            src={project.image}
+            alt={t("imageAlt", { title })}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading={index === 0 ? "eager" : "lazy"}
+            className="object-cover object-top"
+          />
+        </div>
+      )}
+
+      <h3 className="font-sans font-medium text-xl text-text-primary text-balance leading-snug">
+        {title}
+      </h3>
+      <p className="text-[15px] text-text-secondary leading-relaxed">
+        {project.description[locale]}
+      </p>
+
+      {project.metrics.length > 0 && (
+        <dl className="grid grid-cols-3 gap-3">
+          {project.metrics.map((m) => (
+            <div
+              key={m.value}
+              className="flex flex-col-reverse pl-3 border-l-2 border-brand/50"
+            >
+              {/* dt first for screen readers; flex-col-reverse puts the
+                  value on top visually. */}
+              <dt className="text-xs text-text-muted mt-0.5">
+                {m.label[locale]}
+              </dt>
+              <dd className="font-mono text-xl text-accent leading-tight">
+                {m.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      <ul className="flex flex-wrap gap-1.5">
+        {project.stack.map((tech) => (
+          <li key={tech} className="tag tag-accent">
+            {tech}
+          </li>
+        ))}
+      </ul>
+
+      <div className="flex flex-wrap gap-2.5 mt-auto">
+        {project.caseSlug && (
+          <Link
+            href={caseStudyHref(project.caseSlug)}
+            className="btn-primary inline-flex items-center gap-2 min-h-11 px-4 py-2"
+          >
+            {t("links.caseStudy")} <span aria-hidden="true">→</span>
+          </Link>
+        )}
+        {project.repos.map((repo) => (
+          <EvidenceLink key={repo.href} href={repo.href}>
+            {project.repos.length > 1 ? repo.label : t("links.repo")}
+          </EvidenceLink>
+        ))}
+        {live && project.demo && (
+          <EvidenceLink href={project.demo.href}>
+            {t("links.demo")}
+          </EvidenceLink>
+        )}
+        {project.video && (
+          <EvidenceLink href={project.video}>{t("links.video")}</EvidenceLink>
+        )}
+      </div>
+
+      {project.footer && (
+        <p className="text-xs font-mono text-text-muted border-t border-border pt-3">
+          {project.footer[locale]}
+        </p>
+      )}
+
+      {showPending && project.pending && (
+        <PendingNotice items={project.pending} />
+      )}
+    </motion.article>
   );
 }
 
@@ -82,138 +210,69 @@ export default function Projects() {
   const t = useTranslations("Projects");
   const rawLocale = useLocale();
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const grid = projects.filter((p) => p.placement === "grid");
+  const shown =
+    filter === "all" ? grid : grid.filter((p) => p.categories.includes(filter));
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <section id="proyectos" className="section">
       <p className="section-label">{t("sectionLabel")}</p>
+      <p className="text-text-secondary text-[15.5px] leading-[1.6] max-w-[62ch] -mt-4 mb-6">
+        {t("subtitle")}
+      </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {projects.map((project, index) => {
-          const isFeatured = project.featured;
-          const isLast = project.id === 4;
-
-          return (
-            <motion.div
-              key={project.id}
-              className={[
-                isFeatured ? "card-featured" : "card",
-                isFeatured ? "md:col-span-2 md:row-span-2" : "",
-                isLast ? "md:col-span-3" : "",
-                isFeatured
-                  ? "motion-safe:hover:scale-101"
-                  : "motion-safe:hover:scale-102",
-                "hover:border-accent/50 hover:glow-accent transition-all duration-300",
-                "flex flex-col gap-4",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-                ease: "easeOut",
-              }}
-            >
-              {/* Badge + Links */}
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <Badge
-                  color={project.badgeColor}
-                  label={project.badge[locale]}
-                />
-                {project.links.length > 0 && (
-                  <div className="flex gap-3">
-                    {project.links.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 min-h-11 text-xs font-mono text-text-secondary hover:text-accent transition-colors"
-                      >
-                        {link.label}
-                        <ExternalLink size={14} />
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Image */}
-              {project.image && (
-                <ProjectImage
-                  src={project.image}
-                  alt={project.title[locale]}
-                  eager={isFeatured || isLast}
-                  grow={isFeatured}
-                  sizes={
-                    isFeatured
-                      ? "(max-width: 768px) 100vw, 66vw"
-                      : isLast
-                        ? "(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1152px"
-                        : "(max-width: 768px) 100vw, 33vw"
-                  }
-                  fit={isLast ? "contain" : "cover"}
-                />
-              )}
-
-              {/* Title */}
-              <h3
-                className={[
-                  "font-mono text-text-primary",
-                  isFeatured ? "text-xl font-bold" : "text-base font-medium",
-                ].join(" ")}
-              >
-                {project.title[locale]}
-              </h3>
-
-              {/* Description */}
-              <p
-                className={[
-                  "text-sm text-text-secondary leading-relaxed",
-                  "",
-                ].join(" ")}
-              >
-                {project.description[locale]}
-              </p>
-
-              {/* Metrics (featured only) */}
-              {isFeatured && project.metrics.length > 0 && (
-                <div className="bg-bg-secondary border border-border p-3 rounded-lg flex gap-6">
-                  {project.metrics.map((m, i) => (
-                    <div key={i} className="flex flex-col">
-                      <span className="font-mono text-2xl text-accent">
-                        {m.value}
-                      </span>
-                      <p className="text-xs text-text-muted mt-0.5">
-                        {m.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Stack */}
-              <div className="flex flex-wrap gap-2 mt-auto">
-                {project.stack.map((tech) => (
-                  <span key={tech} className="stack-tag">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              {/* Footer */}
-              {project.footer && (
-                <p className="text-xs font-mono text-text-muted border-t border-border pt-3">
-                  {project.footer[locale]}
-                </p>
-              )}
-            </motion.div>
-          );
-        })}
+      <div
+        role="group"
+        aria-label={t("filterLabel")}
+        className="flex flex-wrap items-center gap-2.5 mb-3"
+      >
+        <span className="font-mono text-xs uppercase tracking-widest text-text-muted mr-1">
+          {t("filterBy")}
+        </span>
+        {filters.map((f) => (
+          <button
+            key={f}
+            type="button"
+            className="filter"
+            aria-pressed={filter === f}
+            onClick={() => setFilter(f)}
+          >
+            {t(`filters.${f}`)}
+          </button>
+        ))}
       </div>
+      <p aria-live="polite" className="font-mono text-[13px] text-accent mb-6">
+        {t("count", {
+          shown: shown.length,
+          total: grid.length,
+          filter: t(`filters.${filter}`),
+        })}
+      </p>
+
+      {showPending && gridTodo.length > 0 && (
+        <div className="mb-6">
+          <PendingNotice items={gridTodo} />
+        </div>
+      )}
+
+      {shown.length === 0 ? (
+        <p className="text-text-muted">{t("empty")}</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {shown.map((project, index) => (
+            <ProjectCard
+              key={`${filter}-${project.id}`}
+              project={project}
+              index={index}
+              locale={locale}
+              today={today}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

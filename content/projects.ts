@@ -2,83 +2,87 @@
 // instead of messages/*.json. Bilingual fields stay inline as {es, en}, resolved
 // with next-intl's useLocale() in Projects.tsx. The shape is validated by
 // content/schema.ts at import time, so a malformed entry fails the build.
+//
+// Grid order is display order. `pending` lists missing content; it only shows
+// up as a dev-mode notice and is stripped from production renders.
 import { projectsSchema, type Project } from "./schema";
 
-export type { Project } from "./schema";
+export type { Project, ProjectCategory } from "./schema";
 
 export const projects: Project[] = projectsSchema.parse([
   {
     id: 1,
-    badge: { es: "AI & ML", en: "AI & ML" },
-    badgeColor: "accent",
+    placement: "grid",
+    status: "done",
+    kind: "thesis",
+    year: 2026,
+    categories: ["back", "data", "ai", "ops"],
     title: {
-      es: "Clasificación de alertas con Random Forest",
-      en: "Alert classification with Random Forest",
+      es: "Priorización de alertas SOC con Machine Learning",
+      en: "SOC alert prioritization with Machine Learning",
     },
     description: {
-      es: "Sistema jerárquico de dos etapas (Random Forest + LightGBM) frente a baselines XGBoost/SVM, evaluado sobre ~33,000 alertas reales anonimizadas de un SOC de Lima Metropolitana. Priorización por risk score y explicabilidad SHAP con lenguaje natural vía Claude API. Desplegado en Azure.",
-      en: "Two-stage hierarchical system (Random Forest + LightGBM) benchmarked against XGBoost/SVM baselines, evaluated on ~33,000 real anonymized alerts from a Metropolitan Lima SOC. Risk-score prioritization and SHAP explainability translated into natural language via the Claude API. Deployed on Azure.",
+      es: "Sistema web que clasifica alertas de seguridad (benigno, a investigar, malicioso) con un clasificador jerárquico Random Forest → LightGBM, les asigna un risk score y explica cada decisión con SHAP. Ingesta asíncrona sin Redis, conector real con Splunk y visibilidad por rol de analista. Desplegado en Azure.",
+      en: "Web system that classifies security alerts (benign, to investigate, malicious) with a hierarchical Random Forest → LightGBM classifier, assigns each a risk score and explains every decision with SHAP. Redis-free async ingestion, a real Splunk connector and role-based analyst visibility. Deployed on Azure.",
     },
     metrics: [
-      { value: "82.91%", label: "Accuracy" },
-      { value: "83.16%", label: "F1-Macro" },
+      {
+        value: "98.9%",
+        label: { es: "Recall en maliciosos", en: "Recall on malicious" },
+      },
+      { value: "0.83", label: { es: "F1-macro", en: "F1-macro" } },
+      {
+        value: "119",
+        label: { es: "Tests automatizados", en: "Automated tests" },
+      },
     ],
     stack: [
       "Python",
-      "scikit-learn",
-      "LightGBM",
-      "SHAP",
       "Django",
+      "LightGBM",
+      "scikit-learn",
+      "SHAP",
+      "PostgreSQL",
       "Azure",
       "Claude API",
     ],
     image: "/tesis.png",
-    links: [
+    repos: [
       {
         label: "GitHub",
         href: "https://github.com/Carlou134/soc-alert-prioritization-ml",
       },
     ],
-    featured: true,
     footer: {
-      es: "Tesis de grado · UPC · ~33,000 alertas reales de SOC (Lima Metropolitana)",
-      en: "Degree thesis · UPC · ~33,000 real SOC alerts (Metropolitan Lima)",
+      es: "Tesis de grado · UPC · Desarrollo completo del sistema; dataset, diagramas y gestión Scrum en equipo con Giancarlo Moreno.",
+      en: "Degree thesis · UPC · Built the whole system; dataset, diagrams and Scrum management in a team with Giancarlo Moreno.",
     },
-  },
-  {
-    id: 2,
-    badge: { es: "Backend", en: "Backend" },
-    badgeColor: "accent",
-    title: {
-      es: "API REST con Clean Architecture",
-      en: "REST API with Clean Architecture",
-    },
-    description: {
-      es: "API robusta bajo Clean Architecture, SOLID y CQRS con MediatR. Seguridad con JWT + BCrypt, validaciones con FluentValidation y persistencia con EF Core. Diseñada para escalar sin deuda técnica.",
-      en: "Robust API under Clean Architecture, SOLID, and CQRS with MediatR. JWT + BCrypt security, FluentValidation checks, and EF Core persistence. Designed to scale without technical debt.",
-    },
-    metrics: [],
-    stack: [".NET Core", "C#", "SQL Server", "MediatR", "AutoMapper"],
-    image: "/api-rest.png",
-    links: [{ label: "GitHub", href: "https://github.com/Carlou134/webapi" }],
-    featured: false,
+    pending: [
+      "Demo en vivo: URL del deploy en Azure + liveUntil (los créditos UPC vencen a inicios de diciembre).",
+      "Video walkthrough con voz (opcional; la demo sin voz va en `demo`, no acá).",
+      "Case study (commits 37–42): al publicarlo, agregar caseSlug.",
+      "Capturas para el case study: detalle de alerta con SHAP y conector Splunk.",
+      "Validación con 20 analistas: ¿métrica medida? ¿analistas de SOCs reales?",
+    ],
   },
   {
     id: 3,
-    badge: { es: "Fullstack", en: "Fullstack" },
-    badgeColor: "amber",
+    placement: "grid",
+    status: "done",
+    kind: "technicalTest",
+    year: 2026,
+    categories: ["front", "back", "data", "ops"],
     title: {
       es: "Sistema de gestión de órdenes",
       en: "Order management system",
     },
     description: {
-      es: "SPA en React consumiendo API .NET Core con arquitectura desacoplada. Base de datos en AWS RDS (MySQL). Despliegue automatizado en Azure App Service.",
-      en: "React SPA consuming a .NET Core API with decoupled architecture. Database on AWS RDS (MySQL). Automated deployment on Azure App Service.",
+      es: "SPA en React que consume una API en C#/.NET con arquitectura desacoplada. Base de datos MySQL en AWS RDS y despliegue automatizado en Azure App Service.",
+      en: "React SPA consuming a C#/.NET API with a decoupled architecture. MySQL database on AWS RDS and automated deployment on Azure App Service.",
     },
     metrics: [],
-    stack: ["React", ".NET Core", "MySQL", "Azure", "AWS RDS"],
-    image: "/gestion-ordenes.png",
-    links: [
+    stack: ["React", "C#", ".NET", "MySQL", "AWS RDS", "Azure"],
+    repos: [
       {
         label: "Frontend",
         href: "https://github.com/Carlou134/OrderManagementFrontEnd",
@@ -88,73 +92,129 @@ export const projects: Project[] = projectsSchema.parse([
         href: "https://github.com/Carlou134/OrderManagementBackend",
       },
     ],
-    featured: false,
+    pending: [
+      "Captura nueva con el diseño actual (sin barra del navegador, 1600×900+).",
+      "Narrativa: qué pedía la prueba técnica y 2–3 decisiones técnicas que tomaste.",
+      "Confirmar año y estado.",
+      "Demo: ¿sigue vivo el deploy de Netlify? Si sí, URL + liveUntil.",
+    ],
+  },
+  {
+    id: 7,
+    placement: "grid",
+    status: "wip",
+    kind: "academic",
+    year: 2026,
+    categories: ["back", "ops"],
+    title: {
+      es: "Simulador de alertas SOC",
+      en: "SOC alert simulator",
+    },
+    description: {
+      es: "Worker service en .NET que genera alertas de seguridad sintéticas y las envía a Splunk, para poblar dashboards y probar la ingesta del sistema de la tesis.",
+      en: ".NET worker service that generates synthetic security alerts and ships them to Splunk, to populate dashboards and exercise the thesis system's ingestion.",
+    },
+    metrics: [],
+    stack: ["C#", ".NET Worker", "Splunk"],
+    repos: [],
+    pending: [
+      "Confirmar la descripción (la armé con lo que sé: worker .NET → Splunk).",
+      "Estado real: ¿terminado o en desarrollo?",
+      "Repo público (URL).",
+      "Stack completo y 2–3 decisiones técnicas.",
+      "Imagen: dashboard de Splunk poblado o diagrama del flujo (un worker no tiene UI).",
+    ],
+  },
+  // ── "More projects" table (rendered in commit 33) ────────────────────────
+  {
+    id: 2,
+    placement: "table",
+    status: "done",
+    kind: "personal",
+    year: 2025,
+    categories: ["back"],
+    title: {
+      es: "API REST con Clean Architecture",
+      en: "REST API with Clean Architecture",
+    },
+    description: {
+      es: "API bajo Clean Architecture, SOLID y CQRS con MediatR. Seguridad con JWT + BCrypt, validaciones con FluentValidation y persistencia con EF Core.",
+      en: "API under Clean Architecture, SOLID and CQRS with MediatR. JWT + BCrypt security, FluentValidation checks and EF Core persistence.",
+    },
+    metrics: [],
+    stack: [".NET", "C#", "SQL Server", "MediatR", "AutoMapper"],
+    repos: [{ label: "GitHub", href: "https://github.com/Carlou134/webapi" }],
+    pending: ["Confirmar tipo (¿personal?) y año."],
   },
   {
     id: 4,
-    badge: { es: "Fullstack", en: "Fullstack" },
-    badgeColor: "pink",
+    placement: "table",
+    status: "done",
+    kind: "academic",
+    year: 2025,
+    categories: ["front", "back", "data"],
     title: {
       es: "Ecosistema de gestión empresarial",
       en: "Enterprise management ecosystem",
     },
     description: {
       es: "Sistema de citas y facturación con Spring Security (JWT), JPA/PostgreSQL y Angular. Arquitectura multicapa desplegada en Heroku + Netlify.",
-      en: "Appointment and billing system with Spring Security (JWT), JPA/PostgreSQL, and Angular. Multi-layer architecture deployed on Heroku + Netlify.",
+      en: "Appointment and billing system with Spring Security (JWT), JPA/PostgreSQL and Angular. Multi-layer architecture deployed on Heroku + Netlify.",
     },
     metrics: [],
     stack: ["Java 17", "Spring Boot", "Angular", "PostgreSQL", "JWT"],
-    image: "/angular-spring.png",
-    links: [
+    repos: [
       {
         label: "Frontend",
         href: "https://github.com/Carlou134/TF_FINANZAS_FRONTEND",
       },
       { label: "Backend", href: "https://github.com/Carlou134/TF_FINANZAS" },
     ],
-    featured: false,
+    pending: ["¿Es el de gestión de facturas? Confirmar título y año."],
   },
   {
     id: 5,
-    badge: { es: "Fullstack · IA", en: "Fullstack · AI" },
-    badgeColor: "accent",
+    placement: "table",
+    status: "done",
+    kind: "personal",
+    year: 2026,
+    categories: ["front", "back", "ai"],
     title: {
       es: "Interfaz con estado moderno e integración de IA",
       en: "Modern state management UI with AI integration",
     },
     description: {
-      es: "Interfaz construida con React 19, shadcn/UI, Zustand y TanStack Query, consumiendo APIs .NET bajo Clean Architecture con integración de servicios OpenAI. Optimización de la carga de archivos sobre almacenamiento en AWS.",
-      en: "UI built with React 19, shadcn/UI, Zustand, and TanStack Query, consuming .NET APIs under Clean Architecture with OpenAI service integration. Optimized file upload/retrieval on AWS storage.",
+      es: "Interfaz con React 19, shadcn/UI, Zustand y TanStack Query, consumiendo APIs .NET bajo Clean Architecture con integración de servicios OpenAI.",
+      en: "UI built with React 19, shadcn/UI, Zustand and TanStack Query, consuming .NET APIs under Clean Architecture with OpenAI service integration.",
     },
     metrics: [],
-    stack: [
-      "React 19",
-      "shadcn/UI",
-      "Zustand",
-      "TanStack Query",
-      ".NET",
-      "Clean Architecture",
-      "OpenAI",
-      "AWS",
-    ],
-    links: [],
-    featured: false,
+    stack: ["React 19", "Zustand", "TanStack Query", ".NET", "OpenAI", "AWS"],
+    repos: [],
+    pending: ["Confirmar tipo (¿laboral o personal?), año y si hay repo."],
   },
   {
     id: 6,
-    badge: { es: "Backend · Legacy", en: "Backend · Legacy" },
-    badgeColor: "amber",
+    placement: "table",
+    status: "done",
+    kind: "work",
+    year: 2025,
+    categories: ["back"],
     title: {
       es: "Análisis y modernización de sistema legacy",
       en: "Legacy system analysis and modernization",
     },
     description: {
-      es: "Análisis técnico de un sistema legacy en C# y Visual Basic para planificar su migración a una arquitectura moderna. Mantenimiento y soporte en producción sobre IIS y SQL Server.",
-      en: "Technical analysis of a legacy system in C# and Visual Basic to plan its migration to a modern architecture. Production maintenance and support on IIS and SQL Server.",
+      es: "Análisis técnico de un sistema legacy en C# y Visual Basic para planificar su migración a una arquitectura moderna. Mantenimiento en producción sobre IIS y SQL Server.",
+      en: "Technical analysis of a legacy C# and Visual Basic system to plan its migration to a modern architecture. Production maintenance on IIS and SQL Server.",
     },
     metrics: [],
-    stack: ["C#", "Visual Basic", "IIS", "SQL Server", "Legacy Migration"],
-    links: [],
-    featured: false,
+    stack: ["C#", "Visual Basic", "IIS", "SQL Server"],
+    repos: [],
+    pending: ["Confirmar año."],
   },
 ]);
+
+// Grid slots still waiting for content. Dev-only, like `pending`.
+export const gridTodo: string[] = [
+  "4º proyecto de la grilla: el de patrones de diseño (prueba técnica). Falta toda la plantilla.",
+];

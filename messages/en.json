@@ -36,7 +36,39 @@
     }
   },
   "Projects": {
-    "sectionLabel": "What I've built"
+    "sectionLabel": "What I've built",
+    "subtitle": "Projects with verifiable evidence: repository, demo or case study.",
+    "filterBy": "Filter by",
+    "filterLabel": "Filter projects by category",
+    "filters": {
+      "all": "All",
+      "front": "Frontend",
+      "back": "Backend",
+      "data": "Data",
+      "ops": "DevOps",
+      "ai": "AI"
+    },
+    "count": "{shown} of {total} projects · active filter: {filter}",
+    "empty": "No projects in this category yet.",
+    "status": {
+      "done": "Completed",
+      "wip": "In progress",
+      "prod": "In production"
+    },
+    "kind": {
+      "thesis": "Thesis",
+      "technicalTest": "Technical test",
+      "academic": "Academic",
+      "personal": "Personal",
+      "work": "Work"
+    },
+    "links": {
+      "repo": "Repository",
+      "demo": "Live demo",
+      "video": "Video walkthrough",
+      "caseStudy": "Read case study"
+    },
+    "imageAlt": "Screenshot of {title}"
   },
   "Stack": {
     "sectionLabel": "What I work with",

@@ -5,14 +5,16 @@ import { experiences } from "./experience";
 
 const validProject = {
   id: 1,
-  badge: { es: "Backend", en: "Backend" },
-  badgeColor: "accent",
+  placement: "grid",
+  status: "done",
+  kind: "personal",
+  year: 2026,
+  categories: ["back"],
   title: { es: "Título", en: "Title" },
   description: { es: "Descripción", en: "Description" },
   metrics: [],
   stack: ["C#"],
-  links: [{ label: "GitHub", href: "https://github.com/Carlou134/webapi" }],
-  featured: false,
+  repos: [{ label: "GitHub", href: "https://github.com/Carlou134/webapi" }],
 };
 
 const validExperience = {
@@ -35,16 +37,34 @@ describe("content schemas", () => {
     expect(projectsSchema.safeParse([broken]).success).toBe(false);
   });
 
-  it("rejects a project with an unknown badge color", () => {
-    const broken = { ...validProject, badgeColor: "red" };
+  it("rejects a project with an unknown status", () => {
+    const broken = { ...validProject, status: "abandoned" };
     expect(projectsSchema.safeParse([broken]).success).toBe(false);
   });
 
-  it("rejects a project link that is not a URL", () => {
+  it("rejects a project with no filter category", () => {
+    const broken = { ...validProject, categories: [] };
+    expect(projectsSchema.safeParse([broken]).success).toBe(false);
+  });
+
+  it("rejects a repo link that is not a URL", () => {
     const broken = {
       ...validProject,
-      links: [{ label: "GitHub", href: "not a url" }],
+      repos: [{ label: "GitHub", href: "not a url" }],
     };
+    expect(projectsSchema.safeParse([broken]).success).toBe(false);
+  });
+
+  it("rejects a demo whose liveUntil is not an ISO date", () => {
+    const broken = {
+      ...validProject,
+      demo: { href: "https://example.com", liveUntil: "1 de diciembre" },
+    };
+    expect(projectsSchema.safeParse([broken]).success).toBe(false);
+  });
+
+  it("rejects a case study slug that isn't URL-safe", () => {
+    const broken = { ...validProject, caseSlug: "Mi Tesis" };
     expect(projectsSchema.safeParse([broken]).success).toBe(false);
   });
 
