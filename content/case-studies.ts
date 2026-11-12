@@ -24,7 +24,7 @@ export interface CaseStudy {
   video: { mock: true; note: string };
   results: { value: string; label: string; mock?: boolean }[];
   tradeoff: string;
-  validation: { mock: true; text: string };
+  validation: string;
   learnings: string[];
 }
 
@@ -113,17 +113,24 @@ export const caseStudies: CaseStudy[] = [
     ],
     screenshots: [
       {
-        src: "/tesis.png",
-        caption: "Cola de alertas con clasificación del modelo y risk score.",
-      },
-      {
+        src: "/cola-alertas.png",
         caption:
-          "Detalle de una alerta con la explicación SHAP y técnicas MITRE.",
-        mock: true,
+          "Cola de alertas ordenada por prioridad, con la clasificación del modelo y el risk score.",
       },
       {
-        caption: "Conector Splunk configurado y sincronizando.",
-        mock: true,
+        src: "/detalle-alerta.png",
+        caption:
+          "Detalle de una alerta maliciosa: probabilidades por clase, risk score y acción del sistema.",
+      },
+      {
+        src: "/graficos-shap.png",
+        caption:
+          "Explicación SHAP de las dos etapas: qué features empujan la alerta hacia malicioso y cuáles la alejan.",
+      },
+      {
+        src: "/conexion-splunk.png",
+        caption:
+          "Conector real con Splunk: polling cada 5 minutos y sincronización incremental.",
       },
     ],
     snippet: {
@@ -167,14 +174,15 @@ def pipeline_normalize_view(request):
         label: "recall en alertas maliciosas (19 de 1,800 se escapan)",
       },
       { value: "0.83", label: "F1-macro sobre 6,600 alertas de prueba" },
-      { value: "119", label: "tests mapeados a 30 historias de usuario de QA" },
+      {
+        value: "−40.5%",
+        label: "tiempo de revisión por alerta (11.65 → 6.93 min, 12 analistas)",
+      },
     ],
     tradeoff:
       "El sesgo hacia el recall tiene un costo explícito: 527 alertas benignas se escalan como maliciosas en el set de prueba. Es una decisión, no un accidente: en triaje, un falso positivo cuesta un minuto del analista; un falso negativo, un ataque sin detectar.",
-    validation: {
-      mock: true,
-      text: "Validado con 20 analistas: el tiempo de triaje por alerta bajó de X a Y minutos. (Falta: la métrica medida y si eran analistas de SOCs reales.)",
-    },
+    validation:
+      "Lo validamos con un experimento intrasujeto: 12 analistas N1, N2 y N3 de un SOC de Lima trabajaron con alertas históricas reales de 2025, primero sin el sistema y después con él. El tiempo de revisión bajó 40.5%, la exactitud de clasificación pasó de 95% a 97.5% y el cumplimiento de SLA de 92.5% a 97.5%. En la encuesta ISO/IEC 25010 obtuvo 4.30 sobre 5, con la explicabilidad SHAP entre lo mejor valorado y la fiabilidad como punto más débil. Con 12 participantes, los resultados son descriptivos, no estadísticamente concluyentes.",
     learnings: [
       "SHAP: aprendí a hacer explicable un modelo de árboles, y que en seguridad la explicación es lo que hace que el analista use el modelo.",
       "Desplegaría el modelo como un servicio aparte (por ejemplo, con FastAPI) en lugar de dentro del monolito Django: el modelo se reentrena y versiona a otro ritmo que la app, y separarlo permite escalarlo y cambiarlo sin redeployar todo.",

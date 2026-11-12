@@ -32,14 +32,18 @@ describe("CaseStudy (preview)", () => {
     render(<CaseStudy data={data} />);
     const mocks = screen.getAllByTestId("mock-block");
     const mockShots = data.screenshots.filter((s) => s.mock).length;
-    // Mock screenshots + the video + the analyst validation.
-    expect(mocks).toHaveLength(mockShots + 2);
-    expect(mocks.some((m) => within(m).queryByText(/20 analistas/))).toBe(true);
+    // Mock screenshots + the video.
+    expect(mocks).toHaveLength(mockShots + 1);
+    expect(mocks.some((m) => within(m).queryByText(/video walkthrough/))).toBe(
+      true,
+    );
   });
 
-  it("keeps the real metrics outside the MOCK blocks", () => {
+  it("keeps the real metrics and the validation outside the MOCK blocks", () => {
     render(<CaseStudy data={data} />);
     const recall = screen.getByText("98.9%");
     expect(recall.closest("[data-testid='mock-block']")).toBeNull();
+    const validation = screen.getByText(/12 analistas N1, N2 y N3/);
+    expect(validation.closest("[data-testid='mock-block']")).toBeNull();
   });
 });

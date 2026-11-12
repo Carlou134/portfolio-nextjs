@@ -45,7 +45,10 @@ describe("Projects", () => {
     expect(within(card).getByText("2026 · Tesis")).toBeInTheDocument();
     expect(within(card).getByText("98.9%")).toBeInTheDocument();
     expect(within(card).getByText("Recall en maliciosos")).toBeInTheDocument();
-    expect(within(card).getByText("119")).toBeInTheDocument();
+    expect(within(card).getByText("−40.5%")).toBeInTheDocument();
+    expect(
+      within(card).getByText("Tiempo de revisión (12 analistas)"),
+    ).toBeInTheDocument();
   });
 
   it("labels a technical test as such, not as a client project", () => {

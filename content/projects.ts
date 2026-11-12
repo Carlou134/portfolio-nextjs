@@ -30,11 +30,14 @@ export const projects: Project[] = projectsSchema.parse([
         value: "98.9%",
         label: { es: "Recall en maliciosos", en: "Recall on malicious" },
       },
-      { value: "0.83", label: { es: "F1-macro", en: "F1-macro" } },
       {
-        value: "119",
-        label: { es: "Tests automatizados", en: "Automated tests" },
+        value: "−40.5%",
+        label: {
+          es: "Tiempo de revisión (12 analistas)",
+          en: "Review time (12 analysts)",
+        },
       },
+      { value: "0.83", label: { es: "F1-macro", en: "F1-macro" } },
     ],
     stack: [
       "Python",
@@ -46,7 +49,7 @@ export const projects: Project[] = projectsSchema.parse([
       "Azure",
       "Claude API",
     ],
-    image: "/tesis.png",
+    image: "/login_tesis.png",
     repos: [
       {
         label: "GitHub",
@@ -58,11 +61,10 @@ export const projects: Project[] = projectsSchema.parse([
       en: "Degree thesis · UPC · Built the whole system; dataset, diagrams and Scrum management in a team with Giancarlo Moreno.",
     },
     pending: [
-      "Demo en vivo: URL del deploy en Azure + liveUntil (los créditos UPC vencen a inicios de diciembre).",
       "Video walkthrough con voz (opcional; la demo sin voz va en `demo`, no acá).",
       "Case study (commits 37–42): al publicarlo, agregar caseSlug.",
       "Capturas para el case study: detalle de alerta con SHAP y conector Splunk.",
-      "Validación con 20 analistas: ¿métrica medida? ¿analistas de SOCs reales?",
+      "Conteo de tests: README dice 119, docs/technical.md dice 153. Confirmar con pytest.",
     ],
   },
   {

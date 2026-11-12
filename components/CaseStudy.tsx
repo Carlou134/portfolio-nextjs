@@ -166,25 +166,37 @@ export default function CaseStudy({ data }: { data: CaseStudyData }) {
         </Section>
 
         <Section id="cs-capturas" title="Capturas">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* One column at full article width: these are dense UI screenshots,
+              and at half width their text is unreadable. Each one links to the
+              original PNG, because next/image serves a resized copy. */}
+          <div className="flex flex-col gap-8">
             {data.screenshots.map((s) => {
               const frame = (
                 <figure>
-                  <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-bg-secondary flex items-center justify-center">
-                    {s.src ? (
+                  {s.src ? (
+                    <a
+                      href={s.src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${s.caption} (abrir en tamaño completo)`}
+                      className="block rounded-lg overflow-hidden border border-border transition-colors hover:border-brand/45"
+                    >
                       <Image
                         src={s.src}
                         alt={s.caption}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 430px"
-                        className="object-cover object-top"
+                        width={1920}
+                        height={1032}
+                        sizes="(max-width: 900px) 100vw, 852px"
+                        className="w-full h-auto"
                       />
-                    ) : (
+                    </a>
+                  ) : (
+                    <div className="w-full aspect-video rounded-lg border border-border bg-bg-secondary flex items-center justify-center">
                       <span className="font-mono text-xs text-text-muted">
                         captura pendiente
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   <figcaption className="text-xs text-text-muted mt-2">
                     {s.caption}
                   </figcaption>
@@ -234,9 +246,7 @@ export default function CaseStudy({ data }: { data: CaseStudyData }) {
             ))}
           </div>
           <p className={prose}>{data.tradeoff}</p>
-          <Mock>
-            <p className="text-sm text-text-primary">{data.validation.text}</p>
-          </Mock>
+          <p className={prose}>{data.validation}</p>
           <h3 className="font-sans font-medium text-[19px] mt-2">
             Aprendizajes
           </h3>
