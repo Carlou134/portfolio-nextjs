@@ -104,7 +104,7 @@ export const projects: Project[] = projectsSchema.parse([
   {
     id: 7,
     placement: "grid",
-    status: "wip",
+    status: "done",
     kind: "academic",
     year: 2026,
     categories: ["back", "ops"],
@@ -113,18 +113,28 @@ export const projects: Project[] = projectsSchema.parse([
       en: "SOC alert simulator",
     },
     description: {
-      es: "Worker service en .NET que genera alertas de seguridad sintéticas y las envía a Splunk, para poblar dashboards y probar la ingesta del sistema de la tesis.",
-      en: ".NET worker service that generates synthetic security alerts and ships them to Splunk, to populate dashboards and exercise the thesis system's ingestion.",
+      es: "Worker Service en .NET 8 que cumple el rol de fuente SIEM para la tesis: recibe un dataset de alertas por una Minimal API y lo envía a Splunk por HEC en lotes NDJSON, como lo haría un firewall o un EDR. Cada alerta se envía una sola vez y un upload nuevo despierta al worker sin esperar el siguiente ciclo.",
+      en: ".NET 8 Worker Service that plays the SIEM data source for the thesis: it takes an alert dataset through a Minimal API and streams it into Splunk via HEC in NDJSON batches, the way a firewall or an EDR would. Each alert is sent exactly once, and a new upload wakes the worker instead of waiting for the next tick.",
     },
     metrics: [],
-    stack: ["C#", ".NET Worker", "Splunk"],
-    repos: [],
+    stack: [
+      "C#",
+      ".NET 8",
+      "Minimal API",
+      "Splunk HEC",
+      "Serilog",
+      "CsvHelper",
+      "xUnit",
+    ],
+    image: "/worker-card.png",
+    repos: [
+      {
+        label: "GitHub",
+        href: "https://github.com/Carlou134/soc-alert-simulator-worker",
+      },
+    ],
     pending: [
-      "Confirmar la descripción (la armé con lo que sé: worker .NET → Splunk).",
-      "Estado real: ¿terminado o en desarrollo?",
-      "Repo público (URL).",
-      "Stack completo y 2–3 decisiones técnicas.",
-      "Imagen: dashboard de Splunk poblado o diagrama del flujo (un worker no tiene UI).",
+      "Docs del worker desactualizadas: el README dice 'local dev today' y architecture.md que Django no consume de Splunk; hoy el worker corre en Azure y la tesis tiene el conector real.",
     ],
   },
   // ── "More projects" table (rendered in commit 33) ────────────────────────
