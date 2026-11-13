@@ -274,16 +274,38 @@ export const projects: Project[] = projectsSchema.parse([
     placement: "table",
     status: "done",
     kind: "academic",
-    year: 2025,
+    year: 2023,
     categories: ["front", "back"],
-    title: { es: "DentiBrook", en: "DentiBrook" },
-    description: { es: "Pendiente.", en: "Pending." },
+    title: {
+      es: "DentiBrook: pacientes y odontólogos",
+      en: "DentiBrook: patients and dentists",
+    },
+    description: {
+      es: "Plataforma en equipo que conecta pacientes con odontólogos: reserva de citas, historial clínico, tratamientos y reseñas. API REST con JWT y roles por tipo de usuario (paciente u odontólogo), cliente en Angular y despliegue en Heroku.",
+      en: "Team platform connecting patients with dentists: appointment booking, medical history, treatments and reviews. REST API with JWT and per-user-type roles (patient or dentist), an Angular client and Heroku deployment.",
+    },
     metrics: [],
-    stack: ["Pendiente"],
-    repos: [],
+    stack: [
+      "Java 17",
+      "Spring Boot",
+      "Spring Security",
+      "JWT",
+      "PostgreSQL",
+      "Angular 16",
+      "Angular Material",
+    ],
+    repos: [
+      {
+        label: "Frontend",
+        href: "https://github.com/Carlou134/DentiBrook_Frontend",
+      },
+      {
+        label: "Backend",
+        href: "https://github.com/Carlou134/DentiBrook_Backend",
+      },
+    ],
     pending: [
-      "Descripción: agenda de citas y herramientas para odontólogos (confirmar alcance).",
-      "Stack, año, repo y tu parte si fue en equipo.",
+      "Tu parte: el informe te atribuye usuarios, consultas, GitHub y despliegue, pero en los repos tenés la mayoría de los commits (4 personas en total). ¿Cómo lo querés contar?",
     ],
   },
   {
