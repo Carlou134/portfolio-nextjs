@@ -53,7 +53,17 @@ describe("Projects", () => {
 
   it("labels a technical test as such, not as a client project", () => {
     renderProjects("es");
-    expect(screen.getByText("2026 · Prueba técnica")).toBeInTheDocument();
+    for (const title of [
+      "Integración TMS-OMS en tiempo real",
+      "Sistema de gestión de órdenes",
+    ]) {
+      const card = screen
+        .getByRole("heading", { name: title })
+        .closest("article")!;
+      expect(
+        within(card).getByText("2026 · Prueba técnica"),
+      ).toBeInTheDocument();
+    }
   });
 
   it("links to the thesis repository", () => {

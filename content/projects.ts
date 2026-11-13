@@ -68,6 +68,53 @@ export const projects: Project[] = projectsSchema.parse([
     ],
   },
   {
+    id: 8,
+    placement: "grid",
+    status: "done",
+    kind: "technicalTest",
+    year: 2026,
+    categories: ["back"],
+    title: {
+      es: "Integración TMS-OMS en tiempo real",
+      en: "Real-time TMS-OMS integration",
+    },
+    description: {
+      es: "Sincroniza el estado de los pedidos entre un TMS externo y el OMS de una empresa de logística. Recibe los eventos por webhook descartando duplicados, aplica las reglas de negocio en un aggregate y, de forma asíncrona, registra el historial, descarga las evidencias y notifica a cada cliente en su propio formato, con reintentos, Outbox y cola de mensajes fallidos.",
+      en: "Syncs order status between an external TMS and a logistics company's OMS. It receives events by webhook while discarding duplicates, enforces the business rules in an aggregate and, asynchronously, records the history, downloads the evidence and notifies each client in its own format, with retries, an Outbox and a dead letter queue.",
+    },
+    metrics: [
+      {
+        value: "8/8",
+        label: { es: "Requisitos del enunciado", en: "Brief requirements" },
+      },
+      {
+        value: "12",
+        label: { es: "Patrones justificados", en: "Justified patterns" },
+      },
+    ],
+    stack: [
+      "C#",
+      ".NET 10",
+      "ASP.NET Core",
+      "Clean Architecture",
+      "Polly",
+      "Channels",
+      "xUnit",
+    ],
+    image: "/tms-retries-card.png",
+    repos: [
+      {
+        label: "GitHub",
+        href: "https://github.com/Carlou134/tms-oms-integration",
+      },
+    ],
+    footer: {
+      es: "Prueba técnica · Diagramas, decisiones técnicas y limitaciones conocidas documentadas en el repo.",
+      en: "Technical test · Diagrams, technical decisions and known limitations documented in the repo.",
+    },
+    pending: [],
+  },
+  {
     id: 3,
     placement: "grid",
     status: "done",
@@ -227,6 +274,4 @@ export const projects: Project[] = projectsSchema.parse([
 ]);
 
 // Grid slots still waiting for content. Dev-only, like `pending`.
-export const gridTodo: string[] = [
-  "4º proyecto de la grilla: el de patrones de diseño (prueba técnica). Falta toda la plantilla.",
-];
+export const gridTodo: string[] = [];
