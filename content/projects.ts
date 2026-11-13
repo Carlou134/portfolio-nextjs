@@ -244,8 +244,8 @@ export const projects: Project[] = projectsSchema.parse([
       en: "FacturaPro: discounted invoice portfolios",
     },
     description: {
-      es: "App full-stack para que una pyme descuente facturas y letras con un banco: calcula cuánto recibe de verdad después de intereses, comisiones e IGV, y la TCEA de la cartera en soles o dólares. Login con JWT, roles y reportes en PDF.",
-      en: "Full-stack app for an SME discounting invoices and bills of exchange with a bank: it calculates how much the company really receives after interest, fees and IGV tax, and the portfolio's TCEA in soles or dollars. JWT login, roles and PDF reports.",
+      es: "App para que una pyme descuente facturas y letras con un banco: calcula cuánto recibe de verdad después de intereses, comisiones e IGV, y la TCEA de la cartera en soles o dólares. Trabajo grupal en el que hice el desarrollo full-stack: login con JWT, roles y reportes en PDF.",
+      en: "App for an SME discounting invoices and bills of exchange with a bank: it calculates how much the company really receives after interest, fees and IGV tax, and the portfolio's TCEA in soles or dollars. Group project where I did the full-stack development: JWT login, roles and PDF reports.",
     },
     metrics: [],
     stack: [
@@ -264,10 +264,10 @@ export const projects: Project[] = projectsSchema.parse([
       },
       { label: "Backend", href: "https://github.com/Carlou134/TF_FINANZAS" },
     ],
-    pending: [
-      "Tu parte: el informe es del Grupo 02, pero casi todos los commits son tuyos. ¿Hiciste front y back solo?",
-      "Algoritmo con error, para contarlo si preguntan: la TCEA sale de los totales con exponente 360/360, o sea S/C − 1, sin anualizar por plazo. El README ya lo reconoce como limitación.",
-    ],
+    // Known flaw, ready for interviews: the TCEA comes from portfolio totals
+    // with a 360/360 exponent (just S/C − 1), so it isn't annualized by term.
+    // Both READMEs list it as a limitation.
+    pending: [],
   },
   {
     id: 9,
