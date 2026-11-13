@@ -122,15 +122,38 @@ export const projects: Project[] = projectsSchema.parse([
     year: 2026,
     categories: ["front", "back", "data", "ops"],
     title: {
-      es: "Sistema de gestión de órdenes",
-      en: "Order management system",
+      es: "Gestión de órdenes de compra",
+      en: "Purchase order management",
     },
     description: {
-      es: "SPA en React que consume una API en C#/.NET con arquitectura desacoplada. Base de datos MySQL en AWS RDS y despliegue automatizado en Azure App Service.",
-      en: "React SPA consuming a C#/.NET API with a decoupled architecture. MySQL database on AWS RDS and automated deployment on Azure App Service.",
+      es: "La prueba pedía un frontend en React y una API en Node/Express. Entregué además todos los puntos extra (catálogo de productos, cambio de estado y bloqueo de órdenes completadas) y los dos bonus: backend en .NET 8 con Clean Architecture y despliegue en la nube (Azure, Netlify y MySQL en AWS RDS). Frontend en React 19 + TypeScript con React Query y formularios con Zod; API con FluentValidation, ProblemDetails y auditoría automática.",
+      en: "The brief asked for a React frontend and a Node/Express API. I also delivered every extra point (product catalog, status changes and locking completed orders) and both bonus tracks: a .NET 8 backend with Clean Architecture and a cloud deployment (Azure, Netlify and MySQL on AWS RDS). React 19 + TypeScript frontend with React Query and Zod forms; API with FluentValidation, ProblemDetails and automatic auditing.",
     },
-    metrics: [],
-    stack: ["React", "C#", ".NET", "MySQL", "AWS RDS", "Azure"],
+    metrics: [
+      {
+        value: "3/3",
+        label: { es: "Puntos extra del enunciado", en: "Brief extra points" },
+      },
+      {
+        value: "2/2",
+        label: {
+          es: "Bonus tracks (.NET y nube)",
+          en: "Bonus tracks (.NET and cloud)",
+        },
+      },
+    ],
+    stack: [
+      "React 19",
+      "TypeScript",
+      "React Query",
+      "shadcn/ui",
+      ".NET 8",
+      "EF Core",
+      "MySQL",
+      "AWS RDS",
+      "Azure",
+    ],
+    image: "/order-management-home.png",
     repos: [
       {
         label: "Frontend",
@@ -141,12 +164,11 @@ export const projects: Project[] = projectsSchema.parse([
         href: "https://github.com/Carlou134/OrderManagementBackend",
       },
     ],
-    pending: [
-      "Captura nueva con el diseño actual (sin barra del navegador, 1600×900+).",
-      "Narrativa: qué pedía la prueba técnica y 2–3 decisiones técnicas que tomaste.",
-      "Confirmar año y estado.",
-      "Demo: ¿sigue vivo el deploy de Netlify? Si sí, URL + liveUntil.",
-    ],
+    footer: {
+      es: "Prueba técnica · Frontend y backend en repos separados, con decisiones técnicas documentadas.",
+      en: "Technical test · Frontend and backend in separate repos, with documented technical decisions.",
+    },
+    pending: [],
   },
   {
     id: 7,

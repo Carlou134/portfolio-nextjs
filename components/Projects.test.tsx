@@ -55,7 +55,7 @@ describe("Projects", () => {
     renderProjects("es");
     for (const title of [
       "Integración TMS-OMS en tiempo real",
-      "Sistema de gestión de órdenes",
+      "Gestión de órdenes de compra",
     ]) {
       const card = screen
         .getByRole("heading", { name: title })
