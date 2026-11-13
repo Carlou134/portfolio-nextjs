@@ -281,8 +281,8 @@ export const projects: Project[] = projectsSchema.parse([
       en: "DentiBrook: patients and dentists",
     },
     description: {
-      es: "Plataforma en equipo que conecta pacientes con odontólogos: reserva de citas, historial clínico, tratamientos y reseñas. API REST con JWT y roles por tipo de usuario (paciente u odontólogo), cliente en Angular y despliegue en Heroku.",
-      en: "Team platform connecting patients with dentists: appointment booking, medical history, treatments and reviews. REST API with JWT and per-user-type roles (patient or dentist), an Angular client and Heroku deployment.",
+      es: "Plataforma que conecta pacientes con odontólogos: reserva de citas, historial clínico, tratamientos y reseñas. En un equipo de 4, llevé el desarrollo y el despliegue: API REST con JWT y roles por tipo de usuario (paciente u odontólogo), cliente en Angular y deploy en Heroku.",
+      en: "Platform connecting patients with dentists: appointment booking, medical history, treatments and reviews. In a team of 4, I led development and deployment: a REST API with JWT and per-user-type roles (patient or dentist), an Angular client and Heroku deployment.",
     },
     metrics: [],
     stack: [
@@ -304,9 +304,7 @@ export const projects: Project[] = projectsSchema.parse([
         href: "https://github.com/Carlou134/DentiBrook_Backend",
       },
     ],
-    pending: [
-      "Tu parte: el informe te atribuye usuarios, consultas, GitHub y despliegue, pero en los repos tenés la mayoría de los commits (4 personas en total). ¿Cómo lo querés contar?",
-    ],
+    pending: [],
   },
   {
     id: 10,
