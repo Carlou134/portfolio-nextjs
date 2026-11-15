@@ -13,7 +13,11 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
 import Link from "next/link";
-import { CONTACT_INTENTS, type ContactIntent } from "@/lib/contact-schema";
+import {
+  CONTACT_INTENTS,
+  MIN_MESSAGE_LENGTH,
+  type ContactIntent,
+} from "@/lib/contact-schema";
 
 const EMAIL = "carlouvasquez134@gmail.com";
 // Most visitors are recruiters, so the form starts on a job offer.
@@ -146,6 +150,12 @@ export default function Contact() {
             aria-labelledby={`${fieldId}-heading`}
             noValidate
           >
+            {/* Said once, up front: every text field is required. `required`
+                on each control also makes screen readers announce it. */}
+            <p className="text-sm text-text-secondary mb-5">
+              {t("requiredNote")}
+            </p>
+
             {/* Native radios inside labels: arrow keys, focus and the
                 checked state come from the browser, the chips are just skin. */}
             <fieldset className="mb-5" disabled={isDisabled}>
@@ -190,6 +200,8 @@ export default function Contact() {
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
                 disabled={isDisabled}
+                required
+                autoComplete="name"
                 className="input"
               />
             </div>
@@ -210,6 +222,8 @@ export default function Contact() {
                   setFormData((prev) => ({ ...prev, email: e.target.value }))
                 }
                 disabled={isDisabled}
+                required
+                autoComplete="email"
                 className="input"
               />
             </div>
@@ -225,13 +239,22 @@ export default function Contact() {
                 id={`${fieldId}-message`}
                 placeholder={t("messagePlaceholder")}
                 rows={5}
+                aria-describedby={`${fieldId}-message-hint`}
                 value={formData.message}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, message: e.target.value }))
                 }
                 disabled={isDisabled}
+                required
+                minLength={MIN_MESSAGE_LENGTH}
                 className="input resize-none"
               />
+              <p
+                id={`${fieldId}-message-hint`}
+                className="font-mono text-xs text-text-muted"
+              >
+                {t("messageHint", { min: MIN_MESSAGE_LENGTH })}
+              </p>
             </div>
 
             {/* Botón / estado */}

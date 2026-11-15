@@ -134,7 +134,9 @@
     },
     "copyEmail": "Copy email",
     "copied": "Copied!",
-    "copyFailed": "Couldn't copy"
+    "copyFailed": "Couldn't copy",
+    "requiredNote": "All fields are required.",
+    "messageHint": "At least {min} characters."
   },
   "Footer": {
     "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Peru",

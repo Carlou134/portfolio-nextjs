@@ -275,4 +275,27 @@ describe("Contact form", () => {
       ).toHaveAttribute("href", "mailto:carlouvasquez134@gmail.com");
     });
   });
+
+  describe("required fields", () => {
+    it("says up front that every field is required", () => {
+      renderContact();
+      expect(
+        screen.getByText("Todos los campos son obligatorios."),
+      ).toBeInTheDocument();
+    });
+
+    it("marks each text field as required for assistive tech", () => {
+      renderContact();
+      for (const label of ["Nombre", "Email", "Mensaje"]) {
+        expect(screen.getByLabelText(label)).toBeRequired();
+      }
+    });
+
+    it("announces the message minimum before submitting", () => {
+      renderContact();
+      expect(screen.getByLabelText("Mensaje")).toHaveAccessibleDescription(
+        "Mínimo 10 caracteres.",
+      );
+    });
+  });
 });

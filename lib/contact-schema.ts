@@ -6,7 +6,8 @@ export type ContactError = "missing" | "email" | "short";
 // checks shape. Escaping user input is the mailer's responsibility, not this
 // schema's, so z.email() (stricter) would silently change what gets accepted.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_MESSAGE_LENGTH = 10;
+// Exported so the form can announce the rule before submit, not after.
+export const MIN_MESSAGE_LENGTH = 10;
 
 // Why the person is writing, so the inbox can be triaged at a glance. Optional
 // and forgiving: an older client that doesn't send it, or an unknown value,
