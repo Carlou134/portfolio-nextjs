@@ -6,8 +6,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
 import { experiences, type Experience } from "@/content/experience";
 
-const HIGHLIGHT_PATTERN =
-  /(\+10 (?:módulos|(?:enterprise )?modules)|20%|15%|40%)/g;
+// Only measured facts get emphasis; today that's the module count.
+const HIGHLIGHT_PATTERN = /(\+10 (?:módulos|modules))/g;
 
 function Highlighted({ text }: { text: string }) {
   // split() with a capturing group keeps the matches, always at odd indexes.

@@ -44,7 +44,7 @@ describe("About", () => {
   it("renders the three sourced metrics", () => {
     renderAbout("es");
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
-    for (const value of ["+10", "20%", "−40%"]) {
+    for (const value of ["+10", "−40.5%", "3"]) {
       expect(screen.getByText(value)).toBeInTheDocument();
     }
   });

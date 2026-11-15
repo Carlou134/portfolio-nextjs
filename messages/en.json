@@ -138,15 +138,15 @@
     "metrics": {
       "modules": {
         "value": "+10",
-        "label": "enterprise modules in production under Clean Architecture and CQRS (MSC)"
+        "label": "modules in production across five business areas (MSC)"
       },
-      "speed": {
-        "value": "20%",
-        "label": "estimated response-speed gain migrating jQuery to Angular (MSC)"
+      "thesis": {
+        "value": "−40.5%",
+        "label": "review time per alert with my thesis system, measured with 12 SOC analysts"
       },
-      "meetings": {
-        "value": "−40%",
-        "label": "coordination meetings with an internal Jira-style tool (Zoluxiones)"
+      "stacks": {
+        "value": "3",
+        "label": "ecosystems in production: .NET, React/Next.js and Kotlin"
       }
     }
   }

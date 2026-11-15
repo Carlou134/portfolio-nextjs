@@ -13,9 +13,10 @@ const fadeUp: Variants = {
   }),
 };
 
-// Every figure here is sourced from content/experience.ts — no invented
-// numbers. Years and English level live in the Hero, so they're left out.
-const metrics = ["modules", "speed", "meetings"] as const;
+// Only measured or countable facts: the module count (content/experience.ts),
+// the thesis experiment (content/case-studies.ts) and the stacks used at work.
+// Years and English level live in the Hero, so they're left out.
+const metrics = ["modules", "thesis", "stacks"] as const;
 
 export default function About() {
   const t = useTranslations("About");

@@ -1,6 +1,10 @@
 // Content-as-code: same rationale as content/projects.ts. Bilingual fields stay
 // inline as {es, en}, resolved with next-intl's useLocale() in Experience.tsx.
 // The shape is validated by content/schema.ts at import time.
+//
+// Every bullet must survive an interview question: no percentages without a
+// measurement behind them, and no client names (the robotics platform is
+// client work under NDA, so providers and the client stay generic).
 import { experiencesSchema, type Experience } from "./schema";
 
 export type { Experience } from "./schema";
@@ -8,7 +12,7 @@ export type { Experience } from "./schema";
 export const experiences: Experience[] = experiencesSchema.parse([
   {
     id: 1,
-    company: "Zoluxiones IT Services",
+    company: "Zoluxiones LATAM",
     role: {
       es: "Solutions Center of Excellence Associate",
       en: "Solutions Center of Excellence Associate",
@@ -17,81 +21,80 @@ export const experiences: Experience[] = experiencesSchema.parse([
     current: true,
     bullets: [
       {
-        es: "Desarrollo fullstack para soluciones robóticas, integrando APIs de terceros (IA, cloud, robótica).",
-        en: "Fullstack development for robotics solutions, integrating third-party APIs (AI, cloud, robotics).",
+        es: "Integro endpoints de proveedores de robots autónomos de limpieza con Kotlin y Ktor, dentro de la migración de la plataforma a servicios distribuidos con arquitectura hexagonal.",
+        en: "I integrate autonomous cleaning-robot provider endpoints with Kotlin and Ktor, as part of migrating the platform to distributed services with hexagonal architecture.",
       },
       {
-        es: "Aplicación de Clean Code, testing y buenas prácticas de ciberseguridad en el ciclo de desarrollo.",
-        en: "Applying Clean Code, testing, and cybersecurity best practices across the development cycle.",
+        es: "Construí un webhook que recibe telemetría en tiempo real: un script Python ejecuta comandos Linux en el robot y envía los datos a la API en Kotlin.",
+        en: "Built a webhook that receives real-time telemetry: a Python script runs Linux commands on the robot and sends the data to the Kotlin API.",
+      },
+      {
+        es: "Funcionalidades de gestión de robots: sesiones, mapas, programación de tareas y monitoreo, sobre PostgreSQL, Redis, MinIO y Docker.",
+        en: "Robot management features: sessions, maps, task scheduling and monitoring, on PostgreSQL, Redis, MinIO and Docker.",
+      },
+      {
+        es: "Levanto requerimientos directamente con los responsables de robótica, propongo diseños técnicos al líder técnico y presento los avances a gerencia. Hago code reviews puntuales.",
+        en: "I gather requirements directly with the robotics leads, propose technical designs to the tech lead and present progress to management. I also do occasional code reviews.",
+      },
+      {
+        es: "Actualmente desarrollo web scraping con Kotlin.",
+        en: "Currently building web scraping with Kotlin.",
       },
     ],
   },
   {
     id: 2,
-    company: "Zoluxiones Latam",
+    company: "Zoluxiones LATAM",
     role: {
-      es: "Practicante Pre Profesional de desarrollo",
-      en: "Pre-Professional Developer Intern",
+      es: "Practicante de desarrollo",
+      en: "Developer Intern",
     },
     period: { es: "Abr 2026 – Ago 2026", en: "Apr 2026 – Aug 2026" },
     current: false,
     bullets: [
       {
-        es: "Fullstack con React 19 en el frontend y C#/.NET (Clean Architecture, SOLID) en el backend — con SQL Server y MySQL corriendo en paralelo vía ADO.NET nativo.",
-        en: "Fullstack with React 19 on the front end and C#/.NET (Clean Architecture, SOLID) on the back — running SQL Server and MySQL side by side via native ADO.NET.",
+        es: "Frontend con React, Next.js, TypeScript, Zustand y TanStack Query, y APIs con C#/.NET y Kotlin bajo Clean Architecture y SOLID.",
+        en: "Front end with React, Next.js, TypeScript, Zustand and TanStack Query, and APIs with C#/.NET and Kotlin under Clean Architecture and SOLID.",
       },
       {
-        es: "Endpoints REST documentados con Swagger y control de acceso por roles a nivel de tabla. Sumé envío de correos con Azure Communication Services e IA con la API de OpenAI.",
-        en: "REST endpoints documented with Swagger and table-level role-based access control. Added email via Azure Communication Services and AI features through the OpenAI API.",
+        es: "Desarrollé un módulo de asignación y seguimiento de tareas que ordenó la distribución del trabajo y el seguimiento de avances en las reuniones Scrum.",
+        en: "Built a task assignment and tracking module that organized how work was split and how progress was followed in Scrum meetings.",
       },
       {
-        es: "Migré la base de datos completa de SQL Server a MySQL sin cortar el servicio — reescribiendo la capa de acceso a datos del backend.",
-        en: "Migrated the entire database from SQL Server to MySQL with zero downtime — rewriting the backend's data access layer.",
+        es: "Integré Azure Communication Services, WebSockets y APIs de proveedores robóticos, e hice migraciones de datos entre SQL Server, MySQL y PostgreSQL.",
+        en: "Integrated Azure Communication Services, WebSockets and robotics provider APIs, and ran data migrations across SQL Server, MySQL and PostgreSQL.",
       },
       {
-        es: "Encontré y eliminé un cuello de botella en la descarga de archivos desde AWS. De paso, dockericé PostgreSQL para tener entornos reproducibles.",
-        en: "Found and killed a bottleneck in file retrieval from AWS. Also dockerized PostgreSQL for reproducible environments.",
-      },
-      {
-        es: "Metí caché con Redis en el frontend Next.js/Node.js — 15% más rápido.",
-        en: "Added Redis caching to the Next.js/Node.js frontend — 15% faster.",
-      },
-      {
-        es: "Diseñamos en equipo una herramienta interna estilo Jira que le sacó 40% de reuniones de coordinación al equipo.",
-        en: "Built an internal Jira-style tool with the team that cut coordination meetings by 40%.",
-      },
-      {
-        es: "Modernicé un microservicio legacy a Kotlin con arquitectura hexagonal — puertos y adaptadores, Clean Code, tests obligatorios antes de cada deploy vía CI/CD con GitLab.",
-        en: "Modernized a legacy microservice to Kotlin with hexagonal architecture — ports and adapters, Clean Code, mandatory test coverage before every deploy via GitLab CI/CD.",
-      },
-      {
-        es: "App Android con WebSockets + API Kotlin con interfaz visual para controlar robots en tiempo real, con jobs que sincronizan cada 5 minutos con las APIs de los proveedores. Presenté el MVP directo a gerencia y clientes.",
-        en: "Android app with WebSockets + a Kotlin API with a visual interface for real-time robot control, with jobs syncing every 5 minutes against provider APIs. Presented the MVP straight to management and clients.",
+        es: "Calidad en cada cambio: Git hooks con Prettier, ESLint, Commitlint y ktlint, y GitHub Actions con tests, cobertura y builds Docker.",
+        en: "Quality on every change: Git hooks with Prettier, ESLint, Commitlint and ktlint, and GitHub Actions running tests, coverage and Docker builds.",
       },
     ],
   },
   {
     id: 3,
     company: "MSC Perú",
-    role: { es: "Practicante de IT", en: "IT Intern" },
-    period: { es: "Dic 2023 – Feb 2026", en: "Dec 2023 – Feb 2026" },
+    role: {
+      es: "Practicante de desarrollo IT",
+      en: "IT Developer Intern",
+    },
+    period: { es: "Dic 2023 – Mar 2026", en: "Dec 2023 – Mar 2026" },
     current: false,
     bullets: [
       {
-        es: "Construcción de +10 módulos empresariales en producción bajo Clean Architecture y CQRS.",
-        en: "Built +10 enterprise modules in production under Clean Architecture and CQRS.",
+        es: "+10 módulos en producción para Comercial, Administración, Tráfico, Operaciones y RR. HH., con C#, ASP.NET MVC/Core, Entity Framework y SQL Server.",
+        en: "+10 modules in production for Sales, Administration, Traffic, Operations and HR, with C#, ASP.NET MVC/Core, Entity Framework and SQL Server.",
       },
       {
-        es: "Migración de sistemas legacy (jQuery) a Angular — mejora estimada del 20% en velocidad de respuesta.",
-        en: "Migrated legacy systems (jQuery) to Angular — an estimated 20% improvement in response speed.",
+        es: "APIs REST, procesamiento de archivos CSV, reportes en Excel y PDF, y automatización de procesos operativos.",
+        en: "REST APIs, CSV file processing, Excel and PDF reports, and automation of operational processes.",
       },
       {
-        es: "Automatización con Python/Pandas y Power Automate.",
-        en: "Automation with Python/Pandas and Power Automate.",
+        es: "Del requerimiento a producción: levantamiento, documentación técnica, pruebas UAT y despliegues en IIS, bajo Scrum con Azure DevOps.",
+        en: "From requirement to production: gathering, technical documentation, UAT and IIS deployments, under Scrum with Azure DevOps.",
       },
       {
-        es: "Gestión en Azure DevOps bajo Scrum.",
-        en: "Project management in Azure DevOps under Scrum.",
+        es: "Mantenimiento de aplicaciones legacy en VB.NET y Windows Forms, y modernización de frontends de jQuery a Angular.",
+        en: "Maintained legacy VB.NET and Windows Forms applications, and modernized front ends from jQuery to Angular.",
       },
     ],
   },
