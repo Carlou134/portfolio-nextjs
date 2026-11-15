@@ -57,7 +57,7 @@ export default function About() {
             <p className="font-mono text-[26px] text-accent leading-tight mb-1">
               {t(`metrics.${key}.value`)}
             </p>
-            <p className="text-sm text-text-secondary leading-snug">
+            <p className="text-base text-text-secondary leading-snug">
               {t(`metrics.${key}.label`)}
             </p>
           </li>

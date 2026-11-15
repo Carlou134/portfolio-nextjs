@@ -22,7 +22,7 @@ export default function MoreProjects() {
   return (
     <section id="mas-proyectos" className="section">
       <h2 className="section-heading">{t("sectionLabel")}</h2>
-      <p className="text-text-secondary text-[15.5px] leading-[1.6] max-w-[62ch] -mt-4 mb-6">
+      <p className="text-text-secondary text-base leading-[1.6] max-w-[62ch] -mt-4 mb-6">
         {t("subtitle")}
       </p>
 
@@ -42,7 +42,7 @@ export default function MoreProjects() {
               <h3 className="font-sans font-medium text-lg text-text-primary leading-snug">
                 {project.title[locale]}
               </h3>
-              <p className="text-[15px] text-text-secondary leading-relaxed max-w-[72ch]">
+              <p className="text-base text-text-secondary leading-relaxed max-w-[72ch]">
                 {project.description[locale]}
               </p>
               <ul

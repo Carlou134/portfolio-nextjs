@@ -110,7 +110,7 @@ export default function CaseStudy({ data }: { data: CaseStudyData }) {
                   </span>
                   {d.title}
                 </h3>
-                <p className="text-[15px] text-text-secondary leading-relaxed">
+                <p className="text-base text-text-secondary leading-relaxed">
                   {d.body}
                 </p>
               </li>
@@ -133,7 +133,7 @@ export default function CaseStudy({ data }: { data: CaseStudyData }) {
                     </span>
                   )}
                   <div className="flex-1 flex flex-col gap-2.5">
-                    <p className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
+                    <p className="font-mono text-xs uppercase tracking-widest text-text-muted">
                       {col.stage}
                     </p>
                     {col.boxes.map((b) => (
@@ -241,7 +241,7 @@ export default function CaseStudy({ data }: { data: CaseStudyData }) {
             {data.results.map((r) => (
               <div key={r.value} className="pl-4 border-l-2 border-brand/60">
                 <p className="font-mono text-3xl text-accent">{r.value}</p>
-                <p className="text-sm text-text-secondary mt-1">{r.label}</p>
+                <p className="text-base text-text-secondary mt-1">{r.label}</p>
               </div>
             ))}
           </div>

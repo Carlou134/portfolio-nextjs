@@ -45,7 +45,7 @@ export default function Education() {
             className="group card flex flex-col gap-2 hover:border-brand/45 motion-safe:hover:-translate-y-0.5"
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-accent">
+              <p className="font-mono text-xs uppercase tracking-widest text-accent">
                 {t(`cards.${key}.kicker`)}
               </p>
               {/* Institution reds clash with the indigo palette, so logos sit
@@ -63,7 +63,7 @@ export default function Education() {
             <h3 className="font-sans font-medium text-lg text-text-primary text-balance leading-snug">
               {t(`cards.${key}.title`)}
             </h3>
-            <p className="text-sm text-text-secondary leading-relaxed flex-1 whitespace-pre-line">
+            <p className="text-base text-text-secondary leading-relaxed flex-1 whitespace-pre-line">
               {t(`cards.${key}.body`)}
             </p>
             {hasNote && (

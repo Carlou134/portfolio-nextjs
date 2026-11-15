@@ -96,7 +96,7 @@ export default function Stack() {
   return (
     <section id="stack" className="section">
       <h2 className="section-heading">{t("sectionLabel")}</h2>
-      <p className="text-text-secondary text-[15.5px] leading-[1.6] max-w-[62ch] -mt-4 mb-8">
+      <p className="text-text-secondary text-base leading-[1.6] max-w-[62ch] -mt-4 mb-8">
         {t("subtitle")}
       </p>
 

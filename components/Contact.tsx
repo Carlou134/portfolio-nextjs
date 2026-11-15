@@ -135,7 +135,9 @@ export default function Contact() {
           >
             {t("heading")}
           </h2>
-          <p className="text-sm text-text-secondary mb-8">{t("subheading")}</p>
+          <p className="text-base text-text-secondary mb-8">
+            {t("subheading")}
+          </p>
 
           {/* noValidate: validation is the server's job (bilingual messages via
               /api/contact), so the browser's own bubbles must not pre-empt it. */}

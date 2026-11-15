@@ -63,7 +63,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
               {exp.period[locale]}
             </span>
             {exp.current && (
-              <span className="badge-accent text-[10px] px-2 py-0.5">
+              <span className="badge-accent text-xs px-2 py-0.5">
                 {t("current")}
               </span>
             )}
@@ -74,9 +74,9 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
           {exp.bullets.map((bullet, i) => (
             <li
               key={i}
-              className="flex items-start gap-2 text-sm text-text-secondary leading-relaxed"
+              className="flex items-start gap-2 text-base text-text-secondary leading-relaxed"
             >
-              <span className="mt-2 w-1 h-1 rounded-full flex-shrink-0 bg-accent" />
+              <span className="mt-[11px] w-1 h-1 rounded-full shrink-0 bg-accent" />
               <span>
                 <Highlighted text={bullet[locale]} />
               </span>

@@ -157,7 +157,7 @@ function ProjectCard({
       <h3 className="font-sans font-medium text-xl text-text-primary text-balance leading-snug">
         {title}
       </h3>
-      <p className="text-[15px] text-text-secondary leading-relaxed">
+      <p className="text-base text-text-secondary leading-relaxed">
         {project.description[locale]}
       </p>
 
@@ -243,7 +243,7 @@ export default function Projects() {
   return (
     <section id="proyectos" className="section">
       <h2 className="section-heading">{t("sectionLabel")}</h2>
-      <p className="text-text-secondary text-[15.5px] leading-[1.6] max-w-[62ch] -mt-4 mb-6">
+      <p className="text-text-secondary text-base leading-[1.6] max-w-[62ch] -mt-4 mb-6">
         {t("subtitle")}
       </p>
 
