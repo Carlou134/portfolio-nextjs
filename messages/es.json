@@ -70,6 +70,11 @@
     },
     "imageAlt": "Captura de {title}"
   },
+  "MoreProjects": {
+    "sectionLabel": "Más proyectos",
+    "subtitle": "Proyectos más chicos: pruebas técnicas, trabajos académicos y práctica. Todos con repositorio público.",
+    "stackLabel": "Tecnologías"
+  },
   "Stack": {
     "sectionLabel": "Con qué trabajo",
     "subtitle": "Agrupado por capa. En color, lo que uso a diario; el resto va en orden de uso.",

@@ -70,6 +70,11 @@
     },
     "imageAlt": "Screenshot of {title}"
   },
+  "MoreProjects": {
+    "sectionLabel": "More projects",
+    "subtitle": "Smaller projects: technical tests, academic work and practice. All with a public repository.",
+    "stackLabel": "Technologies"
+  },
   "Stack": {
     "sectionLabel": "What I work with",
     "subtitle": "Grouped by layer. Highlighted is what I use daily; the rest follows in order of use.",
