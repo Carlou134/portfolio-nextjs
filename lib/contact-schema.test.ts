@@ -14,7 +14,29 @@ describe("parseContact", () => {
       email: " a@b.com ",
       message: "  Quiero hablar de un proyecto  ",
     });
-    expect(result).toEqual({ success: true, data: valid });
+    expect(result).toEqual({
+      success: true,
+      data: { ...valid, intent: "other" },
+    });
+  });
+
+  it("keeps a known intent", () => {
+    const result = parseContact({ ...valid, intent: "job" });
+    expect(result).toEqual({
+      success: true,
+      data: { ...valid, intent: "job" },
+    });
+  });
+
+  it.each([
+    ["an unknown intent", "hack"],
+    ["a non-string intent", 42],
+  ])("falls back to 'other' for %s instead of rejecting", (_label, intent) => {
+    const result = parseContact({ ...valid, intent });
+    expect(result).toEqual({
+      success: true,
+      data: { ...valid, intent: "other" },
+    });
   });
 
   it.each([
@@ -66,7 +88,7 @@ describe("parseContact", () => {
     const email = 'a"onmouseover="x@b.com';
     expect(parseContact({ ...valid, email })).toEqual({
       success: true,
-      data: { ...valid, email },
+      data: { ...valid, email, intent: "other" },
     });
   });
 });

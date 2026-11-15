@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
-import { parseContact } from "@/lib/contact-schema";
+import { parseContact, type ContactIntent } from "@/lib/contact-schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -18,6 +18,14 @@ const messages = {
     es: "Error al enviar el mensaje.",
     en: "Failed to send the message.",
   },
+};
+
+// The email goes to me, so the labels stay in Spanish whatever the sender's
+// language. They lead the subject so the inbox sorts itself.
+const intentLabels: Record<ContactIntent, string> = {
+  job: "Oferta laboral",
+  freelance: "Freelance",
+  other: "Otro",
 };
 
 const htmlEscapes: Record<string, string> = {
@@ -47,7 +55,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, message } = parsed.data;
+    const { name, email, message, intent } = parsed.data;
+    const intentLabel = intentLabels[intent];
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
@@ -55,7 +64,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
       to: "carlouvasquez134@gmail.com",
-      subject: `Nuevo mensaje de ${name} — Portfolio`,
+      subject: `[${intentLabel}] Nuevo mensaje de ${name} — Portfolio`,
       html: `
         <div style="font-family: monospace;
                     max-width: 600px;
@@ -73,6 +82,10 @@ export async function POST(req: NextRequest) {
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">De:</span>
             ${safeName}
+          </p>
+          <p style="margin-bottom: 8px;">
+            <span style="color: #9CA3AF;">Motivo:</span>
+            ${intentLabel}
           </p>
           <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">Email:</span>

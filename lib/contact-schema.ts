@@ -8,6 +8,12 @@ export type ContactError = "missing" | "email" | "short";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_MESSAGE_LENGTH = 10;
 
+// Why the person is writing, so the inbox can be triaged at a glance. Optional
+// and forgiving: an older client that doesn't send it, or an unknown value,
+// falls back to "other" instead of rejecting a real message over a label.
+export const CONTACT_INTENTS = ["job", "freelance", "other"] as const;
+export type ContactIntent = (typeof CONTACT_INTENTS)[number];
+
 // Error messages are keys, not prose: the server and any client form map them
 // to their own translations, so this schema stays language-agnostic.
 const contactSchema = z.object(
@@ -23,6 +29,7 @@ const contactSchema = z.object(
       .trim()
       .min(1, { error: "missing" })
       .min(MIN_MESSAGE_LENGTH, { error: "short" }),
+    intent: z.enum(CONTACT_INTENTS).catch("other"),
   },
   { error: "missing" },
 );

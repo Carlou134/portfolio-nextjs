@@ -99,6 +99,37 @@ describe("POST /api/contact", () => {
     );
   });
 
+  it("leads the subject and body with the intent label", async () => {
+    await POST(
+      makeRequest({
+        name: "Carlos",
+        email: "a@b.com",
+        message: "Quiero hablar de un proyecto",
+        intent: "job",
+      }),
+    );
+    const { subject, html } = sendMock.mock.calls[0][0] as {
+      subject: string;
+      html: string;
+    };
+    expect(subject).toBe(
+      "[Oferta laboral] Nuevo mensaje de Carlos — Portfolio",
+    );
+    expect(html).toContain("Oferta laboral");
+  });
+
+  it("labels a message without intent as 'Otro'", async () => {
+    await POST(
+      makeRequest({
+        name: "Carlos",
+        email: "a@b.com",
+        message: "Quiero hablar de un proyecto",
+      }),
+    );
+    const { subject } = sendMock.mock.calls[0][0] as { subject: string };
+    expect(subject).toMatch(/^\[Otro\] /);
+  });
+
   it("escapes user input before interpolating it into the email HTML", async () => {
     const res = await POST(
       makeRequest({
