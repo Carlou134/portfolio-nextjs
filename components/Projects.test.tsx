@@ -125,4 +125,14 @@ describe("Projects", () => {
     renderProjects("es");
     expect(screen.getAllByTestId("pending-notice").length).toBeGreaterThan(0);
   });
+
+  it("draws no pending notice on a card with nothing pending", () => {
+    renderProjects("es");
+    const card = screen
+      .getByRole("heading", { name: "Integración TMS-OMS en tiempo real" })
+      .closest("article")!;
+    expect(
+      within(card).queryByTestId("pending-notice"),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -219,7 +219,9 @@ function ProjectCard({
         </p>
       )}
 
-      {showPending && project.pending && (
+      {/* An empty list is truthy: check the length, or a card with nothing
+          pending still draws an empty notice. */}
+      {showPending && project.pending && project.pending.length > 0 && (
         <PendingNotice
           items={project.pending}
           previewHref={preview ? caseStudyHref(preview.slug) : undefined}

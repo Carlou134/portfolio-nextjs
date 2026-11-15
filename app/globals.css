@@ -143,16 +143,19 @@
      never jumps from h1 to h3. Same accent rule as the kicker, so both read
      as one system. */
   .section-heading {
-    @apply font-sans font-medium text-text-primary leading-tight text-balance text-[clamp(1.75rem,4vw,2rem)] mb-8 flex items-center gap-4;
+    @apply font-sans font-medium text-text-primary leading-tight text-balance text-[clamp(1.75rem,4vw,2rem)] mb-8;
   }
 
+  /* Inline, not a flex sibling: when the heading wraps on mobile the rule
+     follows the last word instead of floating alone at the right edge. */
   .section-heading::after {
     content: "";
-    display: block;
+    display: inline-block;
+    vertical-align: middle;
     height: 1px;
     width: 48px;
+    margin-left: 16px;
     background-color: var(--color-accent);
-    flex-shrink: 0;
   }
 
   .card {
@@ -217,8 +220,10 @@
     @apply scale-95;
   }
 
+  /* min-w-11 + centered text: short labels like "Stack" still get a 44px
+     target. */
   .nav-link {
-    @apply text-sm text-text-secondary font-mono transition-colors duration-200;
+    @apply min-w-11 justify-center text-sm text-text-secondary font-mono transition-colors duration-200;
   }
 
   .nav-link:hover {
