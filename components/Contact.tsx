@@ -126,7 +126,7 @@ export default function Contact() {
 
       <div className="max-w-2xl mx-auto">
         <motion.div
-          className="card hover:border-accent/30 hover:glow-accent motion-safe:hover:scale-101 transition-all duration-300"
+          className="card"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}

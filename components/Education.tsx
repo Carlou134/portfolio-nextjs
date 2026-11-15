@@ -42,7 +42,7 @@ export default function Education() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
             custom={i}
-            className="group card flex flex-col gap-2 hover:border-brand/45 motion-safe:hover:-translate-y-0.5"
+            className="card flex flex-col gap-2"
           >
             <div className="flex items-center justify-between gap-3">
               <p className="font-mono text-xs uppercase tracking-widest text-accent">
@@ -56,7 +56,7 @@ export default function Education() {
                   alt={logo.alt}
                   width={28}
                   height={28}
-                  className="rounded-sm grayscale opacity-70 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                  className="rounded-sm grayscale opacity-70"
                 />
               )}
             </div>

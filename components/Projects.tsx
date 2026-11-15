@@ -122,7 +122,7 @@ function ProjectCard({
       whileInView="visible"
       viewport={{ once: true, margin: "-50px" }}
       custom={index}
-      className="card flex flex-col gap-4 hover:border-brand/45 motion-safe:hover:-translate-y-0.5"
+      className="card flex flex-col gap-4"
     >
       <div className="flex items-center justify-between gap-3">
         <span

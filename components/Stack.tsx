@@ -109,7 +109,7 @@ export default function Stack() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
             custom={i}
-            className="card flex flex-col gap-3 hover:border-brand/45"
+            className="card flex flex-col gap-3"
           >
             <h3 className="flex items-center gap-2 font-sans font-medium text-[17px] text-text-primary">
               <span className="font-mono text-[13px] text-accent">

@@ -159,9 +159,9 @@
     @apply bg-bg-card border border-border rounded-[12px] p-6 transition-all duration-300;
   }
 
-  .card:hover {
-    @apply border-border-hover bg-bg-hover;
-  }
+  /* No hover state: no card is clickable as a whole, and a surface that
+     reacts to the pointer promises a click it doesn't deliver (Nielsen #4).
+     Hover belongs to the buttons and links inside. */
 
   .card-featured {
     @apply bg-bg-card border-2 border-accent rounded-[12px] p-6 transition-all duration-300;
@@ -377,9 +377,5 @@
       transparent 1px
     );
     background-size: 32px 32px;
-  }
-
-  .glow-accent {
-    box-shadow: 0 0 20px color-mix(in srgb, var(--color-brand) 15%, transparent);
   }
 }
