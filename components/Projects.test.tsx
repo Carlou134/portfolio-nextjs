@@ -29,7 +29,7 @@ describe("Projects", () => {
     expect(screen.getAllByRole("article")).toHaveLength(gridCount);
     expect(
       screen.queryByRole("heading", {
-        name: "API REST con Clean Architecture",
+        name: "API de tareas y usuarios",
       }),
     ).not.toBeInTheDocument();
   });
