@@ -2,10 +2,22 @@
 
 import { useId, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Send, CheckCircle, AlertCircle, Mail } from "lucide-react";
+import {
+  Send,
+  CheckCircle,
+  AlertCircle,
+  Mail,
+  Copy,
+  Check,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale } from "@/i18n/locale";
 import Link from "next/link";
+import { CONTACT_INTENTS, type ContactIntent } from "@/lib/contact-schema";
+
+const EMAIL = "carlouvasquez134@gmail.com";
+// Most visitors are recruiters, so the form starts on a job offer.
+const DEFAULT_INTENT: ContactIntent = "job";
 
 function IconLinkedin() {
   return (
@@ -27,7 +39,17 @@ interface FormData {
   name: string;
   email: string;
   message: string;
+  intent: ContactIntent;
 }
+
+const emptyForm: FormData = {
+  name: "",
+  email: "",
+  message: "",
+  intent: DEFAULT_INTENT,
+};
+
+type CopyState = "idle" | "copied" | "failed";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -42,11 +64,20 @@ export default function Contact() {
   const rawLocale = useLocale();
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
   const fieldId = useId();
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState<FormData>(emptyForm);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
+
+  // Clipboard can be unavailable (http, permissions); the address stays
+  // visible and selectable either way, so failing only changes the label.
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopyState("copied");
+    } catch {
+      setCopyState("failed");
+    }
+    setTimeout(() => setCopyState("idle"), 2000);
+  };
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -75,7 +106,7 @@ export default function Contact() {
       }
 
       setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
+      setFormData(emptyForm);
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
@@ -113,7 +144,34 @@ export default function Contact() {
             aria-labelledby={`${fieldId}-heading`}
             noValidate
           >
-            {/* Formulario */}
+            {/* Native radios inside labels: arrow keys, focus and the
+                checked state come from the browser, the chips are just skin. */}
+            <fieldset className="mb-5" disabled={isDisabled}>
+              <legend className="font-mono text-xs text-text-muted tracking-widest uppercase mb-2">
+                {t("intentLabel")}
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {CONTACT_INTENTS.map((intent) => (
+                  <label
+                    key={intent}
+                    className="filter cursor-pointer has-[:checked]:border-accent has-[:checked]:text-accent has-[:checked]:bg-accent/10 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent"
+                  >
+                    <input
+                      type="radio"
+                      name={`${fieldId}-intent`}
+                      value={intent}
+                      checked={formData.intent === intent}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, intent }))
+                      }
+                      className="sr-only"
+                    />
+                    {t(`intents.${intent}`)}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <div className="flex flex-col gap-1.5 mb-4">
               <label
                 htmlFor={`${fieldId}-name`}
@@ -228,15 +286,36 @@ export default function Contact() {
           {/* Separador */}
           <div className="h-px bg-border my-8" />
 
+          {/* Email first: many recruiters prefer writing from their own inbox. */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+            <a
+              href={`mailto:${EMAIL}`}
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-primary hover:text-accent transition-colors duration-200 break-all"
+            >
+              <Mail size={16} aria-hidden="true" />
+              {EMAIL}
+            </a>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="btn-secondary inline-flex items-center gap-2 min-h-11 px-3 py-2 font-mono text-xs hover:bg-bg-hover"
+            >
+              {copyState === "copied" ? (
+                <Check size={14} aria-hidden="true" />
+              ) : (
+                <Copy size={14} aria-hidden="true" />
+              )}
+              {t("copyEmail")}
+            </button>
+            {/* Not role="status": the form already owns that region. */}
+            <span aria-live="polite" className="font-mono text-xs text-accent">
+              {copyState === "copied" && t("copied")}
+              {copyState === "failed" && t("copyFailed")}
+            </span>
+          </div>
+
           {/* Links sociales */}
           <div className="flex items-center justify-center gap-8 flex-wrap">
-            <Link
-              href="mailto:carlouvasquez134@gmail.com"
-              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
-            >
-              <Mail size={16} />
-              Email
-            </Link>
             <Link
               href="https://www.linkedin.com/in/carlos-vasquez-rod/"
               target="_blank"

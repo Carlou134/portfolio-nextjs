@@ -114,18 +114,27 @@
   },
   "Contact": {
     "sectionLabel": "Contacto",
-    "heading": "¿Tienes un proyecto? Hablemos.",
-    "subheading": "Disponible para freelance y posiciones de desarrollo fullstack.",
+    "heading": "¿Una oferta o un proyecto? Hablemos.",
+    "subheading": "Busco posiciones de desarrollo full stack o backend. También tomo proyectos freelance.",
     "name": "Nombre",
     "namePlaceholder": "Tu nombre",
     "email": "Email",
     "emailPlaceholder": "tucorreo@ejemplo.com",
     "message": "Mensaje",
-    "messagePlaceholder": "Cuéntame del proyecto...",
+    "messagePlaceholder": "Cuéntame qué tienes en mente...",
     "success": "¡Mensaje enviado! Te respondo pronto.",
     "sending": "Enviando...",
     "send": "Enviar mensaje",
-    "connectionError": "Error de conexión. Intenta nuevamente."
+    "connectionError": "Error de conexión. Intenta nuevamente.",
+    "intentLabel": "Motivo",
+    "intents": {
+      "job": "Oferta laboral",
+      "freelance": "Freelance",
+      "other": "Otro"
+    },
+    "copyEmail": "Copiar email",
+    "copied": "¡Copiado!",
+    "copyFailed": "No se pudo copiar"
   },
   "Footer": {
     "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Perú",

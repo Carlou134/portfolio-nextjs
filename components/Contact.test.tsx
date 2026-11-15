@@ -25,10 +25,7 @@ async function fillAndSubmit(
     screen.getByPlaceholderText("tucorreo@ejemplo.com"),
     "carlos@example.com",
   );
-  await user.type(
-    screen.getByPlaceholderText("Cuéntame del proyecto..."),
-    message,
-  );
+  await user.type(screen.getByLabelText("Mensaje"), message);
   await user.click(screen.getByRole("button", { name: /enviar mensaje/i }));
 }
 
@@ -227,6 +224,55 @@ describe("Contact form", () => {
       renderContact();
 
       expect(screen.getByRole("alert")).toBeEmptyDOMElement();
+    });
+  });
+
+  describe("intent", () => {
+    it("starts on a job offer and sends the chosen intent", async () => {
+      vi.mocked(fetch).mockResolvedValue(
+        new Response(JSON.stringify({ success: true }), { status: 200 }),
+      );
+      const user = userEvent.setup();
+      renderContact();
+
+      expect(
+        screen.getByRole("radio", { name: "Oferta laboral" }),
+      ).toBeChecked();
+      await user.click(screen.getByRole("radio", { name: "Freelance" }));
+      await fillAndSubmit(user, "Quiero hablar de un proyecto");
+
+      expect(fetch).toHaveBeenCalledWith(
+        "/api/contact",
+        expect.objectContaining({
+          body: expect.stringContaining('"intent":"freelance"'),
+        }),
+      );
+    });
+
+    it("groups the options under a labelled radio group", () => {
+      renderContact();
+      expect(screen.getByRole("group", { name: "Motivo" })).toBeInTheDocument();
+      expect(screen.getAllByRole("radio")).toHaveLength(3);
+    });
+  });
+
+  describe("copy email", () => {
+    it("copies the address and announces it", async () => {
+      const user = userEvent.setup();
+      renderContact();
+      await user.click(screen.getByRole("button", { name: "Copiar email" }));
+
+      expect(await navigator.clipboard.readText()).toBe(
+        "carlouvasquez134@gmail.com",
+      );
+      expect(screen.getByText("¡Copiado!")).toBeInTheDocument();
+    });
+
+    it("keeps the address visible as a mailto link", () => {
+      renderContact();
+      expect(
+        screen.getByRole("link", { name: "carlouvasquez134@gmail.com" }),
+      ).toHaveAttribute("href", "mailto:carlouvasquez134@gmail.com");
     });
   });
 });
