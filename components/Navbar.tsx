@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Download, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -27,6 +27,20 @@ export default function Navbar() {
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
   const t = useTranslations("Nav");
   const activeId = useActiveSection(sectionIds);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the open menu and hands focus back to the toggle, so a
+  // keyboard user isn't dropped at the top of the document (Nielsen #3).
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMobileOpen(false);
+      menuButtonRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
@@ -132,11 +146,13 @@ export default function Navbar() {
           </div>
 
           <button
+            ref={menuButtonRef}
             type="button"
             className="lg:hidden inline-flex items-center justify-center min-h-11 min-w-11 -mr-2 text-text-primary"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -144,7 +160,10 @@ export default function Navbar() {
       </nav>
 
       {mobileOpen && (
-        <ul className="lg:hidden flex flex-col px-6 pb-4 border-t border-border">
+        <ul
+          id="mobile-menu"
+          className="lg:hidden flex flex-col px-6 pb-4 border-t border-border"
+        >
           {navLinks.map((item) => (
             <li key={item.id}>
               <Link

@@ -71,6 +71,31 @@ describe("Navbar", () => {
     expect(screen.getAllByRole("link", { name: "Proyectos" })).toHaveLength(1);
   });
 
+  it("closes the mobile menu with Escape and returns focus to the toggle", async () => {
+    const user = userEvent.setup();
+    renderNavbar();
+
+    await user.click(screen.getByRole("button", { name: /abrir menú/i }));
+    expect(screen.getAllByRole("link", { name: "Proyectos" })).toHaveLength(2);
+
+    await user.keyboard("{Escape}");
+
+    expect(screen.getAllByRole("link", { name: "Proyectos" })).toHaveLength(1);
+    const toggle = screen.getByRole("button", { name: /abrir menú/i });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveFocus();
+  });
+
+  it("points the toggle at the menu it controls", async () => {
+    const user = userEvent.setup();
+    renderNavbar();
+
+    const toggle = screen.getByRole("button", { name: /abrir menú/i });
+    expect(toggle).toHaveAttribute("aria-controls", "mobile-menu");
+    await user.click(toggle);
+    expect(document.getElementById("mobile-menu")).toBeInTheDocument();
+  });
+
   describe("active-section indicator", () => {
     // The global IntersectionObserver mock in vitest.setup.ts never fires.
     // Here we keep the callback so a test can say "this section is now in
