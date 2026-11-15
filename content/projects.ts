@@ -234,12 +234,8 @@ export const projects: Project[] = projectsSchema.parse([
       "JWT",
     ],
     repos: [{ label: "GitHub", href: "https://github.com/Carlou134/webapi" }],
-    pending: [
-      "¿Es el test técnico del CRUD de tareas o práctica personal? Define el tipo y si la fila 11 se fusiona con esta.",
-    ],
+    pending: [],
   },
-  // Skeletons below: "Pendiente" fields are placeholders until the user sends
-  // context. The table isn't rendered yet (commit 33), so nothing ships.
   {
     id: 4,
     placement: "table",
@@ -322,18 +318,28 @@ export const projects: Project[] = projectsSchema.parse([
     year: 2026,
     categories: ["front", "ops"],
     title: { es: "Este portafolio", en: "This portfolio" },
-    description: { es: "Pendiente.", en: "Pending." },
+    description: {
+      es: "El sitio que estás viendo, en español e inglés. El contenido vive en código validado con Zod, así que un proyecto mal cargado rompe los tests y no llega a producción. Tests con Vitest y Playwright, y GitHub Actions corre build, e2e y Lighthouse en cada pull request.",
+      en: "The site you're looking at, in Spanish and English. Content lives in code validated with Zod, so a malformed project breaks the tests instead of reaching production. Vitest and Playwright tests, and GitHub Actions runs build, e2e and Lighthouse on every pull request.",
+    },
     metrics: [],
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Vitest", "Playwright"],
+    stack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind CSS",
+      "next-intl",
+      "Zod",
+      "Vitest",
+      "Playwright",
+    ],
     repos: [
       {
         label: "GitHub",
         href: "https://github.com/Carlou134/portfolio-nextjs",
       },
     ],
-    pending: [
-      "Descripción: lo armo yo con lo que ya conozco del repo (i18n, tests, contenido validado con Zod).",
-    ],
+    pending: [],
   },
   {
     id: 11,
@@ -341,33 +347,35 @@ export const projects: Project[] = projectsSchema.parse([
     status: "done",
     kind: "technicalTest",
     year: 2026,
-    categories: ["back"],
-    title: { es: "CRUD de tareas", en: "Task CRUD" },
-    description: { es: "Pendiente.", en: "Pending." },
-    metrics: [],
-    stack: ["Pendiente"],
-    repos: [],
-    pending: [
-      "Entra solo si tiene algo más que el CRUD (tests, arquitectura, deploy). Si no, se saca.",
-      "Stack, año, repo. ¿Es el mismo que `webapi` (id 2)?",
-    ],
-  },
-  {
-    id: 12,
-    placement: "table",
-    status: "done",
-    kind: "academic",
-    year: 2025,
     categories: ["front", "back"],
-    title: { es: "EasyTravel", en: "EasyTravel" },
-    description: { es: "Pendiente.", en: "Pending." },
+    title: { es: "Task Manager", en: "Task Manager" },
+    description: {
+      es: "App de tareas personales. La API usa Clean Architecture en cuatro proyectos (Domain, Application, Infrastructure y Api) y CQRS con MediatR. El id del usuario sale del token, así que nadie puede tocar tareas ajenas mandando otro userId. El cliente en Angular protege las rutas con un guard que revisa la expiración del JWT y cierra la sesión ante un 401.",
+      en: "Personal task app. The API uses Clean Architecture across four projects (Domain, Application, Infrastructure and Api) and CQRS with MediatR. The user id comes from the token, so nobody can touch someone else's tasks by sending another userId. The Angular client guards routes by checking the JWT's expiry and signs out on a 401.",
+    },
     metrics: [],
-    stack: ["Pendiente"],
-    repos: [],
-    pending: [
-      "Entra solo si el flujo principal funciona (recomendación de hoteles y boletos). Con bugs que lo rompen, se saca.",
-      "Stack, año, repo y tu parte si fue en equipo.",
+    stack: [
+      "C#",
+      ".NET 8",
+      "ASP.NET Core",
+      "EF Core",
+      "PostgreSQL",
+      "MediatR",
+      "JWT",
+      "Angular 18",
+      "Angular Material",
     ],
+    repos: [
+      {
+        label: "Frontend",
+        href: "https://github.com/Carlou134/TaskManagerFrontend",
+      },
+      {
+        label: "Backend",
+        href: "https://github.com/Carlou134/TaskManagerBackend",
+      },
+    ],
+    pending: [],
   },
 ]);
 
