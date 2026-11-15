@@ -105,7 +105,7 @@ export default function Experience() {
 
   return (
     <section id="experiencia" className="section">
-      <p className="section-label">{t("sectionLabel")}</p>
+      <h2 className="section-heading">{t("sectionLabel")}</h2>
 
       <div
         ref={containerRef}

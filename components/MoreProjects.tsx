@@ -21,7 +21,7 @@ export default function MoreProjects() {
 
   return (
     <section id="mas-proyectos" className="section">
-      <p className="section-label">{t("sectionLabel")}</p>
+      <h2 className="section-heading">{t("sectionLabel")}</h2>
       <p className="text-text-secondary text-[15.5px] leading-[1.6] max-w-[62ch] -mt-4 mb-6">
         {t("subtitle")}
       </p>

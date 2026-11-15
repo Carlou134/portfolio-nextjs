@@ -31,7 +31,7 @@ export default function Education() {
 
   return (
     <section id="educacion" className="section">
-      <p className="section-label">{t("sectionLabel")}</p>
+      <h2 className="section-heading">{t("sectionLabel")}</h2>
 
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {cards.map(({ key, hasNote, logo }, i) => (

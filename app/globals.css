@@ -137,6 +137,24 @@
     flex-shrink: 0;
   }
 
+  /* Real <h2> for sections whose only title is their label (Stack, Projects,
+     More projects, Experience, Education). Sections that already carry an h2
+     below (About, Contact) keep .section-label as a kicker, so the outline
+     never jumps from h1 to h3. Same accent rule as the kicker, so both read
+     as one system. */
+  .section-heading {
+    @apply font-sans font-medium text-text-primary leading-tight text-balance text-[clamp(1.75rem,4vw,2rem)] mb-8 flex items-center gap-4;
+  }
+
+  .section-heading::after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 48px;
+    background-color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
   .card {
     @apply bg-bg-card border border-border rounded-[12px] p-6 transition-all duration-300;
   }
