@@ -5,6 +5,13 @@
   "A11y": {
     "skipToContent": "Skip to content"
   },
+  "NotFound": {
+    "kicker": "Error 404",
+    "heading": "This page doesn't exist.",
+    "body": "The link may be mistyped or the page may have moved. From here you can go back home or straight to the projects.",
+    "home": "Back to home",
+    "projects": "See projects"
+  },
   "Nav": {
     "openMenu": "Open menu",
     "closeMenu": "Close menu",

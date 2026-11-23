@@ -5,6 +5,13 @@
   "A11y": {
     "skipToContent": "Saltar al contenido"
   },
+  "NotFound": {
+    "kicker": "Error 404",
+    "heading": "Esta página no existe.",
+    "body": "Puede que el enlace esté mal escrito o que la página se haya movido. Desde aquí puedes volver al inicio o ir directo a los proyectos.",
+    "home": "Volver al inicio",
+    "projects": "Ver proyectos"
+  },
   "Nav": {
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",

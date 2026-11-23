@@ -21,7 +21,9 @@ async function resolve(params: Props["params"]) {
 // engines this page duplicates the home page.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await resolve(params);
-  if (!data) return {};
+  // notFound() here, not `return {}`: an empty object kept the site's default
+  // title on the 404 tab instead of app/not-found.tsx's.
+  if (!data) notFound();
   const title = `${data.title} | Carlos Vásquez`;
   const path = `/case-study/${data.slug}`;
   return {
