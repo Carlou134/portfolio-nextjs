@@ -72,8 +72,13 @@ export default async function RootLayout({
   const t = await getTranslations("A11y");
 
   return (
+    // data-scroll-behavior="smooth": Next 16 no longer pauses the CSS smooth
+    // scroll on route changes, so opening the case study from mid-page
+    // animated a scroll from the old offset up through the new page. With
+    // it, page changes land at the top instantly; in-page anchors stay smooth.
     <html
       lang={locale}
+      data-scroll-behavior="smooth"
       className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
