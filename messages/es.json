@@ -143,7 +143,18 @@
     "copied": "¡Copiado!",
     "copyFailed": "No se pudo copiar",
     "requiredNote": "Todos los campos son obligatorios.",
-    "messageHint": "Mínimo {min} caracteres."
+    "messageHint": "Mínimo {min} caracteres.",
+    "errors": {
+      "name": { "missing": "Escribe tu nombre." },
+      "email": {
+        "missing": "Escribe tu email.",
+        "email": "Revisa el email: debe verse como nombre@dominio.com."
+      },
+      "message": {
+        "missing": "Escribe tu mensaje.",
+        "short": "El mensaje necesita al menos {min} caracteres (llevas {count})."
+      }
+    }
   },
   "Footer": {
     "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Perú",

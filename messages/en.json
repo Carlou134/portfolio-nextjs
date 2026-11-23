@@ -143,7 +143,18 @@
     "copied": "Copied!",
     "copyFailed": "Couldn't copy",
     "requiredNote": "All fields are required.",
-    "messageHint": "At least {min} characters."
+    "messageHint": "At least {min} characters.",
+    "errors": {
+      "name": { "missing": "Enter your name." },
+      "email": {
+        "missing": "Enter your email.",
+        "email": "Check the email: it should look like name@domain.com."
+      },
+      "message": {
+        "missing": "Enter your message.",
+        "short": "The message needs at least {min} characters (you have {count})."
+      }
+    }
   },
   "Footer": {
     "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Peru",

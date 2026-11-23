@@ -6,7 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const messages = {
   missing: {
-    es: "Todos los campos son requeridos.",
+    es: "Todos los campos son obligatorios.",
     en: "All fields are required.",
   },
   email: { es: "Email inválido.", en: "Invalid email." },

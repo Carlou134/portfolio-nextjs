@@ -45,6 +45,31 @@ export type ContactParseResult =
 // mirrors the original hand-written checks: missing > email > short.
 const PRECEDENCE: ContactError[] = ["missing", "email", "short"];
 
+export type ContactField = "name" | "email" | "message";
+export type ContactFieldErrors = Partial<Record<ContactField, ContactError>>;
+const FIELDS: readonly ContactField[] = ["name", "email", "message"];
+
+// Same schema, one error per field: lets the form say what is wrong where it
+// is wrong before the request, instead of one generic line from the server.
+// Within a field the same precedence applies (empty email: "missing", not
+// "email").
+export function contactFieldErrors(input: unknown): ContactFieldErrors {
+  const result = contactSchema.safeParse(input);
+  if (result.success) return {};
+
+  const errors: ContactFieldErrors = {};
+  for (const issue of result.error.issues) {
+    const field = FIELDS.find((f) => f === issue.path[0]);
+    if (!field) continue;
+    const key = issue.message as ContactError;
+    const current = errors[field];
+    if (!current || PRECEDENCE.indexOf(key) < PRECEDENCE.indexOf(current)) {
+      errors[field] = key;
+    }
+  }
+  return errors;
+}
+
 export function parseContact(input: unknown): ContactParseResult {
   const result = contactSchema.safeParse(input);
   if (result.success) return { success: true, data: result.data };

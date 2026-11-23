@@ -30,7 +30,7 @@ describe("POST /api/contact", () => {
       makeRequest({ name: "", email: "a@b.com", message: "hola que tal" }),
     );
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect((await res.json()).error).toMatch(/obligatorios/i);
     expect(sendMock).not.toHaveBeenCalled();
   });
 
@@ -39,14 +39,14 @@ describe("POST /api/contact", () => {
       makeRequest({ name: "   ", email: "a@b.com", message: "hola que tal" }),
     );
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect((await res.json()).error).toMatch(/obligatorios/i);
     expect(sendMock).not.toHaveBeenCalled();
   });
 
   it("rejects a JSON null body with 400 instead of crashing", async () => {
     const res = await POST(makeRequest(null));
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/requeridos/i);
+    expect((await res.json()).error).toMatch(/obligatorios/i);
     expect(sendMock).not.toHaveBeenCalled();
   });
 

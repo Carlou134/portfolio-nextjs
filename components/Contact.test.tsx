@@ -60,15 +60,15 @@ describe("Contact form", () => {
   it("shows the server error message when the request fails", async () => {
     vi.mocked(fetch).mockResolvedValueOnce({
       ok: false,
-      json: async () => ({ error: "El mensaje es muy corto." }),
+      json: async () => ({ error: "Error al enviar el mensaje." }),
     } as Response);
 
     const user = userEvent.setup();
     renderContact();
-    await fillAndSubmit(user, "corto");
+    await fillAndSubmit(user, "Quiero hablar de un proyecto");
 
     expect(
-      await screen.findByText("El mensaje es muy corto."),
+      await screen.findByText("Error al enviar el mensaje."),
     ).toBeInTheDocument();
   });
 
@@ -208,15 +208,15 @@ describe("Contact form", () => {
     it("announces failures through an alert region", async () => {
       vi.mocked(fetch).mockResolvedValueOnce({
         ok: false,
-        json: async () => ({ error: "El mensaje es muy corto." }),
+        json: async () => ({ error: "Error al enviar el mensaje." }),
       } as Response);
 
       const user = userEvent.setup();
       renderContact();
-      await fillAndSubmit(user, "corto");
+      await fillAndSubmit(user, "Quiero hablar de un proyecto");
 
       expect(await screen.findByRole("alert")).toHaveTextContent(
-        "El mensaje es muy corto.",
+        "Error al enviar el mensaje.",
       );
     });
 
@@ -224,6 +224,87 @@ describe("Contact form", () => {
       renderContact();
 
       expect(screen.getByRole("alert")).toBeEmptyDOMElement();
+    });
+  });
+
+  describe("field validation", () => {
+    const submit = (user: ReturnType<typeof userEvent.setup>) =>
+      user.click(screen.getByRole("button", { name: /enviar mensaje/i }));
+
+    it("flags each empty field under itself and sends nothing", async () => {
+      const user = userEvent.setup();
+      renderContact();
+      await submit(user);
+
+      expect(fetch).not.toHaveBeenCalled();
+      expect(screen.getByLabelText("Nombre")).toHaveAttribute(
+        "aria-invalid",
+        "true",
+      );
+      expect(screen.getByLabelText("Nombre")).toHaveAccessibleDescription(
+        "Escribe tu nombre.",
+      );
+      expect(screen.getByLabelText("Email")).toHaveAccessibleDescription(
+        "Escribe tu email.",
+      );
+      expect(screen.getByLabelText("Mensaje")).toHaveAccessibleDescription(
+        "Escribe tu mensaje.",
+      );
+      expect(screen.getByRole("alert")).toBeEmptyDOMElement();
+    });
+
+    it("moves focus to the first invalid field", async () => {
+      const user = userEvent.setup();
+      renderContact();
+      await user.type(screen.getByLabelText("Nombre"), "Carlos");
+      await submit(user);
+
+      expect(screen.getByLabelText("Email")).toHaveFocus();
+    });
+
+    it("says what is wrong with a malformed email and a short message", async () => {
+      const user = userEvent.setup();
+      renderContact();
+      await user.type(screen.getByLabelText("Nombre"), "Carlos");
+      await user.type(screen.getByLabelText("Email"), "carlos@");
+      await user.type(screen.getByLabelText("Mensaje"), "Hola");
+      await submit(user);
+
+      expect(screen.getByLabelText("Email")).toHaveAccessibleDescription(
+        /nombre@dominio\.com/,
+      );
+      expect(screen.getByLabelText("Mensaje")).toHaveAccessibleDescription(
+        "El mensaje necesita al menos 10 caracteres (llevas 4).",
+      );
+    });
+
+    it("clears an error as soon as the field is fixed", async () => {
+      const user = userEvent.setup();
+      renderContact();
+      await submit(user);
+      await user.type(screen.getByLabelText("Nombre"), "C");
+
+      expect(screen.getByLabelText("Nombre")).not.toHaveAttribute(
+        "aria-invalid",
+      );
+      expect(screen.queryByText("Escribe tu nombre.")).not.toBeInTheDocument();
+      expect(screen.getByLabelText("Email")).toHaveAttribute(
+        "aria-invalid",
+        "true",
+      );
+    });
+
+    it("shows no field errors before the first submit", async () => {
+      const user = userEvent.setup();
+      renderContact();
+      await user.type(screen.getByLabelText("Email"), "carlos@");
+
+      expect(screen.getByLabelText("Email")).not.toHaveAttribute(
+        "aria-invalid",
+      );
+      expect(screen.getByLabelText("Mensaje")).toHaveAccessibleDescription(
+        "Mínimo 10 caracteres.",
+      );
     });
   });
 

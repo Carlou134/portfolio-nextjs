@@ -16,8 +16,14 @@ import Link from "next/link";
 import {
   CONTACT_INTENTS,
   MIN_MESSAGE_LENGTH,
+  contactFieldErrors,
+  type ContactField,
+  type ContactFieldErrors,
   type ContactIntent,
 } from "@/lib/contact-schema";
+
+// Focus order when several fields fail: the first one in the form.
+const FIELD_ORDER: readonly ContactField[] = ["name", "email", "message"];
 
 const EMAIL = "carlouvasquez134@gmail.com";
 // Most visitors are recruiters, so the form starts on a job offer.
@@ -57,6 +63,23 @@ type CopyState = "idle" | "copied" | "failed";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
+// Icon + text, never color alone. Not a live region: on submit, focus moves
+// to the field, and its aria-describedby makes the reader say the error.
+function FieldError({ id, text }: { id: string; text: string | null }) {
+  if (!text) return null;
+  return (
+    <p
+      id={id}
+      className="flex items-start gap-1.5 font-mono text-xs text-error"
+    >
+      {/* items-start + nudge: on a wrapped two-line error the icon stays on
+          the first line instead of floating between them. */}
+      <AlertCircle size={13} aria-hidden="true" className="shrink-0 mt-px" />
+      {text}
+    </p>
+  );
+}
+
 function Spinner() {
   return (
     <div className="w-4 h-4 border-2 border-bg-primary/30 border-t-bg-primary rounded-full animate-spin" />
@@ -84,12 +107,56 @@ export default function Contact() {
   };
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
+
+  // Errors appear on submit, not while typing a first draft; once a field is
+  // flagged, it re-checks on every keystroke so the error clears the moment
+  // it's fixed, without another submit.
+  const updateField = (field: ContactField, value: string) => {
+    const next = { ...formData, [field]: value };
+    setFormData(next);
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [field]: contactFieldErrors(next)[field],
+      }));
+    }
+  };
+
+  const errorText = (field: ContactField) => {
+    const key = fieldErrors[field];
+    if (!key) return null;
+    return t(`errors.${field}.${key}` as Parameters<typeof t>[0], {
+      min: MIN_MESSAGE_LENGTH,
+      count: formData.message.trim().length,
+    });
+  };
+
+  // aria-describedby must only point at ids that exist.
+  const describedBy = (field: ContactField, ...extra: string[]) =>
+    [
+      ...extra,
+      ...(fieldErrors[field] ? [`${fieldId}-${field}-error`] : []),
+    ].join(" ") || undefined;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     // Without this the browser navigates to the form's action (the page itself).
     event.preventDefault();
     // Enter can fire again before the loading state re-renders the fields disabled.
     if (status === "loading") return;
+
+    // Same schema as the API, checked here first: each problem shows under
+    // its field, and focus lands on the first one so keyboard and screen
+    // reader users hear the error instead of losing focus to <body>.
+    const errors = contactFieldErrors(formData);
+    setFieldErrors(errors);
+    const firstInvalid = FIELD_ORDER.find((field) => errors[field]);
+    if (firstInvalid) {
+      setStatus("idle");
+      setErrorMessage("");
+      document.getElementById(`${fieldId}-${firstInvalid}`)?.focus();
+      return;
+    }
 
     setStatus("loading");
     setErrorMessage("");
@@ -143,8 +210,9 @@ export default function Contact() {
             {t("subheading")}
           </p>
 
-          {/* noValidate: validation is the server's job (bilingual messages via
-              /api/contact), so the browser's own bubbles must not pre-empt it. */}
+          {/* noValidate: the browser's bubbles would pre-empt our own per-field
+              messages (translated, same rules as the API, which still has the
+              final word). */}
           <form
             onSubmit={handleSubmit}
             aria-labelledby={`${fieldId}-heading`}
@@ -196,13 +264,17 @@ export default function Contact() {
                 type="text"
                 placeholder={t("namePlaceholder")}
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={(e) => updateField("name", e.target.value)}
                 disabled={isDisabled}
                 required
                 autoComplete="name"
-                className="input"
+                aria-invalid={fieldErrors.name ? true : undefined}
+                aria-describedby={describedBy("name")}
+                className="input aria-invalid:border-error"
+              />
+              <FieldError
+                id={`${fieldId}-name-error`}
+                text={errorText("name")}
               />
             </div>
 
@@ -218,13 +290,17 @@ export default function Contact() {
                 type="email"
                 placeholder={t("emailPlaceholder")}
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, email: e.target.value }))
-                }
+                onChange={(e) => updateField("email", e.target.value)}
                 disabled={isDisabled}
                 required
                 autoComplete="email"
-                className="input"
+                aria-invalid={fieldErrors.email ? true : undefined}
+                aria-describedby={describedBy("email")}
+                className="input aria-invalid:border-error"
+              />
+              <FieldError
+                id={`${fieldId}-email-error`}
+                text={errorText("email")}
               />
             </div>
 
@@ -239,22 +315,33 @@ export default function Contact() {
                 id={`${fieldId}-message`}
                 placeholder={t("messagePlaceholder")}
                 rows={5}
-                aria-describedby={`${fieldId}-message-hint`}
+                aria-describedby={describedBy(
+                  "message",
+                  ...(fieldErrors.message ? [] : [`${fieldId}-message-hint`]),
+                )}
                 value={formData.message}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, message: e.target.value }))
-                }
+                onChange={(e) => updateField("message", e.target.value)}
                 disabled={isDisabled}
                 required
                 minLength={MIN_MESSAGE_LENGTH}
-                className="input resize-none"
+                aria-invalid={fieldErrors.message ? true : undefined}
+                className="input resize-none aria-invalid:border-error"
               />
-              <p
-                id={`${fieldId}-message-hint`}
-                className="font-mono text-xs text-text-muted"
-              >
-                {t("messageHint", { min: MIN_MESSAGE_LENGTH })}
-              </p>
+              {/* The error replaces the hint rather than stacking under it:
+                  it already states the same rule, plus the current count. */}
+              {fieldErrors.message ? (
+                <FieldError
+                  id={`${fieldId}-message-error`}
+                  text={errorText("message")}
+                />
+              ) : (
+                <p
+                  id={`${fieldId}-message-hint`}
+                  className="font-mono text-xs text-text-muted"
+                >
+                  {t("messageHint", { min: MIN_MESSAGE_LENGTH })}
+                </p>
+              )}
             </div>
 
             {/* Botón / estado */}

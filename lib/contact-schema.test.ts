@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseContact } from "./contact-schema";
+import { contactFieldErrors, parseContact } from "./contact-schema";
 
 const valid = {
   name: "Carlos",
@@ -89,6 +89,32 @@ describe("parseContact", () => {
     expect(parseContact({ ...valid, email })).toEqual({
       success: true,
       data: { ...valid, email, intent: "other" },
+    });
+  });
+});
+
+describe("contactFieldErrors", () => {
+  it("returns nothing for valid input", () => {
+    expect(contactFieldErrors(valid)).toEqual({});
+  });
+
+  it("reports every failing field, each with its own error", () => {
+    expect(
+      contactFieldErrors({ name: " ", email: "nope", message: "corto" }),
+    ).toEqual({ name: "missing", email: "email", message: "short" });
+  });
+
+  it("calls an empty field missing, not malformed or short", () => {
+    expect(contactFieldErrors({ name: "", email: "", message: "" })).toEqual({
+      name: "missing",
+      email: "missing",
+      message: "missing",
+    });
+  });
+
+  it("leaves valid fields out", () => {
+    expect(contactFieldErrors({ ...valid, email: "x@" })).toEqual({
+      email: "email",
     });
   });
 });
