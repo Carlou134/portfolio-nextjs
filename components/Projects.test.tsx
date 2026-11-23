@@ -131,9 +131,12 @@ describe("Projects", () => {
     expect(screen.getByText("2026 · Thesis")).toBeInTheDocument();
   });
 
-  it("shows pending-content notices outside production", () => {
+  it("shows one pending notice per grid project with something pending", () => {
     renderProjects("es");
-    expect(screen.getAllByTestId("pending-notice").length).toBeGreaterThan(0);
+    const withPending = projects.filter(
+      (p) => p.placement === "grid" && (p.pending?.length ?? 0) > 0,
+    ).length;
+    expect(screen.queryAllByTestId("pending-notice")).toHaveLength(withPending);
   });
 
   it("draws no pending notice on a card with nothing pending", () => {

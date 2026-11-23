@@ -201,9 +201,7 @@ export const projects: Project[] = projectsSchema.parse([
         href: "https://github.com/Carlou134/soc-alert-simulator-worker",
       },
     ],
-    pending: [
-      "Docs del worker desactualizadas: el README dice 'local dev today' y architecture.md que Django no consume de Splunk; hoy el worker corre en Azure y la tesis tiene el conector real.",
-    ],
+    pending: [],
   },
   // ── "More projects" table (rendered in commit 33) ────────────────────────
   {
