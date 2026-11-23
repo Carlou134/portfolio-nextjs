@@ -82,7 +82,7 @@ export const caseStudies: CaseStudy[] = [
         stage: "Ingesta",
         boxes: [
           { title: "Subida CSV / JSON", sub: "pipeline de limpieza" },
-          { title: "Conector Splunk", sub: "REST · polling cada 5 min" },
+          { title: "Conector Splunk", sub: "REST · polling por conector" },
         ],
       },
       {
@@ -131,7 +131,7 @@ export const caseStudies: CaseStudy[] = [
       {
         src: "/conexion-splunk.png",
         caption:
-          "Conector real con Splunk: polling cada 5 minutos y sincronización incremental.",
+          "Conector real con Splunk: polling con intervalo configurable por conector (5 minutos por defecto) y sincronización incremental.",
       },
     ],
     snippet: {
