@@ -108,11 +108,13 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+      {/* gap-3 is a floor: at 320px justify-between had no space left to
+          share and the logo touched the language toggle. */}
+      <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center gap-3">
         <SectionLink
           id={"inicio"}
           onHome={onHome}
-          className="inline-flex items-center min-h-11 font-mono font-medium text-text-primary text-lg"
+          className="inline-flex items-center min-h-11 font-mono font-medium text-text-primary text-base min-[360px]:text-lg"
         >
           cfvasquez<span className="text-accent">.</span>dev
         </SectionLink>
@@ -206,7 +208,9 @@ export default function Navbar() {
               href={cvFileByLocale[locale]}
               target="_blank"
               rel="noopener noreferrer"
-              className="nav-link flex items-center gap-2 py-3"
+              // justify-start: .nav-link centers (for the header's square
+              // targets), which pushed this one item off the menu's left edge.
+              className="nav-link flex items-center justify-start gap-2 py-3"
               aria-label={t("cvLabel")}
             >
               <Download size={14} aria-hidden="true" />
