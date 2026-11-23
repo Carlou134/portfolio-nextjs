@@ -11,6 +11,13 @@ vi.mock("@/i18n/actions", () => ({
   setLocale: (...args: unknown[]) => setLocaleMock(...args),
 }));
 
+// Default "/", the home page; tests for other routes override it.
+let pathname = "/";
+vi.mock("next/navigation", () => ({ usePathname: () => pathname }));
+beforeEach(() => {
+  pathname = "/";
+});
+
 // Navbar no longer touches LanguageContext post-migration (removed in commit
 // 17), so only NextIntlClientProvider is needed here. Locale is a prop, not
 // global state, so switching it per test is just a different render.
@@ -35,6 +42,43 @@ describe("Navbar", () => {
       "Proyectos",
       "Experiencia",
       "Contacto",
+    ]);
+  });
+
+  // A bare "#experiencia" resolves against the current path: on the case
+  // study it pointed at /case-study/soc-ml#experiencia and did nothing.
+  it("points every section link at the home page, so it works from any route", () => {
+    pathname = "/case-study/soc-ml";
+    renderNavbar();
+    const hrefs = within(screen.getAllByRole("list")[0])
+      .getAllByRole("link")
+      .map((link) => link.getAttribute("href"));
+    expect(hrefs).toEqual([
+      "/#sobre-mi",
+      "/#stack",
+      "/#proyectos",
+      "/#experiencia",
+      "/#contacto",
+    ]);
+    expect(screen.getByRole("link", { name: /cfvasquez/ })).toHaveAttribute(
+      "href",
+      "/#inicio",
+    );
+  });
+
+  // On "/" the links stay native same-document anchors: a <Link> there let
+  // Next 16.2's router stack hashes ("/#experiencia#contacto").
+  it("uses bare hash anchors on the home page", () => {
+    renderNavbar();
+    const hrefs = within(screen.getAllByRole("list")[0])
+      .getAllByRole("link")
+      .map((link) => link.getAttribute("href"));
+    expect(hrefs).toEqual([
+      "#sobre-mi",
+      "#stack",
+      "#proyectos",
+      "#experiencia",
+      "#contacto",
     ]);
   });
 
@@ -110,7 +154,13 @@ describe("Navbar", () => {
       vi.stubGlobal(
         "IntersectionObserver",
         class {
-          constructor(callback: IntersectionObserverCallback) {
+          constructor(
+            callback: IntersectionObserverCallback,
+            options?: IntersectionObserverInit,
+          ) {
+            // next/link builds its own prefetch observers; keep only the
+            // active-section one (its 1px center line).
+            if (options?.rootMargin !== "-50% 0px -50% 0px") return;
             fire = (target, isIntersecting) =>
               callback(
                 [{ target, isIntersecting } as IntersectionObserverEntry],
@@ -118,6 +168,7 @@ describe("Navbar", () => {
               );
           }
           observe = vi.fn();
+          unobserve = vi.fn(); // next/link prefetch calls it on unmount
           disconnect = vi.fn();
         },
       );
@@ -169,9 +220,13 @@ describe("Navbar", () => {
       vi.stubGlobal(
         "IntersectionObserver",
         class {
-          constructor(callback: IntersectionObserverCallback) {
-            // Only the hero-CV observer matters here; the section observer
-            // has no sections to watch in this block.
+          constructor(
+            callback: IntersectionObserverCallback,
+            options?: IntersectionObserverInit,
+          ) {
+            // Only the hero-CV observer matters here (the one under the 80px
+            // header); the section and next/link prefetch ones are ignored.
+            if (options?.rootMargin !== "-80px 0px 0px 0px") return;
             fire = (isIntersecting) =>
               callback(
                 [
@@ -184,6 +239,7 @@ describe("Navbar", () => {
               );
           }
           observe = vi.fn();
+          unobserve = vi.fn(); // next/link prefetch calls it on unmount
           disconnect = vi.fn();
         },
       );
@@ -207,6 +263,13 @@ describe("Navbar", () => {
       renderNavbar();
       act(() => fire(true));
       act(() => fire(false));
+      expect(headerCv()).not.toHaveClass("invisible");
+    });
+
+    it("always shows it off the home page, where there is no hero CV", () => {
+      pathname = "/case-study/soc-ml";
+      renderNavbar();
+      act(() => fire(true));
       expect(headerCv()).not.toHaveClass("invisible");
     });
   });

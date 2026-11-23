@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { Download, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { defaultLocale, isLocale, locales } from "@/i18n/locale";
 import { setLocale } from "@/i18n/actions";
@@ -10,6 +11,24 @@ import { cvFileByLocale } from "@/lib/cv";
 import { useActiveSection } from "@/lib/use-active-section";
 
 // Same order as the sections in app/page.tsx.
+
+// On "/" a native "#id" anchor: a plain same-document jump. Elsewhere "#id"
+// would resolve against the current path (/case-study/soc-ml#experiencia, a
+// dead link), so it's a <Link> to "/#id". Not <Link> on "/" too: after a soft
+// navigation to "/#a", Next 16.2's router appends the next hash to the cached
+// canonical URL ("/#a#b" — segment-cache/navigation.js), a URL that scrolls
+// nowhere if shared.
+function SectionLink({
+  id,
+  onHome,
+  ...rest
+}: { id: string; onHome: boolean } & Omit<ComponentProps<"a">, "href">) {
+  return onHome ? (
+    <a href={`#${id}`} {...rest} />
+  ) : (
+    <Link href={`/#${id}`} {...rest} />
+  );
+}
 const navLinks = [
   { labelKey: "linkAbout", id: "sobre-mi" },
   { labelKey: "linkStack", id: "stack" },
@@ -51,9 +70,11 @@ export default function Navbar() {
   // The hero has its own "Download CV" button. While it's on screen the
   // header one would offer the same action twice, so it only shows once the
   // hero's has scrolled away. Starts hidden so it doesn't flash on load.
-  // Assumes the hero is on the page: app/page.tsx is the only route today.
-  // A page without #hero-cv would keep this hidden — revisit if one appears.
+  // Only "/" has the hero: on any other route (the case study) the header
+  // button is the only CV link, so it must always show there.
+  const onHome = usePathname() === "/";
   const [heroCvInView, setHeroCvInView] = useState(true);
+  const hideHeaderCv = onHome && heroCvInView;
 
   useEffect(() => {
     const heroCv = document.getElementById("hero-cv");
@@ -88,12 +109,13 @@ export default function Navbar() {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
-        <a
-          href="#inicio"
+        <SectionLink
+          id={"inicio"}
+          onHome={onHome}
           className="inline-flex items-center min-h-11 font-mono font-medium text-text-primary text-lg"
         >
           cfvasquez<span className="text-accent">.</span>dev
-        </a>
+        </SectionLink>
 
         {/* From lg, not md: at 768px the five links plus logo, CV and the
             language toggle don't fit — "Sobre mí" wrapped and the toggle
@@ -101,13 +123,14 @@ export default function Navbar() {
         <ul className="hidden lg:flex items-center gap-8">
           {navLinks.map((item) => (
             <li key={item.id}>
-              <a
-                href={`#${item.id}`}
+              <SectionLink
+                id={item.id}
+                onHome={onHome}
                 className="nav-link inline-flex items-center min-h-11"
                 {...currentProps(item.id)}
               >
                 {t(item.labelKey)}
-              </a>
+              </SectionLink>
             </li>
           ))}
         </ul>
@@ -121,7 +144,7 @@ export default function Navbar() {
             // don't shift, and visibility drops it from tab order and the
             // accessibility tree while the hero's button is on screen.
             className={`btn-secondary hidden sm:inline-flex items-center gap-2 min-h-11 px-4 transition-[opacity,visibility] duration-(--duration-base) ${
-              heroCvInView ? "invisible opacity-0" : "opacity-100"
+              hideHeaderCv ? "invisible opacity-0" : "opacity-100"
             }`}
             aria-label={t("cvLabel")}
           >
@@ -166,14 +189,15 @@ export default function Navbar() {
         >
           {navLinks.map((item) => (
             <li key={item.id}>
-              <Link
-                href={`#${item.id}`}
+              <SectionLink
+                id={item.id}
+                onHome={onHome}
                 onClick={() => setMobileOpen(false)}
                 className="nav-link block py-3"
                 {...currentProps(item.id)}
               >
                 {t(item.labelKey)}
-              </Link>
+              </SectionLink>
             </li>
           ))}
           {/* The header CV button hides below sm, so it lives here instead. */}
