@@ -21,7 +21,8 @@ export interface CaseStudy {
   archWhy: string[];
   screenshots: { src?: string; caption: string; mock?: boolean }[];
   snippet: { file: string; lang: string; code: string; note: string };
-  video: { mock: true; note: string };
+  // YouTube video id. Without one the video section isn't rendered.
+  video?: { youtubeId: string; caption: string };
   results: { value: string; label: string; mock?: boolean }[];
   tradeoff: string;
   validation: string;
@@ -165,8 +166,9 @@ def pipeline_normalize_view(request):
       note: "Extracto simplificado. Los comentarios son anotaciones para este case study.",
     },
     video: {
-      mock: true,
-      note: "Acá va el video walkthrough con voz (3–5 min). Sin video, la sección no se renderiza.",
+      youtubeId: "XbaL3qdgyqY",
+      caption:
+        "Demo sin narración con datos de prueba anonimizados: conexión con Splunk, cola de alertas, detalle de una alerta y el paso de alerta a incidente hasta su resolución.",
     },
     results: [
       {

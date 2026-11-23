@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import CaseStudy from "./CaseStudy";
 import { getCaseStudy } from "@/content/case-studies";
 
@@ -23,20 +23,32 @@ describe("CaseStudy (preview)", () => {
       "Arquitectura",
       "Capturas",
       "Snippet curado",
-      "Video walkthrough",
+      "Video demo",
       "Resultados y aprendizajes",
     ]);
   });
 
   it("wraps every placeholder in a MOCK block", () => {
     render(<CaseStudy data={data} />);
-    const mocks = screen.getAllByTestId("mock-block");
     const mockShots = data.screenshots.filter((s) => s.mock).length;
-    // Mock screenshots + the video.
-    expect(mocks).toHaveLength(mockShots + 1);
-    expect(mocks.some((m) => within(m).queryByText(/video walkthrough/))).toBe(
-      true,
+    expect(screen.queryAllByTestId("mock-block")).toHaveLength(mockShots);
+  });
+
+  it("embeds the demo video without tracking cookies, lazily", () => {
+    render(<CaseStudy data={data} />);
+    const player = screen.getByTitle(/^Video demo:/);
+    expect(player).toHaveAttribute(
+      "src",
+      "https://www.youtube-nocookie.com/embed/XbaL3qdgyqY",
     );
+    expect(player).toHaveAttribute("loading", "lazy");
+  });
+
+  it("skips the video section when there is no video", () => {
+    render(<CaseStudy data={{ ...data, video: undefined }} />);
+    expect(
+      screen.queryByRole("heading", { name: "Video demo" }),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps the real metrics and the validation outside the MOCK blocks", () => {

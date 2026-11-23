@@ -65,7 +65,7 @@
     "links": {
       "repo": "Repository",
       "demo": "Live demo",
-      "video": "Video walkthrough",
+      "video": "Video demo",
       "caseStudy": "Read case study"
     },
     "imageAlt": "Screenshot of {title}"

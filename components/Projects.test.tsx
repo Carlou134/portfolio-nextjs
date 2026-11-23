@@ -81,14 +81,24 @@ describe("Projects", () => {
     );
   });
 
-  it("never renders a demo or video button without a real URL", () => {
+  it("never renders a demo button without a real URL", () => {
     renderProjects("es");
     expect(
       screen.queryByRole("link", { name: /Demo en vivo/ }),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("link", { name: /Video walkthrough/ }),
-    ).not.toBeInTheDocument();
+  });
+
+  it("shows the video button only on the project that has a video", () => {
+    renderProjects("es");
+    const videos = screen.getAllByRole("link", { name: /Video demo/ });
+    expect(videos).toHaveLength(1);
+    expect(videos[0]).toHaveAttribute(
+      "href",
+      "https://www.youtube.com/watch?v=XbaL3qdgyqY",
+    );
+    expect(videos[0].closest("article")!.querySelector("h3")).toHaveTextContent(
+      "Priorización de alertas SOC con Machine Learning",
+    );
   });
 
   it("filters by category and announces the count", async () => {

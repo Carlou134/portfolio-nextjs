@@ -50,6 +50,9 @@ export const projects: Project[] = projectsSchema.parse([
       "Claude API",
     ],
     image: "/login_tesis.png",
+    // Silent screen recording of the demo (no narration), so the button says
+    // "Video demo", not "walkthrough". Unlisted on YouTube.
+    video: "https://www.youtube.com/watch?v=XbaL3qdgyqY",
     repos: [
       {
         label: "GitHub",
@@ -61,9 +64,7 @@ export const projects: Project[] = projectsSchema.parse([
       en: "Degree thesis · UPC · Built the whole system; dataset, diagrams and Scrum management in a team with Giancarlo Moreno.",
     },
     pending: [
-      "Video walkthrough con voz (opcional; la demo sin voz va en `demo`, no acá).",
       "Case study (commits 37–42): al publicarlo, agregar caseSlug.",
-      "Capturas para el case study: detalle de alerta con SHAP y conector Splunk.",
       "Conteo de tests: README dice 119, docs/technical.md dice 153. Confirmar con pytest.",
     ],
   },

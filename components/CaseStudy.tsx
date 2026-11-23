@@ -226,15 +226,28 @@ export default function CaseStudy({ data }: { data: CaseStudyData }) {
           </p>
         </Section>
 
-        <Section id="cs-video" title="Video walkthrough">
-          <Mock>
-            <div className="aspect-video rounded-lg bg-bg-secondary flex items-center justify-center">
-              <span className="font-mono text-sm text-text-muted">
-                ▶ {data.video.note}
-              </span>
-            </div>
-          </Mock>
-        </Section>
+        {data.video && (
+          <Section id="cs-video" title="Video demo">
+            {/* youtube-nocookie: no tracking cookies until play. loading="lazy":
+                the player is heavy and sits far below the fold. */}
+            <figure>
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-bg-secondary">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${data.video.youtubeId}`}
+                  title={`Video demo: ${data.title}`}
+                  loading="lazy"
+                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+              <figcaption className="text-xs text-text-muted mt-2">
+                {data.video.caption}
+              </figcaption>
+            </figure>
+          </Section>
+        )}
 
         <Section id="cs-resultados" title="Resultados y aprendizajes">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
