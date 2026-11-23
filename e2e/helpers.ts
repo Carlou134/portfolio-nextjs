@@ -9,8 +9,8 @@ import { expect, type Page, type Route } from "@playwright/test";
  * "hydrated" signal that doesn't need sleeps or `networkidle`. Navbar renders
  * on every page, so the marker holds regardless of which page loaded.
  */
-export async function gotoHydrated(page: Page) {
-  await page.goto("/");
+export async function gotoHydrated(page: Page, path = "/") {
+  await page.goto(path);
   await page.waitForFunction(
     () => document.documentElement.dataset.hydrated === "true",
   );
@@ -27,6 +27,7 @@ export interface ContactRequest {
   name: string;
   email: string;
   message: string;
+  intent: "job" | "freelance" | "other";
   lang: "es" | "en";
 }
 

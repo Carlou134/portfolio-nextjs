@@ -26,7 +26,7 @@ test.describe("contact form", () => {
     await expect(contactForm(page).getByRole("status")).toContainText(
       "Mensaje enviado",
     );
-    expect(requests).toEqual([{ ...valid, lang: "es" }]);
+    expect(requests).toEqual([{ ...valid, intent: "job", lang: "es" }]);
     await expect(page.getByLabel("Nombre", { exact: true })).toHaveValue("");
   });
 
@@ -48,27 +48,56 @@ test.describe("contact form", () => {
   test("shows the server error and keeps what was typed", async ({ page }) => {
     const requests = await mockContactApi(page, {
       kind: "json",
-      status: 400,
-      body: { error: "El mensaje es muy corto." },
+      status: 500,
+      body: { error: "Error al enviar el mensaje." },
     });
     await gotoHydrated(page);
-    await fillContactForm(page, { ...valid, message: "corto" });
+    await fillContactForm(page, valid);
 
     await contactForm(page)
       .getByRole("button", { name: "Enviar mensaje" })
       .click();
 
     await expect(contactForm(page).getByRole("alert")).toContainText(
-      "El mensaje es muy corto.",
+      "Error al enviar el mensaje.",
     );
     expect(requests).toHaveLength(1);
     await expect(page.getByLabel("Mensaje", { exact: true })).toHaveValue(
-      "corto",
+      valid.message,
     );
     // The button is back, so the visitor can fix the text and retry.
     await expect(
       contactForm(page).getByRole("button", { name: "Enviar mensaje" }),
     ).toBeEnabled();
+  });
+
+  test("flags invalid fields before sending anything", async ({ page }) => {
+    const requests = await mockContactApi(page);
+    await gotoHydrated(page);
+    const field = (label: string) => page.getByLabel(label, { exact: true });
+
+    await field("Email").fill("carlos@");
+    await field("Mensaje").fill("Hola");
+    await contactForm(page)
+      .getByRole("button", { name: "Enviar mensaje" })
+      .click();
+
+    await expect(field("Nombre")).toBeFocused();
+    await expect(field("Nombre")).toHaveAttribute("aria-invalid", "true");
+    await expect(field("Nombre")).toHaveAccessibleDescription(
+      "Escribe tu nombre.",
+    );
+    await expect(field("Email")).toHaveAccessibleDescription(
+      /nombre@dominio\.com/,
+    );
+    await expect(field("Mensaje")).toHaveAccessibleDescription(
+      "El mensaje necesita al menos 10 caracteres (llevas 4).",
+    );
+    expect(requests).toHaveLength(0);
+
+    // Fixing a field clears its error right away, without resubmitting.
+    await field("Nombre").fill("Carlos");
+    await expect(field("Nombre")).not.toHaveAttribute("aria-invalid");
   });
 
   test("shows a connection error when the request fails", async ({ page }) => {
@@ -102,6 +131,6 @@ test.describe("contact form", () => {
     await expect(contactForm(page).getByRole("status")).toContainText(
       "Message sent",
     );
-    expect(requests).toEqual([{ ...valid, lang: "en" }]);
+    expect(requests).toEqual([{ ...valid, intent: "job", lang: "en" }]);
   });
 });

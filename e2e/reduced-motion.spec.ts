@@ -1,6 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
+import es from "../messages/es.json";
 
-const KICKER = "Full Stack Developer · Lima, Perú";
+// The first fadeUp element in the Hero. Read from the messages so a copy
+// change can not silently break the selector (the kicker this used to target
+// stopped being animated when the Hero was redesigned).
+const ANIMATED_TEXT = es.Hero.subtitle;
 
 declare global {
   interface Window {
@@ -9,7 +13,7 @@ declare global {
 }
 
 /**
- * The Hero kicker fades in (opacity) while sliding up (transform). Normally
+ * The Hero subtitle fades in (opacity) while sliding up (transform). Normally
  * both finish together, so the transform only settles once opacity is 1.
  * With reduced motion, framer snaps the transform and keeps the fade, so the
  * transform settles while the element is still fading in.
@@ -18,10 +22,10 @@ declare global {
  * depend on how fast the test process polls.
  */
 async function opacityWhenTransformSettles(page: Page) {
-  await page.addInitScript((kicker) => {
+  await page.addInitScript((text) => {
     const sample = () => {
       const el = [...document.querySelectorAll("p")].find(
-        (p) => p.textContent === kicker,
+        (p) => p.textContent === text,
       );
       if (
         el &&
@@ -34,7 +38,7 @@ async function opacityWhenTransformSettles(page: Page) {
       requestAnimationFrame(sample);
     };
     requestAnimationFrame(sample);
-  }, KICKER);
+  }, ANIMATED_TEXT);
 
   await page.goto("/");
   await page.waitForFunction(() => window.__opacityWhenSettled !== undefined);
