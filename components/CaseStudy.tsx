@@ -34,8 +34,10 @@ const prose = "text-text-secondary leading-[1.65] max-w-[62ch]";
 export default function CaseStudy({ data }: { data: CaseStudyData }) {
   const t = useTranslations("CaseStudy");
 
+  // pt-28 clears the fixed h-20 navbar (same as the Hero); with less, the back
+  // link sits under the header and the header swallows its clicks.
   return (
-    <article className="max-w-[900px] mx-auto px-6 pt-9 pb-24">
+    <article className="max-w-[900px] mx-auto px-6 pt-28 pb-24">
       <Link
         href="/#proyectos"
         className="inline-flex items-center gap-2 min-h-11 font-mono text-[13px] text-text-secondary hover:text-accent"
