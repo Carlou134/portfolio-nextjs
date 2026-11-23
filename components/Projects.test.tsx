@@ -145,4 +145,16 @@ describe("Projects", () => {
       within(card).queryByTestId("pending-notice"),
     ).not.toBeInTheDocument();
   });
+
+  it("links the thesis card to its published case study", () => {
+    renderProjects("es");
+    const card = screen
+      .getByRole("heading", {
+        name: "Priorización de alertas SOC con Machine Learning",
+      })
+      .closest("article")!;
+    expect(
+      within(card).getByRole("link", { name: /Ver case study/ }),
+    ).toHaveAttribute("href", "/case-study/soc-ml");
+  });
 });

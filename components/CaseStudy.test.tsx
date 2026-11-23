@@ -1,20 +1,37 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
 import CaseStudy from "./CaseStudy";
-import { getCaseStudy } from "@/content/case-studies";
+import { getCaseStudy, type CaseStudy as Data } from "@/content/case-studies";
+import esMessages from "@/messages/es.json";
+import enMessages from "@/messages/en.json";
 
-const data = getCaseStudy("soc-ml")!;
+const es = getCaseStudy("soc-ml", "es")!;
+const en = getCaseStudy("soc-ml", "en")!;
 
-describe("CaseStudy (preview)", () => {
-  it("announces itself as a dev-only preview", () => {
-    render(<CaseStudy data={data} />);
-    expect(
-      screen.getByText("VISTA PRELIMINAR · solo en desarrollo"),
-    ).toBeInTheDocument();
+function renderCase(
+  locale: "es" | "en",
+  data: Data = locale === "es" ? es : en,
+) {
+  return render(
+    <NextIntlClientProvider
+      locale={locale}
+      messages={locale === "es" ? esMessages : enMessages}
+    >
+      <CaseStudy data={data} />
+    </NextIntlClientProvider>,
+  );
+}
+
+describe("CaseStudy", () => {
+  it("ships without preview banner or MOCK blocks", () => {
+    renderCase("es");
+    expect(screen.queryByText(/VISTA PRELIMINAR/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/MOCK/)).not.toBeInTheDocument();
   });
 
-  it("renders the real sections in order", () => {
-    render(<CaseStudy data={data} />);
+  it("renders the sections in order", () => {
+    renderCase("es");
     expect(
       screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
     ).toEqual([
@@ -28,14 +45,42 @@ describe("CaseStudy (preview)", () => {
     ]);
   });
 
-  it("wraps every placeholder in a MOCK block", () => {
-    render(<CaseStudy data={data} />);
-    const mockShots = data.screenshots.filter((s) => s.mock).length;
-    expect(screen.queryAllByTestId("mock-block")).toHaveLength(mockShots);
+  it("renders the English page in English, content and UI", () => {
+    renderCase("en");
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "SOC alert prioritization with Machine Learning",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Back to projects/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
+    ).toEqual([
+      "Context and problem",
+      "Role and key decisions",
+      "Architecture",
+      "Screenshots",
+      "Curated snippet",
+      "Video demo",
+      "Results and learnings",
+    ]);
+    expect(screen.getByText(/12 N1, N2 and N3 analysts/)).toBeInTheDocument();
+  });
+
+  it("names each screenshot link after its caption", () => {
+    renderCase("en");
+    expect(
+      screen.getByRole("link", {
+        name: /^Alert queue sorted by priority.*\(open full size\)$/,
+      }),
+    ).toHaveAttribute("href", "/cola-alertas.png");
   });
 
   it("embeds the demo video without tracking cookies, lazily", () => {
-    render(<CaseStudy data={data} />);
+    renderCase("es");
     const player = screen.getByTitle(/^Video demo:/);
     expect(player).toHaveAttribute(
       "src",
@@ -45,17 +90,37 @@ describe("CaseStudy (preview)", () => {
   });
 
   it("skips the video section when there is no video", () => {
-    render(<CaseStudy data={{ ...data, video: undefined }} />);
+    renderCase("es", { ...es, video: undefined });
     expect(
       screen.queryByRole("heading", { name: "Video demo" }),
     ).not.toBeInTheDocument();
   });
+});
 
-  it("keeps the real metrics and the validation outside the MOCK blocks", () => {
-    render(<CaseStudy data={data} />);
-    const recall = screen.getByText("98.9%");
-    expect(recall.closest("[data-testid='mock-block']")).toBeNull();
-    const validation = screen.getByText(/12 analistas N1, N2 y N3/);
-    expect(validation.closest("[data-testid='mock-block']")).toBeNull();
+describe("case study content", () => {
+  // Both locales must tell the same story: same structure, same numbers.
+  it("keeps the English version structurally in sync with the Spanish one", () => {
+    expect(en.slug).toBe(es.slug);
+    expect(en.projectId).toBe(es.projectId);
+    expect(en.decisions).toHaveLength(es.decisions.length);
+    expect(en.flow.map((c) => c.boxes.length)).toEqual(
+      es.flow.map((c) => c.boxes.length),
+    );
+    expect(en.screenshots.map((s) => s.src)).toEqual(
+      es.screenshots.map((s) => s.src),
+    );
+    expect(en.results.map((r) => r.value)).toEqual(
+      es.results.map((r) => r.value),
+    );
+    expect(en.video?.youtubeId).toBe(es.video?.youtubeId);
+    expect(en.learnings).toHaveLength(es.learnings.length);
+  });
+
+  it("falls back to Spanish when no locale is given", () => {
+    expect(getCaseStudy("soc-ml")).toBe(es);
+  });
+
+  it("returns nothing for an unknown slug", () => {
+    expect(getCaseStudy("nope", "en")).toBeUndefined();
   });
 });

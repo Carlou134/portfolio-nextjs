@@ -63,7 +63,8 @@ export const projects: Project[] = projectsSchema.parse([
       es: "Tesis de grado · UPC · Desarrollo completo del sistema; dataset, diagramas y gestión Scrum en equipo con Giancarlo Moreno.",
       en: "Degree thesis · UPC · Built the whole system; dataset, diagrams and Scrum management in a team with Giancarlo Moreno.",
     },
-    pending: ["Case study (commits 37–42): al publicarlo, agregar caseSlug."],
+    caseSlug: "soc-ml",
+    pending: [],
   },
   {
     id: 8,

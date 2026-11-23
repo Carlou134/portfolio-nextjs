@@ -160,5 +160,21 @@
         "label": "ecosistemas en producción: .NET, React/Next.js y Kotlin"
       }
     }
+  },
+  "CaseStudy": {
+    "back": "Volver a proyectos",
+    "sections": {
+      "context": "Contexto y problema",
+      "role": "Rol y decisiones clave",
+      "architecture": "Arquitectura",
+      "screenshots": "Capturas",
+      "snippet": "Snippet curado",
+      "video": "Video demo",
+      "results": "Resultados y aprendizajes"
+    },
+    "why": "Por qué así",
+    "learnings": "Aprendizajes",
+    "openFull": "{caption} (abrir en tamaño completo)",
+    "videoTitle": "Video demo: {title}"
   }
 }
