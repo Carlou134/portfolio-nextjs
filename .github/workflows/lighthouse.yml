@@ -36,8 +36,10 @@ jobs:
       # Lighthouse must measure the production bundle, never `next dev`.
       - run: pnpm build
 
-      # Budgets in lighthouserc.json are all "warn": they annotate the run but
-      # never fail it. They get promoted to "error" once scores are stable.
+      # Accessibility and SEO fail the run ("error"): they depend on the HTML,
+      # not the bundle, and measured 100 on both pages. Performance,
+      # best-practices and Web Vitals stay "warn" until production runs here
+      # show stable scores; runner noise would otherwise fail PRs at random.
       - run: pnpm lhci
 
       - name: Upload Lighthouse reports
