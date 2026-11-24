@@ -23,7 +23,7 @@ export default function Image() {
             width: 16,
             height: 16,
             borderRadius: "50%",
-            backgroundColor: "#00E5A0",
+            backgroundColor: "#818cf8",
             display: "flex",
           }}
         />
@@ -48,7 +48,7 @@ export default function Image() {
         style={{
           display: "flex",
           fontSize: 40,
-          color: "#00E5A0",
+          color: "#818cf8",
           marginTop: 20,
         }}
       >

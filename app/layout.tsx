@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { MotionConfig } from "framer-motion";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 
 const inter = Inter({
@@ -60,26 +62,43 @@ const personJsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const t = await getTranslations("A11y");
+
   return (
+    // data-scroll-behavior="smooth": Next 16 no longer pauses the CSS smooth
+    // scroll on route changes, so opening the case study from mid-page
+    // animated a scroll from the old offset up through the new page. With
+    // it, page changes land at the top instantly; in-page anchors stay smooth.
     <html
-      lang="es"
+      lang={locale}
+      data-scroll-behavior="smooth"
       className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="bg-[#0A0F1E] text-[#F9FAFB] font-sans antialiased">
+      <body>
+        {/* Every page must render <main id="contenido"> for this to land. */}
+        <a href="#contenido" className="skip-link">
+          {t("skipToContent")}
+        </a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
-        <LanguageProvider>
-          {children}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {/* One switch for the whole tree: with the OS "reduce motion" setting
+              on, framer drops transform animations (movement) and keeps
+              opacity fades. MotionConfig ships its own "use client", so a
+              server layout can render it directly. */}
+          <MotionConfig reducedMotion="user">{children}</MotionConfig>
           <Analytics />
           <SpeedInsights />
-        </LanguageProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

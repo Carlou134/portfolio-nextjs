@@ -1,0 +1,198 @@
+{
+  "I18nInfra": {
+    "smokeTest": "next-intl está funcionando"
+  },
+  "A11y": {
+    "skipToContent": "Saltar al contenido"
+  },
+  "NotFound": {
+    "kicker": "Error 404",
+    "heading": "Esta página no existe.",
+    "body": "Puede que el enlace esté mal escrito o que la página se haya movido. Desde aquí puedes volver al inicio o ir directo a los proyectos.",
+    "home": "Volver al inicio",
+    "projects": "Ver proyectos"
+  },
+  "Nav": {
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "language": "Idioma",
+    "cv": "CV",
+    "cvLabel": "Descargar CV (PDF)",
+    "linkAbout": "Sobre mí",
+    "linkProjects": "Proyectos",
+    "linkStack": "Stack",
+    "linkExperience": "Experiencia",
+    "linkContact": "Contacto"
+  },
+  "Hero": {
+    "kicker": "Full Stack Developer · Lima, Perú",
+    "headline": "Construyo sistemas C#/.NET y Next.js que llegan a producción y se mantienen ahí.",
+    "subtitle": "Más de 2 años en el ecosistema .NET, React/Next.js y Kotlin: diseño de APIs REST, arquitecturas limpias y hexagonales, CI/CD e IA aplicada. Bachiller en Ingeniería de Sistemas (UPC, Quinto Superior).",
+    "viewProjects": "Ver proyectos",
+    "downloadCv": "Descargar CV",
+    "meta": "Disponible para propuestas · UTC−5 · inglés B2",
+    "photoAlt": "Foto de perfil de Carlos Vásquez",
+    "profileLabel": "Perfil",
+    "terminal": {
+      "thesisLabel": "Tesis (UPC) · detección de alertas con machine learning",
+      "thesisCommand": "cat tesis.txt",
+      "thesis": "<hl>98.9% recall</hl> en alertas maliciosas · SOC + ML",
+      "nowLabel": "Trabajo actual · Zoluxiones",
+      "nowCommand": "cat ahora.txt",
+      "now": "arquitectura hexagonal en producción"
+    }
+  },
+  "Projects": {
+    "sectionLabel": "Lo que he construido",
+    "subtitle": "Proyectos con evidencia verificable: repositorio, demo o case study.",
+    "filterBy": "Filtrar por",
+    "filterLabel": "Filtrar proyectos por categoría",
+    "filters": {
+      "all": "Todos",
+      "front": "Frontend",
+      "back": "Backend",
+      "data": "Datos",
+      "ops": "DevOps",
+      "ai": "IA"
+    },
+    "count": "{shown} de {total} proyectos · filtro activo: {filter}",
+    "empty": "Ningún proyecto en esta categoría todavía.",
+    "status": {
+      "done": "Completado",
+      "wip": "En desarrollo",
+      "prod": "En producción"
+    },
+    "kind": {
+      "thesis": "Tesis",
+      "technicalTest": "Prueba técnica",
+      "academic": "Académico",
+      "personal": "Personal",
+      "work": "Laboral"
+    },
+    "links": {
+      "repo": "Repositorio",
+      "demo": "Demo en vivo",
+      "video": "Video demo",
+      "caseStudy": "Ver case study"
+    },
+    "imageAlt": "Captura de {title}"
+  },
+  "MoreProjects": {
+    "sectionLabel": "Más proyectos",
+    "subtitle": "Proyectos más chicos: pruebas técnicas, trabajos académicos y práctica. Todos con repositorio público.",
+    "stackLabel": "Tecnologías"
+  },
+  "Stack": {
+    "sectionLabel": "Con qué trabajo",
+    "subtitle": "Agrupado por capa. En color, lo que uso a diario; el resto va en orden de uso.",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "data": "Datos",
+      "devops": "DevOps / Cloud",
+      "ai": "IA"
+    }
+  },
+  "Experience": {
+    "sectionLabel": "Experiencia",
+    "current": "Actual"
+  },
+  "Education": {
+    "sectionLabel": "Educación y certificaciones",
+    "cards": {
+      "degree": {
+        "kicker": "2020 — 2026",
+        "title": "Bachiller en Ingeniería de Sistemas de Información",
+        "body": "Universidad Peruana de Ciencias Aplicadas (UPC) · Quinto Superior",
+        "note": "Tesis: Sistema web basado en el framework NIST y el algoritmo Random Forest para optimizar las alertas en Centros de Operaciones de Seguridad (SOC) de Lima Metropolitana"
+      },
+      "english": {
+        "kicker": "Certificación",
+        "title": "Inglés B2 — Avanzado",
+        "body": "We Talk · UPC.\nPrograma Intermedio completo en el Británico (2022–2024).",
+        "note": "Japonés básico"
+      },
+      "focus": {
+        "kicker": "Enfoque",
+        "title": "Arquitectura e IA aplicada",
+        "body": "Clean Architecture, Hexagonal, SOLID, CQRS y Scrum aplicados en producción; scikit-learn, LightGBM y SHAP en el lado de IA."
+      }
+    }
+  },
+  "Contact": {
+    "sectionLabel": "Contacto",
+    "heading": "¿Una oferta o un proyecto? Hablemos.",
+    "subheading": "Busco posiciones de desarrollo full stack o backend. También tomo proyectos freelance.",
+    "name": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "email": "Email",
+    "emailPlaceholder": "tucorreo@ejemplo.com",
+    "message": "Mensaje",
+    "messagePlaceholder": "Cuéntame qué tienes en mente...",
+    "success": "¡Mensaje enviado! Te respondo pronto.",
+    "sending": "Enviando...",
+    "send": "Enviar mensaje",
+    "connectionError": "Error de conexión. Intenta nuevamente.",
+    "intentLabel": "Motivo",
+    "intents": {
+      "job": "Oferta laboral",
+      "freelance": "Freelance",
+      "other": "Otro"
+    },
+    "copyEmail": "Copiar email",
+    "copied": "¡Copiado!",
+    "copyFailed": "No se pudo copiar",
+    "requiredNote": "Todos los campos son obligatorios.",
+    "messageHint": "Mínimo {min} caracteres.",
+    "errors": {
+      "name": { "missing": "Escribe tu nombre." },
+      "email": {
+        "missing": "Escribe tu email.",
+        "email": "Revisa el email: debe verse como nombre@dominio.com."
+      },
+      "message": {
+        "missing": "Escribe tu mensaje.",
+        "short": "El mensaje necesita al menos {min} caracteres (llevas {count})."
+      }
+    }
+  },
+  "Footer": {
+    "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Perú",
+    "builtWith": "Hecho a mano · sin plantilla · dark mode por defecto"
+  },
+  "About": {
+    "sectionLabel": "Sobre mí",
+    "heading": "Trabajo de punta a punta: modelo de datos, API, interfaz y el despliegue.",
+    "bio": "Desarrollo software en entornos reales — no en tutoriales. Trabajo principalmente con .NET y React, aunque me adapto al stack que el proyecto necesite.",
+    "metrics": {
+      "modules": {
+        "value": "+10",
+        "label": "módulos en producción para cinco áreas de negocio (MSC)"
+      },
+      "thesis": {
+        "value": "−40.5%",
+        "label": "tiempo de revisión por alerta con mi sistema de tesis, medido con 12 analistas SOC"
+      },
+      "stacks": {
+        "value": "3",
+        "label": "ecosistemas en producción: .NET, React/Next.js y Kotlin"
+      }
+    }
+  },
+  "CaseStudy": {
+    "back": "Volver a proyectos",
+    "sections": {
+      "context": "Contexto y problema",
+      "role": "Rol y decisiones clave",
+      "architecture": "Arquitectura",
+      "screenshots": "Capturas",
+      "snippet": "Snippet curado",
+      "video": "Video demo",
+      "results": "Resultados y aprendizajes"
+    },
+    "why": "Por qué así",
+    "learnings": "Aprendizajes",
+    "openFull": "{caption} (abrir en tamaño completo)",
+    "videoTitle": "Video demo: {title}"
+  }
+}

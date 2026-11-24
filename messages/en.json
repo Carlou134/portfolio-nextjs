@@ -1,0 +1,198 @@
+{
+  "I18nInfra": {
+    "smokeTest": "next-intl is working"
+  },
+  "A11y": {
+    "skipToContent": "Skip to content"
+  },
+  "NotFound": {
+    "kicker": "Error 404",
+    "heading": "This page doesn't exist.",
+    "body": "The link may be mistyped or the page may have moved. From here you can go back home or straight to the projects.",
+    "home": "Back to home",
+    "projects": "See projects"
+  },
+  "Nav": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "cv": "CV",
+    "cvLabel": "Download CV (PDF)",
+    "linkAbout": "About",
+    "linkProjects": "Projects",
+    "linkStack": "Stack",
+    "linkExperience": "Experience",
+    "linkContact": "Contact"
+  },
+  "Hero": {
+    "kicker": "Full Stack Developer · Lima, Peru",
+    "headline": "I build C#/.NET and Next.js systems that reach production and stay there.",
+    "subtitle": "2+ years across the .NET, React/Next.js and Kotlin ecosystems: REST API design, clean and hexagonal architectures, CI/CD and applied AI. BSc in Information Systems Engineering (UPC, top 20%).",
+    "viewProjects": "See projects",
+    "downloadCv": "Download CV",
+    "meta": "Open to offers · UTC−5 · English B2",
+    "photoAlt": "Profile photo of Carlos Vásquez",
+    "profileLabel": "Profile",
+    "terminal": {
+      "thesisLabel": "Thesis (UPC) · alert detection with machine learning",
+      "thesisCommand": "cat thesis.txt",
+      "thesis": "<hl>98.9% recall</hl> on malicious alerts · SOC + ML",
+      "nowLabel": "Current work · Zoluxiones",
+      "nowCommand": "cat now.txt",
+      "now": "hexagonal architecture in production"
+    }
+  },
+  "Projects": {
+    "sectionLabel": "What I've built",
+    "subtitle": "Projects with verifiable evidence: repository, demo or case study.",
+    "filterBy": "Filter by",
+    "filterLabel": "Filter projects by category",
+    "filters": {
+      "all": "All",
+      "front": "Frontend",
+      "back": "Backend",
+      "data": "Data",
+      "ops": "DevOps",
+      "ai": "AI"
+    },
+    "count": "{shown} of {total} projects · active filter: {filter}",
+    "empty": "No projects in this category yet.",
+    "status": {
+      "done": "Completed",
+      "wip": "In progress",
+      "prod": "In production"
+    },
+    "kind": {
+      "thesis": "Thesis",
+      "technicalTest": "Technical test",
+      "academic": "Academic",
+      "personal": "Personal",
+      "work": "Work"
+    },
+    "links": {
+      "repo": "Repository",
+      "demo": "Live demo",
+      "video": "Video demo",
+      "caseStudy": "Read case study"
+    },
+    "imageAlt": "Screenshot of {title}"
+  },
+  "MoreProjects": {
+    "sectionLabel": "More projects",
+    "subtitle": "Smaller projects: technical tests, academic work and practice. All with a public repository.",
+    "stackLabel": "Technologies"
+  },
+  "Stack": {
+    "sectionLabel": "What I work with",
+    "subtitle": "Grouped by layer. Highlighted is what I use daily; the rest follows in order of use.",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "data": "Data",
+      "devops": "DevOps / Cloud",
+      "ai": "AI"
+    }
+  },
+  "Experience": {
+    "sectionLabel": "Experience",
+    "current": "Current"
+  },
+  "Education": {
+    "sectionLabel": "Education and certifications",
+    "cards": {
+      "degree": {
+        "kicker": "2020 — 2026",
+        "title": "BSc in Information Systems Engineering",
+        "body": "Universidad Peruana de Ciencias Aplicadas (UPC) · Top 20% of class",
+        "note": "Thesis: Web system based on the NIST framework and the Random Forest algorithm to optimize alerts in Security Operations Centers (SOC) in Metropolitan Lima"
+      },
+      "english": {
+        "kicker": "Certification",
+        "title": "English B2 — Advanced",
+        "body": "We Talk · UPC.\nCompleted the Intermediate program at Británico (2022–2024).",
+        "note": "Basic Japanese"
+      },
+      "focus": {
+        "kicker": "Focus",
+        "title": "Architecture and applied AI",
+        "body": "Clean Architecture, Hexagonal, SOLID, CQRS and Scrum applied in production; scikit-learn, LightGBM and SHAP on the AI side."
+      }
+    }
+  },
+  "Contact": {
+    "sectionLabel": "Contact",
+    "heading": "A role or a project? Let's talk.",
+    "subheading": "I'm looking for full stack or backend development roles. I also take freelance projects.",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "message": "Message",
+    "messagePlaceholder": "Tell me what you have in mind...",
+    "success": "Message sent! I'll get back to you soon.",
+    "sending": "Sending...",
+    "send": "Send message",
+    "connectionError": "Connection error. Please try again.",
+    "intentLabel": "Reason",
+    "intents": {
+      "job": "Job offer",
+      "freelance": "Freelance",
+      "other": "Other"
+    },
+    "copyEmail": "Copy email",
+    "copied": "Copied!",
+    "copyFailed": "Couldn't copy",
+    "requiredNote": "All fields are required.",
+    "messageHint": "At least {min} characters.",
+    "errors": {
+      "name": { "missing": "Enter your name." },
+      "email": {
+        "missing": "Enter your email.",
+        "email": "Check the email: it should look like name@domain.com."
+      },
+      "message": {
+        "missing": "Enter your message.",
+        "short": "The message needs at least {min} characters (you have {count})."
+      }
+    }
+  },
+  "Footer": {
+    "copyright": "© {year} Carlos Vásquez Rodriguez · Lima, Peru",
+    "builtWith": "Hand-built · no template · dark mode by default"
+  },
+  "About": {
+    "sectionLabel": "About me",
+    "heading": "I work end to end: data model, API, interface and the deploy.",
+    "bio": "I build software in real production environments — not tutorials. I work mainly with .NET and React, but adapt to whatever stack the project needs.",
+    "metrics": {
+      "modules": {
+        "value": "+10",
+        "label": "modules in production across five business areas (MSC)"
+      },
+      "thesis": {
+        "value": "−40.5%",
+        "label": "review time per alert with my thesis system, measured with 12 SOC analysts"
+      },
+      "stacks": {
+        "value": "3",
+        "label": "ecosystems in production: .NET, React/Next.js and Kotlin"
+      }
+    }
+  },
+  "CaseStudy": {
+    "back": "Back to projects",
+    "sections": {
+      "context": "Context and problem",
+      "role": "Role and key decisions",
+      "architecture": "Architecture",
+      "screenshots": "Screenshots",
+      "snippet": "Curated snippet",
+      "video": "Video demo",
+      "results": "Results and learnings"
+    },
+    "why": "Why this way",
+    "learnings": "Learnings",
+    "openFull": "{caption} (open full size)",
+    "videoTitle": "Video demo: {title}"
+  }
+}

@@ -1,20 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
+import { Download, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { defaultLocale, isLocale, locales } from "@/i18n/locale";
+import { setLocale } from "@/i18n/actions";
+import { cvFileByLocale } from "@/lib/cv";
+import { useActiveSection } from "@/lib/use-active-section";
 
-const copy = {
-  available: { es: "Disponible", en: "Available" },
-  openMenu: { es: "Abrir menú", en: "Open menu" },
-  closeMenu: { es: "Cerrar menú", en: "Close menu" },
-};
+// Same order as the sections in app/page.tsx.
+
+// On "/" a native "#id" anchor: a plain same-document jump. Elsewhere "#id"
+// would resolve against the current path (/case-study/soc-ml#experiencia, a
+// dead link), so it's a <Link> to "/#id". Not <Link> on "/" too: after a soft
+// navigation to "/#a", Next 16.2's router appends the next hash to the cached
+// canonical URL ("/#a#b" — segment-cache/navigation.js), a URL that scrolls
+// nowhere if shared.
+function SectionLink({
+  id,
+  onHome,
+  ...rest
+}: { id: string; onHome: boolean } & Omit<ComponentProps<"a">, "href">) {
+  return onHome ? (
+    <a href={`#${id}`} {...rest} />
+  ) : (
+    <Link href={`/#${id}`} {...rest} />
+  );
+}
+const navLinks = [
+  { labelKey: "linkAbout", id: "sobre-mi" },
+  { labelKey: "linkStack", id: "stack" },
+  { labelKey: "linkProjects", id: "proyectos" },
+  { labelKey: "linkExperience", id: "experiencia" },
+  { labelKey: "linkContact", id: "contacto" },
+] as const;
+
+const sectionIds = navLinks.map((item) => item.id);
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { lang, toggle } = useLanguage();
+  const rawLocale = useLocale();
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+  const t = useTranslations("Nav");
+  const activeId = useActiveSection(sectionIds);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the open menu and hands focus back to the toggle, so a
+  // keyboard user isn't dropped at the top of the document (Nielsen #3).
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMobileOpen(false);
+      menuButtonRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
@@ -22,12 +67,38 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { label: { es: "Proyectos", en: "Projects" }, href: "#proyectos" },
-    { label: { es: "Stack", en: "Stack" }, href: "#stack" },
-    { label: { es: "Experiencia", en: "Experience" }, href: "#experiencia" },
-    { label: { es: "Contacto", en: "Contact" }, href: "#contacto" },
-  ];
+  // The hero has its own "Download CV" button. While it's on screen the
+  // header one would offer the same action twice, so it only shows once the
+  // hero's has scrolled away. Starts hidden so it doesn't flash on load.
+  // Only "/" has the hero: on any other route (the case study) the header
+  // button is the only CV link, so it must always show there.
+  const onHome = usePathname() === "/";
+  const [heroCvInView, setHeroCvInView] = useState(true);
+  const hideHeaderCv = onHome && heroCvInView;
+
+  useEffect(() => {
+    const heroCv = document.getElementById("hero-cv");
+    if (!heroCv) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeroCvInView(entry.isIntersecting),
+      // The fixed h-20 header covers the top 80px of the viewport.
+      { rootMargin: "-80px 0px 0px 0px" },
+    );
+    observer.observe(heroCv);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    // e2e/helpers.ts's gotoHydrated() waits on this marker to know click
+    // handlers are attached — it used to piggyback on LanguageContext's own
+    // localStorage write for the same purpose, now gone with that context.
+    document.documentElement.dataset.hydrated = "true";
+  }, []);
+
+  // aria-current="location" is what screen readers announce as "current
+  // location"; the CSS indicator keys off the same attribute.
+  const currentProps = (id: string) =>
+    activeId === id ? { "aria-current": "location" as const } : {};
 
   return (
     <header
@@ -37,42 +108,76 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
-        <a href="#" className="font-mono font-medium text-text-primary text-lg">
-          cfvasquez<span className="text-accent-green">.</span>dev
-        </a>
+      {/* gap-3 is a floor: at 320px justify-between had no space left to
+          share and the logo touched the language toggle. */}
+      <nav className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center gap-3">
+        <SectionLink
+          id={"inicio"}
+          onHome={onHome}
+          className="inline-flex items-center min-h-11 font-mono font-medium text-text-primary text-base min-[360px]:text-lg"
+        >
+          cfvasquez<span className="text-accent">.</span>dev
+        </SectionLink>
 
-        <ul className="hidden md:flex items-center gap-8">
+        {/* From lg, not md: at 768px the five links plus logo, CV and the
+            language toggle don't fit — "Sobre mí" wrapped and the toggle
+            was clipped off the right edge. */}
+        <ul className="hidden lg:flex items-center gap-8">
           {navLinks.map((item) => (
-            <li key={item.href}>
-              <a href={item.href} className="nav-link">
-                {item.label[lang]}
-              </a>
+            <li key={item.id}>
+              <SectionLink
+                id={item.id}
+                onHome={onHome}
+                className="nav-link inline-flex items-center min-h-11"
+                {...currentProps(item.id)}
+              >
+                {t(item.labelKey)}
+              </SectionLink>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-3">
-          <span className="badge-green hidden sm:inline-flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
-            {copy.available[lang]}
-          </span>
-
-          <button
-            type="button"
-            onClick={toggle}
-            className="nav-link border border-border rounded-md px-2 py-1 text-xs font-mono hover:border-border-hover"
-            aria-label="Switch language / Cambiar idioma"
+          <a
+            href={cvFileByLocale[locale]}
+            target="_blank"
+            rel="noopener noreferrer"
+            // invisible, not hidden: it keeps its width so the nav links
+            // don't shift, and visibility drops it from tab order and the
+            // accessibility tree while the hero's button is on screen.
+            className={`btn-secondary hidden sm:inline-flex items-center gap-2 min-h-11 px-4 transition-[opacity,visibility] duration-(--duration-base) ${
+              hideHeaderCv ? "invisible opacity-0" : "opacity-100"
+            }`}
+            aria-label={t("cvLabel")}
           >
-            {lang === "es" ? "EN" : "ES"}
-          </button>
+            <Download size={14} aria-hidden="true" />
+            {t("cv")}
+          </a>
+
+          <div role="group" aria-label={t("language")} className="seg">
+            {locales.map((option) => (
+              <button
+                key={option}
+                type="button"
+                lang={option}
+                aria-pressed={locale === option}
+                onClick={() => {
+                  if (option !== locale) void setLocale(option);
+                }}
+              >
+                {option.toUpperCase()}
+              </button>
+            ))}
+          </div>
 
           <button
+            ref={menuButtonRef}
             type="button"
-            className="md:hidden p-2 -mr-2 text-text-primary"
+            className="lg:hidden inline-flex items-center justify-center min-h-11 min-w-11 -mr-2 text-text-primary"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label={mobileOpen ? copy.closeMenu[lang] : copy.openMenu[lang]}
+            aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -80,18 +185,38 @@ export default function Navbar() {
       </nav>
 
       {mobileOpen && (
-        <ul className="md:hidden flex flex-col px-6 pb-4 border-t border-border">
+        <ul
+          id="mobile-menu"
+          className="lg:hidden flex flex-col px-6 pb-4 border-t border-border"
+        >
           {navLinks.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
+            <li key={item.id}>
+              <SectionLink
+                id={item.id}
+                onHome={onHome}
                 onClick={() => setMobileOpen(false)}
                 className="nav-link block py-3"
+                {...currentProps(item.id)}
               >
-                {item.label[lang]}
-              </Link>
+                {t(item.labelKey)}
+              </SectionLink>
             </li>
           ))}
+          {/* The header CV button hides below sm, so it lives here instead. */}
+          <li className="sm:hidden">
+            <a
+              href={cvFileByLocale[locale]}
+              target="_blank"
+              rel="noopener noreferrer"
+              // justify-start: .nav-link centers (for the header's square
+              // targets), which pushed this one item off the menu's left edge.
+              className="nav-link flex items-center justify-start gap-2 py-3"
+              aria-label={t("cvLabel")}
+            >
+              <Download size={14} aria-hidden="true" />
+              {t("cv")}
+            </a>
+          </li>
         </ul>
       )}
     </header>

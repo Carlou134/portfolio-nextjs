@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseContact } from "./contact-schema";
+import { contactFieldErrors, parseContact } from "./contact-schema";
 
 const valid = {
   name: "Carlos",
@@ -14,7 +14,29 @@ describe("parseContact", () => {
       email: " a@b.com ",
       message: "  Quiero hablar de un proyecto  ",
     });
-    expect(result).toEqual({ success: true, data: valid });
+    expect(result).toEqual({
+      success: true,
+      data: { ...valid, intent: "other" },
+    });
+  });
+
+  it("keeps a known intent", () => {
+    const result = parseContact({ ...valid, intent: "job" });
+    expect(result).toEqual({
+      success: true,
+      data: { ...valid, intent: "job" },
+    });
+  });
+
+  it.each([
+    ["an unknown intent", "hack"],
+    ["a non-string intent", 42],
+  ])("falls back to 'other' for %s instead of rejecting", (_label, intent) => {
+    const result = parseContact({ ...valid, intent });
+    expect(result).toEqual({
+      success: true,
+      data: { ...valid, intent: "other" },
+    });
   });
 
   it.each([
@@ -66,7 +88,33 @@ describe("parseContact", () => {
     const email = 'a"onmouseover="x@b.com';
     expect(parseContact({ ...valid, email })).toEqual({
       success: true,
-      data: { ...valid, email },
+      data: { ...valid, email, intent: "other" },
+    });
+  });
+});
+
+describe("contactFieldErrors", () => {
+  it("returns nothing for valid input", () => {
+    expect(contactFieldErrors(valid)).toEqual({});
+  });
+
+  it("reports every failing field, each with its own error", () => {
+    expect(
+      contactFieldErrors({ name: " ", email: "nope", message: "corto" }),
+    ).toEqual({ name: "missing", email: "email", message: "short" });
+  });
+
+  it("calls an empty field missing, not malformed or short", () => {
+    expect(contactFieldErrors({ name: "", email: "", message: "" })).toEqual({
+      name: "missing",
+      email: "missing",
+      message: "missing",
+    });
+  });
+
+  it("leaves valid fields out", () => {
+    expect(contactFieldErrors({ ...valid, email: "x@" })).toEqual({
+      email: "email",
     });
   });
 });

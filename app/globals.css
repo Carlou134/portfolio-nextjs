@@ -1,32 +1,67 @@
 @import "tailwindcss";
 
+/* Contrast ratios below are WCAG, measured against bg-primary / bg-card /
+   bg-hover. Text tokens must stay >= 4.5:1 on all three. */
 @theme {
-  --color-bg-primary: #0a0f1e;
-  --color-bg-secondary: #0f1629;
-  --color-bg-card: #111827;
-  --color-bg-hover: #1a2236;
+  --color-bg-primary: #161826;
+  --color-bg-secondary: #1d1f2c; /* midpoint bg-primary/bg-card: inputs, tags */
+  --color-bg-card: #232532;
+  --color-bg-hover: #272936; /* bg-card + 2% text */
 
-  --color-accent-green: #00e5a0;
-  --color-accent-green-dim: #00e5a015;
-  --color-accent-blue: #3b82f6;
-  --color-accent-blue-dim: #3b82f615;
+  /* accent-500: text and fills. brand: lines, borders, glow ONLY — it's
+     3.9:1 on bg-primary, so never use it for text. */
+  --color-accent: #8b8cf5; /* 6.0 / 5.2 / 4.9 */
+  --color-accent-dim: #8b8cf50d; /* 5%: badge-accent text still >= 4.5 */
+  --color-on-accent: #0a0c12; /* text on accent fills: 6.7 */
+  --color-brand: #6366f1;
 
-  --color-border: #1f2937;
-  --color-border-hover: #374151;
-  --color-border-accent: #00e5a030;
+  --color-border: #e9e9ed1a; /* hairline: text at 10% */
+  --color-border-hover: #e9e9ed2e; /* text at 18% */
 
-  --color-text-primary: #f9fafb;
-  --color-text-secondary: #9ca3af;
-  --color-text-muted: #4b5563;
+  --color-text-primary: #e9e9ed; /* 14.5 / 12.6 / 11.8 */
+  --color-text-secondary: #aeaeb5; /* text at 72%: 8.0 / 6.9 / 6.5 */
+  /* The mockup's 55% alpha is 4.48 on bg-card — fails. 60% passes everywhere. */
+  --color-text-muted: #95959d; /* text at 60%: 5.9 / 5.1 / 4.9 */
+
+  --color-success: #34d399;
+  --color-warning: #ffc857;
+  --color-error: #ff6b6b;
+  --color-info: #7dd3fc;
 
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
 
   --radius-card: 12px;
   --radius-pill: 9999px;
+
+  /* Motion: one curve, two durations. ease-standard → `ease-standard`
+     utility; the animations → `animate-enter` / `animate-caret`. */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-enter: enter var(--duration-base) var(--ease-standard) both;
+  --animate-caret: caret 1s steps(1) infinite;
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {
+  /* Tailwind v4 has no duration namespace in @theme, so these live here.
+     Use as duration-(--duration-fast) or var(--duration-base). */
+  :root {
+    --duration-fast: 220ms;
+    --duration-base: 300ms;
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
@@ -54,18 +89,39 @@
   }
 
   ::selection {
-    background-color: color-mix(
-      in srgb,
-      var(--color-accent-green) 10%,
-      transparent
-    );
-    color: var(--color-accent-green);
+    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-accent);
+  }
+
+  /* Keyboard-only focus ring: :focus-visible skips mouse clicks, so pointer
+     users don't see it but keyboard users always do. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* CSS half of reduced motion (framer's half is MotionConfig in the
+     layout). 0.01ms instead of 0 so animationend/transitionend still fire. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
 @layer components {
+  /* 72px vertical per the style guide. py-24 (96px) stacked to ~190px
+     between sections and cut the hero off from what follows. */
   .section {
-    @apply py-24 px-6 max-w-6xl mx-auto;
+    @apply py-18 px-6 max-w-6xl mx-auto;
   }
 
   .section-label {
@@ -77,20 +133,41 @@
     display: block;
     height: 1px;
     width: 48px;
-    background-color: var(--color-accent-green);
+    background-color: var(--color-accent);
     flex-shrink: 0;
+  }
+
+  /* Real <h2> for sections whose only title is their label (Stack, Projects,
+     More projects, Experience, Education). Sections that already carry an h2
+     below (About, Contact) keep .section-label as a kicker, so the outline
+     never jumps from h1 to h3. Same accent rule as the kicker, so both read
+     as one system. */
+  .section-heading {
+    @apply font-sans font-medium text-text-primary leading-tight text-balance text-[clamp(1.75rem,4vw,2rem)] mb-8;
+  }
+
+  /* Inline, not a flex sibling: when the heading wraps on mobile the rule
+     follows the last word instead of floating alone at the right edge. */
+  .section-heading::after {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 1px;
+    width: 48px;
+    margin-left: 16px;
+    background-color: var(--color-accent);
   }
 
   .card {
     @apply bg-bg-card border border-border rounded-[12px] p-6 transition-all duration-300;
   }
 
-  .card:hover {
-    @apply border-border-hover bg-bg-hover;
-  }
+  /* No hover state: no card is clickable as a whole, and a surface that
+     reacts to the pointer promises a click it doesn't deliver (Nielsen #4).
+     Hover belongs to the buttons and links inside. */
 
   .card-featured {
-    @apply bg-bg-card border-2 border-accent-blue rounded-[12px] p-6 transition-all duration-300;
+    @apply bg-bg-card border-2 border-accent rounded-[12px] p-6 transition-all duration-300;
   }
 
   .card-featured:hover {
@@ -101,31 +178,26 @@
     @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
   }
 
-  .badge-green {
+  .badge-accent {
     @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
-    @apply bg-accent-green-dim border-accent-green text-accent-green;
-  }
-
-  .badge-blue {
-    @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
-    @apply bg-accent-blue-dim border-accent-blue text-accent-blue;
+    @apply bg-accent-dim border-accent text-accent;
   }
 
   .badge-amber {
     @apply text-xs font-mono px-3 py-1 rounded-full border inline-block tracking-wide;
-    @apply bg-amber-900/20 border-amber-500/40 text-amber-400;
+    @apply bg-warning/10 border-warning/40 text-warning;
   }
 
   .stack-tag {
-    @apply text-xs font-mono px-2 py-1 rounded bg-bg-secondary border border-border text-text-secondary transition-colors duration-200;
+    @apply text-xs font-mono px-2 py-1 rounded bg-bg-secondary border border-border text-text-secondary transition-[color,border-color,scale] duration-200;
   }
 
   .stack-tag:hover {
-    @apply border-accent-green text-accent-green;
+    @apply border-accent text-accent;
   }
 
   .btn-primary {
-    @apply bg-accent-green text-bg-primary font-mono font-medium text-sm px-6 py-3 rounded-lg transition-all duration-200 select-none;
+    @apply bg-accent text-on-accent font-mono font-medium text-sm px-6 py-3 rounded-lg transition-all duration-200 select-none;
   }
 
   .btn-primary:hover {
@@ -148,31 +220,167 @@
     @apply scale-95;
   }
 
+  /* min-w-11 + centered text: short labels like "Stack" still get a 44px
+     target. */
   .nav-link {
-    @apply text-sm text-text-secondary font-mono transition-colors duration-200;
+    @apply min-w-11 justify-center text-sm text-text-secondary font-mono transition-colors duration-200;
   }
 
   .nav-link:hover {
     @apply text-text-primary;
   }
 
+  /* Active section: keyed off aria-current so the visual state can't drift
+     from what assistive tech announces. */
+  .nav-link[aria-current="location"] {
+    @apply text-text-primary underline decoration-accent decoration-2 underline-offset-8;
+  }
+
   .timeline-dot {
-    @apply w-2 h-2 rounded-full bg-accent-green ring-4 ring-accent-green/20 flex-shrink-0;
+    @apply w-2 h-2 rounded-full bg-accent ring-4 ring-accent/20 flex-shrink-0;
   }
 
   .input {
     @apply w-full bg-bg-secondary border border-border rounded-lg px-4 py-3 text-sm text-text-primary;
-    @apply placeholder:text-text-muted focus:outline-none focus:border-accent-green transition-colors duration-200;
+    @apply placeholder:text-text-muted focus:border-accent transition-colors duration-200;
+  }
+
+  /* Hidden off-screen until focused; first Tab on the page reveals it. */
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed top-4 left-4 z-100 bg-accent text-on-accent font-mono font-medium text-sm px-6 py-3 rounded-lg;
+  }
+
+  /* ── Mockup base classes ──────────────────────────────────────────────
+     Modifiers compose with their base (`tag tag-accent`) because Tailwind v4
+     can't @apply a class declared in @layer components. */
+
+  /* Mono label above a heading. */
+  .kicker {
+    @apply font-mono text-[12px] uppercase tracking-[0.14em] text-text-muted;
+  }
+
+  /* Small mono label. Neutral by default. */
+  .tag {
+    @apply inline-flex items-center gap-1 font-mono text-[11px] leading-none px-2 py-1 rounded-md border;
+    @apply bg-bg-secondary border-transparent text-text-secondary;
+  }
+
+  .tag-accent {
+    @apply bg-accent-dim border-accent/30 text-accent;
+  }
+
+  .tag-outline {
+    @apply bg-transparent border-border-hover;
+  }
+
+  /* Toggleable chip for filtering lists. State lives in aria-pressed so the
+     style can't drift from what screen readers announce. */
+  .filter {
+    @apply inline-flex items-center min-h-11 px-4 rounded-full border border-border font-mono text-xs text-text-secondary;
+    @apply transition-colors duration-(--duration-fast) ease-standard;
+  }
+
+  .filter:hover {
+    @apply border-border-hover text-text-primary;
+  }
+
+  .filter[aria-pressed="true"] {
+    @apply bg-accent-dim border-accent text-accent;
+  }
+
+  /* Segmented control (e.g. ES / EN): a .seg wrapper of buttons; the active
+     one carries aria-pressed="true". */
+  .seg {
+    @apply inline-flex p-0.5 rounded-lg border border-border;
+  }
+
+  .seg > button {
+    @apply inline-flex items-center justify-center min-h-11 min-w-11 px-3 rounded-md font-mono text-xs text-text-secondary;
+    @apply transition-colors duration-(--duration-fast) ease-standard;
+  }
+
+  .seg > button:hover {
+    @apply text-text-primary;
+  }
+
+  /* Tinted, not filled: a solid accent block here competed with the hero's
+     primary CTA, which should be the only filled accent on screen. */
+  .seg > button[aria-pressed="true"] {
+    @apply bg-accent/15 text-accent;
+  }
+
+  /* Horizontal rule that fades out over its last 48px on each side. */
+  .hr {
+    @apply h-px border-0 bg-border;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 48px,
+      #000 calc(100% - 48px),
+      transparent
+    );
+  }
+
+  /* Code block: .code > .code-header (file name + version) + .code-body. */
+  .code {
+    @apply bg-bg-card border border-border rounded-[14px] overflow-hidden font-mono text-sm;
+  }
+
+  .code-header {
+    @apply flex items-center justify-between gap-4 px-4 py-2 border-b border-border text-xs text-text-muted;
+  }
+
+  .code-body {
+    @apply p-4 overflow-x-auto leading-relaxed text-text-secondary;
+  }
+
+  /* Convergence motif: four strokes (.ln) resolving into one node (.node)
+     inside a halo. The SVG markup carries no colors; these classes do. */
+  .converge {
+    @apply block w-full h-auto overflow-visible pointer-events-none;
+  }
+
+  .converge .ln {
+    fill: none;
+    stroke: var(--color-brand);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    opacity: 0.55;
+    /* Strokes stay 1.25 CSS px at any rendered size; otherwise a small
+       motif scales them down to sub-pixel hairlines. */
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* The mockup uses an accent-700 here; that step doesn't exist in our
+     scale, so the soft strokes are brand at lower opacity. */
+  .converge .ln-soft {
+    opacity: 0.4;
+  }
+
+  .converge .node {
+    fill: var(--color-accent);
+  }
+
+  .converge .halo {
+    fill: none;
+    stroke: var(--color-brand);
+    stroke-width: 1;
+    opacity: 0.3;
+    vector-effect: non-scaling-stroke;
   }
 }
 
 @layer utilities {
   .dot-grid {
-    background-image: radial-gradient(circle, #1f2937 1px, transparent 1px);
+    background-image: radial-gradient(
+      circle,
+      var(--color-border) 1px,
+      transparent 1px
+    );
     background-size: 32px 32px;
-  }
-
-  .glow-green {
-    box-shadow: 0 0 20px #00e5a015;
   }
 }

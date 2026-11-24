@@ -2,40 +2,32 @@
 
 import { useId, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Send, CheckCircle, AlertCircle, Mail } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  Send,
+  CheckCircle,
+  AlertCircle,
+  Mail,
+  Copy,
+  Check,
+} from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { defaultLocale, isLocale } from "@/i18n/locale";
 import Link from "next/link";
+import {
+  CONTACT_INTENTS,
+  MIN_MESSAGE_LENGTH,
+  contactFieldErrors,
+  type ContactField,
+  type ContactFieldErrors,
+  type ContactIntent,
+} from "@/lib/contact-schema";
 
-const copy = {
-  sectionLabel: { es: "Contacto", en: "Contact" },
-  heading: {
-    es: "¿Tienes un proyecto? Hablemos.",
-    en: "Have a project? Let's talk.",
-  },
-  subheading: {
-    es: "Disponible para freelance y posiciones de desarrollo fullstack.",
-    en: "Available for freelance work and fullstack development positions.",
-  },
-  name: { es: "Nombre", en: "Name" },
-  namePlaceholder: { es: "Tu nombre", en: "Your name" },
-  email: { es: "Email", en: "Email" },
-  emailPlaceholder: { es: "tucorreo@ejemplo.com", en: "you@example.com" },
-  message: { es: "Mensaje", en: "Message" },
-  messagePlaceholder: {
-    es: "Cuéntame del proyecto...",
-    en: "Tell me about the project...",
-  },
-  success: {
-    es: "¡Mensaje enviado! Te respondo pronto.",
-    en: "Message sent! I'll get back to you soon.",
-  },
-  sending: { es: "Enviando...", en: "Sending..." },
-  send: { es: "Enviar mensaje", en: "Send message" },
-  connectionError: {
-    es: "Error de conexión. Intenta nuevamente.",
-    en: "Connection error. Please try again.",
-  },
-};
+// Focus order when several fields fail: the first one in the form.
+const FIELD_ORDER: readonly ContactField[] = ["name", "email", "message"];
+
+const EMAIL = "carlouvasquez134@gmail.com";
+// Most visitors are recruiters, so the form starts on a job offer.
+const DEFAULT_INTENT: ContactIntent = "job";
 
 function IconLinkedin() {
   return (
@@ -57,9 +49,36 @@ interface FormData {
   name: string;
   email: string;
   message: string;
+  intent: ContactIntent;
 }
 
+const emptyForm: FormData = {
+  name: "",
+  email: "",
+  message: "",
+  intent: DEFAULT_INTENT,
+};
+
+type CopyState = "idle" | "copied" | "failed";
+
 type FormStatus = "idle" | "loading" | "success" | "error";
+
+// Icon + text, never color alone. Not a live region: on submit, focus moves
+// to the field, and its aria-describedby makes the reader say the error.
+function FieldError({ id, text }: { id: string; text: string | null }) {
+  if (!text) return null;
+  return (
+    <p
+      id={id}
+      className="flex items-start gap-1.5 font-mono text-xs text-error"
+    >
+      {/* items-start + nudge: on a wrapped two-line error the icon stays on
+          the first line instead of floating between them. */}
+      <AlertCircle size={13} aria-hidden="true" className="shrink-0 mt-px" />
+      {text}
+    </p>
+  );
+}
 
 function Spinner() {
   return (
@@ -68,21 +87,76 @@ function Spinner() {
 }
 
 export default function Contact() {
-  const { lang } = useLanguage();
+  const t = useTranslations("Contact");
+  const rawLocale = useLocale();
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
   const fieldId = useId();
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState<FormData>(emptyForm);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
+
+  // Clipboard can be unavailable (http, permissions); the address stays
+  // visible and selectable either way, so failing only changes the label.
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopyState("copied");
+    } catch {
+      setCopyState("failed");
+    }
+    setTimeout(() => setCopyState("idle"), 2000);
+  };
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
+
+  // Errors appear on submit, not while typing a first draft; once a field is
+  // flagged, it re-checks on every keystroke so the error clears the moment
+  // it's fixed, without another submit.
+  const updateField = (field: ContactField, value: string) => {
+    const next = { ...formData, [field]: value };
+    setFormData(next);
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [field]: contactFieldErrors(next)[field],
+      }));
+    }
+  };
+
+  const errorText = (field: ContactField) => {
+    const key = fieldErrors[field];
+    if (!key) return null;
+    return t(`errors.${field}.${key}` as Parameters<typeof t>[0], {
+      min: MIN_MESSAGE_LENGTH,
+      count: formData.message.trim().length,
+    });
+  };
+
+  // aria-describedby must only point at ids that exist.
+  const describedBy = (field: ContactField, ...extra: string[]) =>
+    [
+      ...extra,
+      ...(fieldErrors[field] ? [`${fieldId}-${field}-error`] : []),
+    ].join(" ") || undefined;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     // Without this the browser navigates to the form's action (the page itself).
     event.preventDefault();
     // Enter can fire again before the loading state re-renders the fields disabled.
     if (status === "loading") return;
+
+    // Same schema as the API, checked here first: each problem shows under
+    // its field, and focus lands on the first one so keyboard and screen
+    // reader users hear the error instead of losing focus to <body>.
+    const errors = contactFieldErrors(formData);
+    setFieldErrors(errors);
+    const firstInvalid = FIELD_ORDER.find((field) => errors[field]);
+    if (firstInvalid) {
+      setStatus("idle");
+      setErrorMessage("");
+      document.getElementById(`${fieldId}-${firstInvalid}`)?.focus();
+      return;
+    }
 
     setStatus("loading");
     setErrorMessage("");
@@ -91,23 +165,23 @@ export default function Contact() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, lang }),
+        body: JSON.stringify({ ...formData, lang: locale }),
       });
 
       const data = (await res.json()) as { error?: string };
 
       if (!res.ok) {
         setStatus("error");
-        setErrorMessage(data.error ?? copy.connectionError[lang]);
+        setErrorMessage(data.error ?? t("connectionError"));
         return;
       }
 
       setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
+      setFormData(emptyForm);
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
-      setErrorMessage(copy.connectionError[lang]);
+      setErrorMessage(t("connectionError"));
     }
   };
 
@@ -115,53 +189,92 @@ export default function Contact() {
 
   return (
     <section id="contacto" className="section">
-      <p className="section-label">{copy.sectionLabel[lang]}</p>
+      <p className="section-label">{t("sectionLabel")}</p>
 
       <div className="max-w-2xl mx-auto">
         <motion.div
-          className="card hover:border-accent-green/30 hover:glow-green transition-all duration-300"
+          className="card"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
         >
           {/* Header */}
           <h2
             id={`${fieldId}-heading`}
             className="font-mono text-xl font-medium text-text-primary mb-2"
           >
-            {copy.heading[lang]}
+            {t("heading")}
           </h2>
-          <p className="text-sm text-text-secondary mb-8">
-            {copy.subheading[lang]}
+          <p className="text-base text-text-secondary mb-8">
+            {t("subheading")}
           </p>
 
-          {/* noValidate: validation is the server's job (bilingual messages via
-              /api/contact), so the browser's own bubbles must not pre-empt it. */}
+          {/* noValidate: the browser's bubbles would pre-empt our own per-field
+              messages (translated, same rules as the API, which still has the
+              final word). */}
           <form
             onSubmit={handleSubmit}
             aria-labelledby={`${fieldId}-heading`}
             noValidate
           >
-            {/* Formulario */}
+            {/* Said once, up front: every text field is required. `required`
+                on each control also makes screen readers announce it. */}
+            <p className="text-sm text-text-secondary mb-5">
+              {t("requiredNote")}
+            </p>
+
+            {/* Native radios inside labels: arrow keys, focus and the
+                checked state come from the browser, the chips are just skin. */}
+            <fieldset className="mb-5" disabled={isDisabled}>
+              <legend className="font-mono text-xs text-text-muted tracking-widest uppercase mb-2">
+                {t("intentLabel")}
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {CONTACT_INTENTS.map((intent) => (
+                  <label
+                    key={intent}
+                    className="filter cursor-pointer has-[:checked]:border-accent has-[:checked]:text-accent has-[:checked]:bg-accent/10 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent"
+                  >
+                    <input
+                      type="radio"
+                      name={`${fieldId}-intent`}
+                      value={intent}
+                      checked={formData.intent === intent}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, intent }))
+                      }
+                      className="sr-only"
+                    />
+                    {t(`intents.${intent}`)}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <div className="flex flex-col gap-1.5 mb-4">
               <label
                 htmlFor={`${fieldId}-name`}
                 className="font-mono text-xs text-text-muted tracking-widest uppercase"
               >
-                {copy.name[lang]}
+                {t("name")}
               </label>
               <input
                 id={`${fieldId}-name`}
                 type="text"
-                placeholder={copy.namePlaceholder[lang]}
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={(e) => updateField("name", e.target.value)}
                 disabled={isDisabled}
-                className="input"
+                required
+                autoComplete="name"
+                aria-invalid={fieldErrors.name ? true : undefined}
+                aria-describedby={describedBy("name")}
+                className="input aria-invalid:border-error"
+              />
+              <FieldError
+                id={`${fieldId}-name-error`}
+                text={errorText("name")}
               />
             </div>
 
@@ -170,18 +283,24 @@ export default function Contact() {
                 htmlFor={`${fieldId}-email`}
                 className="font-mono text-xs text-text-muted tracking-widest uppercase"
               >
-                {copy.email[lang]}
+                {t("email")}
               </label>
               <input
                 id={`${fieldId}-email`}
                 type="email"
-                placeholder={copy.emailPlaceholder[lang]}
+                placeholder={t("emailPlaceholder")}
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, email: e.target.value }))
-                }
+                onChange={(e) => updateField("email", e.target.value)}
                 disabled={isDisabled}
-                className="input"
+                required
+                autoComplete="email"
+                aria-invalid={fieldErrors.email ? true : undefined}
+                aria-describedby={describedBy("email")}
+                className="input aria-invalid:border-error"
+              />
+              <FieldError
+                id={`${fieldId}-email-error`}
+                text={errorText("email")}
               />
             </div>
 
@@ -190,19 +309,39 @@ export default function Contact() {
                 htmlFor={`${fieldId}-message`}
                 className="font-mono text-xs text-text-muted tracking-widest uppercase"
               >
-                {copy.message[lang]}
+                {t("message")}
               </label>
               <textarea
                 id={`${fieldId}-message`}
-                placeholder={copy.messagePlaceholder[lang]}
+                placeholder={t("messagePlaceholder")}
                 rows={5}
+                aria-describedby={describedBy(
+                  "message",
+                  ...(fieldErrors.message ? [] : [`${fieldId}-message-hint`]),
+                )}
                 value={formData.message}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, message: e.target.value }))
-                }
+                onChange={(e) => updateField("message", e.target.value)}
                 disabled={isDisabled}
-                className="input resize-none"
+                required
+                minLength={MIN_MESSAGE_LENGTH}
+                aria-invalid={fieldErrors.message ? true : undefined}
+                className="input resize-none aria-invalid:border-error"
               />
+              {/* The error replaces the hint rather than stacking under it:
+                  it already states the same rule, plus the current count. */}
+              {fieldErrors.message ? (
+                <FieldError
+                  id={`${fieldId}-message-error`}
+                  text={errorText("message")}
+                />
+              ) : (
+                <p
+                  id={`${fieldId}-message-hint`}
+                  className="font-mono text-xs text-text-muted"
+                >
+                  {t("messageHint", { min: MIN_MESSAGE_LENGTH })}
+                </p>
+              )}
             </div>
 
             {/* Botón / estado */}
@@ -214,11 +353,11 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="w-full mt-6 p-4 rounded-lg bg-accent-green/10 border border-accent-green/30 flex items-center gap-3"
+                  className="w-full mt-6 p-4 rounded-lg bg-success/10 border border-success/30 flex items-center gap-3"
                 >
-                  <CheckCircle size={18} color="#00E5A0" />
-                  <span className="font-mono text-sm text-accent-green">
-                    {copy.success[lang]}
+                  <CheckCircle size={18} className="text-success" />
+                  <span className="font-mono text-sm text-success">
+                    {t("success")}
                   </span>
                 </motion.div>
               )}
@@ -230,26 +369,25 @@ export default function Contact() {
                 className="btn-primary w-full mt-6 flex items-center justify-center gap-2 opacity-70 cursor-not-allowed"
               >
                 <Spinner />
-                {copy.sending[lang]}
+                {t("sending")}
               </button>
             )}
 
             {(status === "idle" || status === "error") && (
-              <motion.button
+              <button
                 type="submit"
                 className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
-                whileTap={{ scale: 0.95 }}
               >
                 <Send size={16} />
-                {copy.send[lang]}
-              </motion.button>
+                {t("send")}
+              </button>
             )}
 
             <div role="alert">
               {status === "error" && (
-                <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-500/30 flex items-center gap-2">
-                  <AlertCircle size={14} color="#F87171" />
-                  <span className="text-xs text-red-400 font-mono">
+                <div className="mt-3 p-3 rounded-lg bg-error/10 border border-error/30 flex items-center gap-2">
+                  <AlertCircle size={14} className="text-error" />
+                  <span className="text-xs text-error font-mono">
                     {errorMessage}
                   </span>
                 </div>
@@ -260,20 +398,41 @@ export default function Contact() {
           {/* Separador */}
           <div className="h-px bg-border my-8" />
 
+          {/* Email first: many recruiters prefer writing from their own inbox. */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+            <a
+              href={`mailto:${EMAIL}`}
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-primary hover:text-accent transition-colors duration-200 break-all"
+            >
+              <Mail size={16} aria-hidden="true" />
+              {EMAIL}
+            </a>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="btn-secondary inline-flex items-center gap-2 min-h-11 px-3 py-2 font-mono text-xs hover:bg-bg-hover"
+            >
+              {copyState === "copied" ? (
+                <Check size={14} aria-hidden="true" />
+              ) : (
+                <Copy size={14} aria-hidden="true" />
+              )}
+              {t("copyEmail")}
+            </button>
+            {/* Not role="status": the form already owns that region. */}
+            <span aria-live="polite" className="font-mono text-xs text-accent">
+              {copyState === "copied" && t("copied")}
+              {copyState === "failed" && t("copyFailed")}
+            </span>
+          </div>
+
           {/* Links sociales */}
           <div className="flex items-center justify-center gap-8 flex-wrap">
-            <Link
-              href="mailto:carlouvasquez134@gmail.com"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
-            >
-              <Mail size={16} />
-              Email
-            </Link>
             <Link
               href="https://www.linkedin.com/in/carlos-vasquez-rod/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <IconLinkedin />
               LinkedIn
@@ -282,7 +441,7 @@ export default function Contact() {
               href="https://github.com/Carlou134"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-sm text-text-muted hover:text-accent-green transition-colors duration-200"
+              className="flex items-center gap-2 min-h-11 font-mono text-sm text-text-muted hover:text-accent transition-colors duration-200"
             >
               <IconGithub />
               GitHub

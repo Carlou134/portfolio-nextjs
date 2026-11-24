@@ -1,47 +1,24 @@
 "use client";
 
+import { useId } from "react";
 import { motion, type Variants } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
-import { useLanguage } from "@/contexts/LanguageContext";
-import Terminal from "./Terminal";
+import { useLocale, useTranslations } from "next-intl";
+import { defaultLocale, isLocale } from "@/i18n/locale";
+import { cvFileByLocale } from "@/lib/cv";
 
-const copy = {
-  available: { es: "Disponible", en: "Available" },
-  tagline: {
-    es: "Carlos Vásquez · Fullstack Developer · Lima, Perú",
-    en: "Carlos Vásquez · Fullstack Developer · Lima, Peru",
-  },
-  headline: {
-    es: ["Construyo software", "que funciona."],
-    en: ["I build software", "that works."],
-  },
-  subtext: {
-    es: [
-      ".NET · React · Next.js · IA aplicada.",
-      "+2 años entregando en producción.",
-    ],
-    en: [
-      ".NET · React · Next.js · Applied AI.",
-      "+2 years shipping to production.",
-    ],
-  },
-  viewProjects: { es: "Ver proyectos", en: "View projects" },
-  downloadCv: { es: "Descargar CV", en: "Download CV" },
-  cvFile: {
-    es: "/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf",
-    en: "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf",
-  },
-};
-
+// Same entrance as the `enter` keyframes in globals.css: fade + 6px,
+// --duration-base (300ms) on the standard curve.
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 6 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     transition: {
-      delay: i * 0.15,
-      duration: 0.6,
-      ease: "easeOut" as const,
+      delay: i * 0.1,
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
     },
   }),
 };
@@ -52,95 +29,225 @@ const GithubIcon = () => (
   </svg>
 );
 
-export default function Hero() {
-  const { lang } = useLanguage();
+// Availability is the first segment of the meta line; it reads as the
+// status, the rest (timezone, English level) as secondary detail. The dot
+// repeats it visually, so the status never depends on color alone.
+function Availability({ text }: { text: string }) {
+  const [status, ...rest] = text.split(" · ");
+  return (
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[13px] text-text-primary">
+      <span
+        className="size-2 rounded-full bg-accent ring-[3px] ring-accent/25"
+        aria-hidden="true"
+      />
+      {status}
+      {rest.length > 0 && (
+        // Own line on purpose: wrapping naturally left a dangling "·" at
+        // the start of the second line. The separator stays for screen
+        // readers, so textContent still equals the message.
+        <span className="basis-full pl-4 text-text-muted">
+          <span className="sr-only"> · </span>
+          {rest.join(" · ")}
+        </span>
+      )}
+    </p>
+  );
+}
+
+// "Role · City, Country". On one line when the card is wide enough (~18rem);
+// below that each part gets its own line instead of wrapping mid-way and
+// leaving the "·" dangling. The separator stays for screen readers, so
+// textContent always equals the message.
+function Kicker({ text }: { text: string }) {
+  const [role, ...rest] = text.split(" · ");
+  return (
+    <p className="kicker">
+      {role}
+      {rest.length > 0 && (
+        <>
+          <span className="sr-only @[18rem]:not-sr-only"> · </span>
+          <span className="block @[18rem]:inline">{rest.join(" · ")}</span>
+        </>
+      )}
+    </p>
+  );
+}
+
+function ProfileCard() {
+  const t = useTranslations("Hero");
 
   return (
-    <section className="section min-h-screen flex items-center relative">
+    // Photo beside the text from sm up, never wrapped below it: the
+    // availability line wraps inside its own <p> instead.
+    <div className="card flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+      {/* The photo's white backdrop was the brightest area on screen and
+          pulled focus from the headline: dim it slightly and edge it. */}
+      <div className="relative shrink-0 size-28 md:size-30 lg:size-34 rounded-xl overflow-hidden ring-1 ring-border brightness-90">
+        <Image
+          src="/Foto-Linkedin.jpeg"
+          alt={t("photoAlt")}
+          fill
+          sizes="136px"
+          loading="eager"
+          className="object-cover object-top"
+        />
+      </div>
+
+      {/* A size container so the kicker can react to its own width.
+          flex-1 + self-stretch give it a real width: inline-size
+          containment would otherwise size it to zero. */}
+      <div className="@container flex flex-col justify-center gap-2.5 min-w-0 flex-1 self-stretch">
+        {/* A proper name isn't translated, so it isn't a message. */}
+        {/* Same weight as the h1 (500): heavier here inverted the hierarchy. */}
+        <p className="text-2xl font-medium tracking-tight text-text-primary">
+          Carlos Vásquez
+        </p>
+        <Kicker text={t("kicker")} />
+        <Availability text={t("meta")} />
+      </div>
+    </div>
+  );
+}
+
+// Static on purpose: a recruiter scans the hero in seconds and won't type
+// commands. Each line carries a plain-language label so the shell framing
+// adds flavor without hiding what the fact is about.
+function ProfileTerminal() {
+  const t = useTranslations("Hero.terminal");
+  const titleId = useId();
+  const lines = [
+    {
+      label: t("thesisLabel"),
+      command: t("thesisCommand"),
+      output: t.rich("thesis", {
+        hl: (chunks) => (
+          <strong className="font-medium text-accent">{chunks}</strong>
+        ),
+      }),
+    },
+    { label: t("nowLabel"), command: t("nowCommand"), output: t("now") },
+  ];
+
+  return (
+    <figure className="card p-0 overflow-hidden" aria-labelledby={titleId}>
+      <figcaption className="flex items-center gap-2 px-4 py-3 border-b border-border">
+        {[0, 1, 2].map((dot) => (
+          <span
+            key={dot}
+            className="size-2.5 rounded-full bg-text-muted/40"
+            aria-hidden="true"
+          />
+        ))}
+        <span id={titleId} className="ml-2 font-mono text-xs text-text-muted">
+          perfil.sh
+        </span>
+      </figcaption>
+
+      <div className="flex flex-col gap-5 p-5 lg:p-6 font-mono text-sm lg:text-[15px] leading-relaxed">
+        {lines.map((line) => (
+          <div key={line.command}>
+            <p className="mb-1 font-sans text-[13px] lg:text-sm text-text-secondary">
+              {line.label}
+            </p>
+            <p>
+              <span className="text-accent" aria-hidden="true">
+                ${" "}
+              </span>
+              <span className="text-text-primary">{line.command}</span>
+            </p>
+            <p className="text-text-secondary">{line.output}</p>
+          </div>
+        ))}
+      </div>
+    </figure>
+  );
+}
+
+export default function Hero() {
+  const t = useTranslations("Hero");
+  // next-intl's useLocale() types as plain `string` (no module augmentation
+  // configured), so it can't index cvFileByLocale on its own — narrow it with
+  // our own guard instead of casting past the compiler.
+  const rawLocale = useLocale();
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+
+  return (
+    <section
+      id="inicio"
+      // Fills the first screen: the hero is the whole first impression, so
+      // the next section only starts below the fold. pt-20 clears the fixed
+      // h-20 navbar; svh (not vh) so mobile browser chrome doesn't cut it.
+      // Below lg the stacked content outgrows the screen, so centering adds
+      // no air: pt-28 leaves 32px between the navbar and the headline.
+      className="section relative min-h-svh flex flex-col justify-center pt-28 lg:pt-20"
+    >
       <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full relative z-10">
-        {/* Left column */}
-        <div className="flex flex-col justify-center gap-6">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={0}
-            className="badge-green inline-flex items-center gap-1.5 w-fit"
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
-              style={{ backgroundColor: "#00E5A0" }}
-            />
-            {copy.available[lang]}
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={1}
-            className="font-mono text-sm text-text-secondary tracking-wide"
-          >
-            {copy.tagline[lang]}
-          </motion.p>
-
-          <h1
-            className="font-mono font-bold leading-tight"
-            style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
-          >
-            {copy.headline[lang][0]}
-            <br />
-            <span style={{ color: "#00E5A0" }}>{copy.headline[lang][1]}</span>
+      {/* The headline opens the page; identity and proof sit in the right
+          column, centered against the left one so neither leaves a gap
+          below it when their heights differ. */}
+      {/* Two columns only from lg: below that each column is ~330px and the
+          headline crowds the profile card, so they stack instead. */}
+      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start lg:items-center">
+        <div className="flex flex-col gap-8 lg:gap-10">
+          {/* Not animated: the h1 is the LCP element, and fading it in
+              would delay the metric. */}
+          {/* 42px (the guide's H1) up to laptop widths; from lg it scales
+              up to 48px. Capped there: at 56px the half-width column broke
+              it into 6 lines and the left column towered over the right. */}
+          <h1 className="font-sans font-medium leading-tight tracking-tight text-balance text-[clamp(2rem,5vw,2.625rem)] lg:text-[clamp(2.625rem,3vw,3rem)]">
+            {t("headline")}
           </h1>
 
           <motion.p
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={3}
-            className="text-text-secondary text-base font-sans leading-relaxed"
+            custom={0}
+            className="text-text-secondary text-[17px] lg:text-[19px] leading-[1.6] max-w-[56ch] text-pretty"
           >
-            {copy.subtext[lang][0]}
-            <br />
-            {copy.subtext[lang][1]}
+            {t("subtitle")}
           </motion.p>
 
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={4}
-            className="flex gap-4 flex-wrap items-center"
+            custom={1}
+            // Phones: primary CTA full width, then CV + GitHub sharing a
+            // row — otherwise GitHub wrapped alone onto a third line.
+            className="grid grid-cols-[1fr_auto] gap-3 sm:flex sm:items-stretch"
           >
-            <motion.button
-              className="btn-primary"
-              onClick={() =>
-                document
-                  .getElementById("proyectos")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              whileTap={{ scale: 0.95 }}
+            <a
+              href="#proyectos"
+              className="btn-primary col-span-2 inline-flex items-center justify-center gap-2"
             >
-              {copy.viewProjects[lang]}
-            </motion.button>
+              {t("viewProjects")} <span aria-hidden="true">↓</span>
+            </a>
 
-            <motion.a
-              href={copy.cvFile[lang]}
+            <a
+              // The navbar watches this id to hide its own CV button while
+              // this one is on screen.
+              id="hero-cv"
+              href={cvFileByLocale[locale]}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary"
-              whileTap={{ scale: 0.95 }}
+              className="btn-secondary inline-flex items-center justify-center gap-2"
             >
-              {copy.downloadCv[lang]}
-            </motion.a>
+              {t("downloadCv")}
+              <span
+                className="font-mono text-xs text-text-muted"
+                aria-hidden="true"
+              >
+                PDF
+              </span>
+            </a>
 
             <Link
               href="https://github.com/Carlou134"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
+              className="inline-flex items-center justify-center min-h-11 min-w-11 px-4 rounded-lg border border-border hover:border-border-hover text-text-secondary hover:text-text-primary transition-colors duration-200"
               aria-label="GitHub"
             >
               <GithubIcon />
@@ -148,8 +255,17 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right column — interactive terminal */}
-        <Terminal />
+        <motion.aside
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          aria-label={t("profileLabel")}
+          className="flex flex-col gap-5"
+        >
+          <ProfileCard />
+          <ProfileTerminal />
+        </motion.aside>
       </div>
     </section>
   );

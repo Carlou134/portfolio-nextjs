@@ -1,12 +1,12 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
-import { parseContact } from "@/lib/contact-schema";
+import { parseContact, type ContactIntent } from "@/lib/contact-schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const messages = {
   missing: {
-    es: "Todos los campos son requeridos.",
+    es: "Todos los campos son obligatorios.",
     en: "All fields are required.",
   },
   email: { es: "Email inválido.", en: "Invalid email." },
@@ -18,6 +18,14 @@ const messages = {
     es: "Error al enviar el mensaje.",
     en: "Failed to send the message.",
   },
+};
+
+// The email goes to me, so the labels stay in Spanish whatever the sender's
+// language. They lead the subject so the inbox sorts itself.
+const intentLabels: Record<ContactIntent, string> = {
+  job: "Oferta laboral",
+  freelance: "Freelance",
+  other: "Otro",
 };
 
 const htmlEscapes: Record<string, string> = {
@@ -47,7 +55,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, message } = parsed.data;
+    const { name, email, message, intent } = parsed.data;
+    const intentLabel = intentLabels[intent];
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
@@ -55,7 +64,7 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
       to: "carlouvasquez134@gmail.com",
-      subject: `Nuevo mensaje de ${name} — Portfolio`,
+      subject: `[${intentLabel}] Nuevo mensaje de ${name} — Portfolio`,
       html: `
         <div style="font-family: monospace;
                     max-width: 600px;
@@ -65,7 +74,7 @@ export async function POST(req: NextRequest) {
                     padding: 32px;
                     border-radius: 12px;
                     border: 1px solid #1F2937;">
-          <h2 style="color: #00E5A0;
+          <h2 style="color: #818cf8;
                      margin-bottom: 24px;
                      font-size: 18px;">
             Nuevo mensaje desde tu portfolio
@@ -75,8 +84,12 @@ export async function POST(req: NextRequest) {
             ${safeName}
           </p>
           <p style="margin-bottom: 8px;">
+            <span style="color: #9CA3AF;">Motivo:</span>
+            ${intentLabel}
+          </p>
+          <p style="margin-bottom: 8px;">
             <span style="color: #9CA3AF;">Email:</span>
-            <a href="mailto:${safeEmail}" style="color: #00E5A0;">${safeEmail}</a>
+            <a href="mailto:${safeEmail}" style="color: #818cf8;">${safeEmail}</a>
           </p>
           <div style="margin-top: 24px;
                       padding: 16px;
