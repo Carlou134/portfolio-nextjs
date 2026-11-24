@@ -88,7 +88,7 @@ describe("Hero", () => {
 
     expect(screen.getByRole("link", { name: "Descargar CV" })).toHaveAttribute(
       "href",
-      "/Carlos_Vasquez_Desarrollador_Fullstack_CV.pdf",
+      "/CV_Carlos_Vasquez_Full_Stack_Developer.pdf",
     );
   });
 
@@ -97,7 +97,7 @@ describe("Hero", () => {
 
     expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute(
       "href",
-      "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf",
+      "/Carlos_Vasquez_Full_Stack_Developer_Resume.pdf",
     );
   });
 

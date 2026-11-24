@@ -91,7 +91,10 @@ describe("Navbar", () => {
     renderNavbar("en");
     expect(
       screen.getByRole("link", { name: "Download CV (PDF)" }),
-    ).toHaveAttribute("href", "/CV_Carlos_Vasquez_Fullstack_Developer_EN.pdf");
+    ).toHaveAttribute(
+      "href",
+      "/Carlos_Vasquez_Full_Stack_Developer_Resume.pdf",
+    );
   });
 
   it("opens the mobile menu on hamburger click and closes it when a link is clicked", async () => {
