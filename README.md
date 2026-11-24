@@ -1,49 +1,54 @@
 # Carlos Vásquez — Portfolio
 
-> Personal portfolio built with Next.js 16 (App Router) — projects, stack, and a contact form with real email delivery, no `mailto:` fallback.
+> Personal portfolio built with Next.js 16 (App Router): projects with verifiable evidence, a bilingual case study, and a contact form that actually delivers the email.
 
-![Hero](docs/screenshots/hero-section.png)
+![Hero](docs/screenshots/hero.png)
 
-![Projects](docs/screenshots/projects-section.png)
+![Projects](docs/screenshots/projects.png)
 
-[![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cfvasquez.dev)
+[![Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://www.cfvasquez.dev)
 
 ---
 
 ## 🧩 Problem / Context
 
-Personal portfolio to showcase experience as a Fullstack Developer (.NET, React/Next.js) with a focus on DevOps and applied AI. Replaces the static résumé with real case studies, production metrics (SOC, migrations, operational efficiency), and a contact channel that actually sends the message.
+A portfolio to show my work as a Full Stack Developer (.NET, React/Next.js). The rule for every claim on the site is that it has to be verifiable: each project links to its repository, a demo or a case study, and metrics only appear when they were actually measured (e.g. the thesis results). It replaces a static résumé with something a recruiter can check in a couple of clicks, and a contact channel that doesn't depend on the visitor's mail client.
 
 ---
 
 ## 🛠️ Stack
 
-| Layer           | Technology                                    |
-| --------------- | --------------------------------------------- |
-| Frontend        | Next.js 16 (App Router), React 19, TypeScript |
-| Styling         | Tailwind CSS v4, Framer Motion                |
-| Icons           | simple-icons, lucide-react                    |
-| Contact         | Resend (Route Handler, real email delivery)   |
-| Analytics       | Vercel Analytics + Speed Insights             |
-| Deploy / Infra  | Vercel                                        |
-| Package manager | pnpm                                          |
+| Layer           | Technology                                                 |
+| --------------- | ---------------------------------------------------------- |
+| Frontend        | Next.js 16 (App Router), React 19, TypeScript              |
+| Styling         | Tailwind CSS v4, Framer Motion                             |
+| i18n            | next-intl (ES/EN, locale stored in a cookie)               |
+| Content         | Typed TypeScript modules validated with Zod                |
+| Contact         | Route Handler + Resend (real email delivery)               |
+| Testing         | Vitest + Testing Library, Playwright                       |
+| CI              | GitHub Actions: lint, format, coverage, e2e, Lighthouse CI |
+| Analytics       | Vercel Analytics + Speed Insights                          |
+| Deploy          | Vercel                                                     |
+| Package manager | pnpm                                                       |
 
 ---
 
 ## 🏗️ Architecture
 
-- App Router — one section per component in `components/`, assembled in `app/page.tsx`.
-- The contact form doesn't use `mailto:` — it posts to `app/api/contact/route.ts`, which validates the data server-side and sends the actual email via Resend.
-- Content (projects, experience, stack) lives as typed arrays inside each component — no CMS, no external fetch; it's a personal portfolio, updated via PR.
+- **App Router.** `app/page.tsx` assembles one component per section; `app/case-study/[slug]` renders case studies; `app/not-found.tsx` gives unknown URLs the site's own shell.
+- **Content as code.** Projects, experience and case studies live in `content/*.ts`, validated by a Zod schema (`content/schema.ts`), so a malformed entry fails the tests instead of rendering broken. No CMS: it's a personal site, updated through pull requests.
+- **i18n without routes.** UI strings live in `messages/{es,en}.json`; the locale comes from a cookie set by a Server Action, not from the URL.
+- **Contact.** The form posts to `app/api/contact/route.ts`. Validation is a single Zod schema (`lib/contact-schema.ts`) shared by the server and the form: the form uses it to flag each field before sending, and the server stays the final authority.
 
 ---
 
 ## 🧠 Technical challenges and decisions
 
-- **Problem:** several stack icons (C#, Java) don't exist in `simple-icons`. → **Solution:** fall back to a 2-letter tag when `icon` is `null`. → **Why:** avoids breaking the build or showing an incorrect generic icon.
-- **Problem:** Next.js 16 deprecated the `priority` prop on `next/image` in favor of `loading`/`preload`. → **Solution:** project cards use `loading="eager"` only on the featured card and the full-width one (the actual LCP candidates). → **Why:** this Next.js version ships breaking changes relative to the standard docs — you have to check `node_modules/next/dist/docs` before assuming behavior.
-- **Problem:** the contact form needed to actually send the message, not depend on the visitor having a mail client configured. → **Solution:** a dedicated Route Handler + Resend, with server-side email and message-length validation. → **Why:** a `mailto:` as the only channel has a poor conversion rate.
-- **Problem:** supporting Spanish/English without duplicating routes or per-language SEO indexing. → **Solution:** a client-side toggle with Context API + `localStorage` (no `next-intl`, no `/en` routes), and the current language travels in the body of `/api/contact` so error messages also come back in the right language. → **Why:** nobody finds a portfolio through organic search — they arrive via a direct link — so the multi-language SEO of a routed solution doesn't pay for itself.
+- **Problem:** this Next.js version ships breaking changes relative to the docs most people know. → **Solution:** check `node_modules/next/dist/docs` before assuming behavior. → **Example:** Next 16 stopped pausing CSS smooth scrolling on route changes, so opening the case study from mid-page animated a scroll through the new page; `data-scroll-behavior="smooth"` on `<html>` restores the instant jump.
+- **Problem:** after a client-side navigation to `/#a`, the next `<Link>` hash navigation produced `/#a#b`, a URL that scrolls nowhere when shared (Next 16.2 appends the hash to a cached canonical URL that already holds one). → **Solution:** on the home page, section links are native `<a href="#id">`; on other routes they're `<Link href="/#id">`. → **Why:** a bare `#id` on `/case-study/*` resolves against the current path and left the whole navbar dead.
+- **Problem:** the contact form needed to deliver the message, not depend on the visitor having a mail client configured. → **Solution:** a Route Handler + Resend, with one validation schema for client and server. → **Why:** `mailto:` as the only channel loses messages; per-field errors with focus on the first one let keyboard and screen-reader users fix the form instead of guessing.
+- **Problem:** Spanish and English without duplicating pages or maintaining per-language SEO. → **Solution:** next-intl with the locale in a cookie, no `/en` routes; the locale also travels to `/api/contact`, so server errors come back in the visitor's language. → **Why:** people reach a portfolio through a direct link, not organic search, so routed multi-language SEO doesn't pay for itself.
+- **Problem:** honesty about the work. → **Solution:** a dev-only "pending" checklist per project in `content/projects.ts` that tracks what still needs evidence; it never renders in production. → **Why:** it kept unverified claims off the site until they were backed by a repo, a demo or a measurement.
 
 ---
 
@@ -69,8 +74,13 @@ Open [http://localhost:3000](http://localhost:3000).
 ## ✅ Code quality
 
 ```bash
-pnpm lint   # ESLint (next lint was removed in Next.js 16)
-pnpm test   # Vitest + React Testing Library
+pnpm lint           # ESLint (next lint was removed in Next.js 16)
+pnpm format:check   # Prettier
+pnpm test           # Vitest + Testing Library
+pnpm test:e2e       # Playwright (reuses a running dev server)
 ```
 
-Tests cover where the real logic lives, not static markup: contact form validation and submission (`app/api/contact/route.test.ts`), and the navbar's mobile menu (`components/Navbar.test.tsx`, `components/Contact.test.tsx`).
+- **Unit and component tests** (Vitest): content schema, contact validation and API route, sitemap, and the components where behavior lives: navbar routing, project filter, contact form, case study, 404.
+- **End-to-end** (Playwright): contact flow, language switch, the case study in both languages, navigation from the case study, the 404 page, the projects filter, the skip link and reduced motion. Every bug fixed in the redesign has a regression test.
+- **CI** (GitHub Actions) runs on every pull request: lint, format check and coverage (also on pushes to `master`), e2e against the production build, and Lighthouse CI.
+- **Accessibility:** WCAG AA contrast, a visible focus ring on every interactive element, 44px tap targets, a skip link, a single heading outline per page, and no color-only signals.
