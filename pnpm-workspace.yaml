@@ -1,3 +1,12 @@
+# pnpm 11 fails the install (ERR_PNPM_IGNORED_BUILDS) when a dependency has an
+# install script that is neither allowed nor denied here, so every one must be
+# listed explicitly.
 allowBuilds:
   sharp: true
   unrs-resolver: true
+  # Both come from next-intl and ship prebuilt binaries for every platform as
+  # optionalDependencies; their scripts are only a fallback (build from source
+  # / check the binary). Denied: no third-party code runs at install time
+  # unless it has to.
+  "@parcel/watcher": false
+  "@swc/core": false
